@@ -10,4 +10,5 @@ public class DangerManageApplication {
         SpringApplication.run(DangerManageApplication.class, args);
     }
     //gaox123
+    //666
 }
