@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DangerManageApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DangerManageApplication.class, args);
+        SpringApplication.run(DangerManageApplication.class, args); //123
     }
-    //gaox123
-    //666
 }
