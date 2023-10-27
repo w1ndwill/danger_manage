@@ -9,4 +9,5 @@ public class DangerManageApplication {
     public static void main(String[] args) {
         SpringApplication.run(DangerManageApplication.class, args);
     } //12345
+    //gaox
 }
