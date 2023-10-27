@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-level Vertical Menu with Persistent Submenu and Hover Effect</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #eeeeee;
+            overflow: auto;
+            height: 100vh;
+            border-right: 1px solid #ddd;
+            margin-top: 20px; /* 将 .sidebar 向下移动 20 像素 */
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar li {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .sidebar li:hover {
+            background-color: #eee;
+        }
+        .sub-menu {
+            display: none;
+            padding-left: 20px;
+        }
+        .arrow {
+            float: right;
+            margin-right: 5px;
+            font-size: 10px; /* 调整箭头大小 */
+        }
+        .opened .arrow {
+            transform: rotate(30deg);
+        }
+        .sub-menu li:hover {
+            background-color: #ccc;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            margin-top: 20px; /* 将 .sidebar 向下移动 20 像素 */
+        }
+        .navbar {
+            position: fixed; /* 将导航栏固定在页面顶部 */
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #333; /* 设置导航栏背景颜色 */
+            color: #fff; /* 设置导航栏文字颜色 */
+            padding: 1px;
+            display: flex;/* 使其成为弹性容器 */
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+
+        .login-button {
+            width: 40px; /* 设置按钮宽度 */
+            height: 40px; /* 设置按钮高度，使其成为圆形 */
+            background-color: #dddddd;
+            color: #333333;
+            text-decoration: none;
+            border: none;
+            border-radius: 50%; /* 设置边框半径以实现圆形按钮 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .login-button span {
+            font-size: 10px; /* 设置文字大小 */
+
+        }
+
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="logo">苏州市安全生产委员会网格化巡查系统</div>
+    <a href="login" class="login-button">
+        <span>未登录</span>
+    </a>
+</div>
+<div class="sidebar">
+    <ul>
+        <li>首页</li>
+        <li>信息中心</li>
+        <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('/login')">我的任务</li>
+        <li class="menu-item" id="menu1" onclick="toggleSubMenu(1)">
+            监督巡查 <span class="arrow">◄</span>
+            <ul class="sub-menu" id="subMenu1">
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('/login')">巡查计划</li>
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('Page 1.2')">我的巡查任务</li>
+            </ul>
+        </li>
+        <li class="menu-item" id="menu2" onclick="toggleSubMenu(2)">
+            下辖企业管理 <span class="arrow">◄</span>
+            <ul class="sub-menu" id="subMenu2">
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('Page 2.1')">下辖企业管理</li>
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('Page 2.2')">企业风险指数</li>
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('Page 00')">包管干部列表</li>
+            </ul>
+        </li>
+        <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('Page 3')">第三方机构/专家</li>
+    </ul>
+</div>
+
+<!--导航栏右侧要改变的的内容-->
+<div class="content">
+    Content goes here...
+</div>
+
+<script>
+    let submenuStates = [false, false]; // Initial submenu states
+
+    function toggleSubMenu(menuIndex) {
+        const menu = document.getElementById("menu" + menuIndex);
+        const subMenu = document.getElementById("subMenu" + menuIndex);
+
+        if (menu && subMenu) {
+            if (subMenu.style.display === "none" || subMenu.style.display === "") {
+                subMenu.style.display = "block";
+                menu.classList.add("opened"); // 添加 .opened 类
+            } else {
+                subMenu.style.display = "none";
+                menu.classList.remove("opened"); // 移除 .opened 类
+            }
+        }
+    }
+
+    const subMenuItems = document.querySelectorAll(".sub-menu li");
+    // Add click event listener to submenu items
+    subMenuItems.forEach(item => {
+        item.addEventListener('click', (event) => {
+            // Prevent the event from propagating to the parent menu item
+            event.stopPropagation();
+
+            // Handle the click action here
+            // For example, switch the content
+            encodeURIComponent(item.textContent)
+        });
+    });
+
+    function switchPage(pageName) {
+        const content = document.querySelector('.content');
+        // 使用 fetch 或其他方法获取新内容的 HTML 或数据
+        fetch(pageName)
+            .then(response => response.text())
+            .then(data => {
+                // 将获取的内容设置为右侧内容的 HTML
+                content.innerHTML = data;
+            });
+    }
+    // 使用 DOMContentLoaded 事件来初始化页面
+    document.addEventListener('DOMContentLoaded', function () {
+        // 初始显示 first.html 页面
+        switchPage('/Index');
+    });
+
+
+// 鼠标浮选显示
+    function highlightMenuItem(item) {
+        item.style.backgroundColor = "#ccc";
+    }
+
+    function unhighlightMenuItem(item) {
+        item.style.backgroundColor = "";
+    }
+</script>
+</body>
+</html>

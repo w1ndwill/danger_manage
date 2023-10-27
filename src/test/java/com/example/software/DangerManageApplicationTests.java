@@ -1,4 +1,4 @@
-package com.example.danger_manage;
+package com.example.software;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
