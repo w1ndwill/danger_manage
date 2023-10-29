@@ -5,5 +5,11 @@
     <select id="getInfo" parameterType="String" resultType="com.example.software.bean.UserBean">
         SELECT * FROM user WHERE name = #{name} AND password = #{password}
     </select>
+    <select id="getUserIdByUsernameAndPassword" resultType="java.lang.String">
+        SELECT truename
+        FROM user
+        WHERE name = #{name}
+          AND password = #{password}
+    </select>
 
 </mapper>

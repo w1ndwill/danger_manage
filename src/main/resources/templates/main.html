@@ -83,20 +83,21 @@
             cursor: pointer;
             text-align: center;
         }
-
         .login-button span {
             font-size: 10px; /* 设置文字大小 */
 
         }
-
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
 <div class="navbar">
     <div class="logo">苏州市安全生产委员会网格化巡查系统</div>
     <a href="login" class="login-button">
-        <span>未登录</span>
+        <span id="username-placeholder" th:text="${tn} ? ${tn} : '未登录'"></span>
     </a>
+
 </div>
 <div class="sidebar">
     <ul>
@@ -128,12 +129,12 @@
 </div>
 
 <script>
-    let submenuStates = [false, false]; // Initial submenu states
 
+    //使下拉菜单展开并且保持展开方法
+    let submenuStates = [false, false]; // Initial submenu states
     function toggleSubMenu(menuIndex) {
         const menu = document.getElementById("menu" + menuIndex);
         const subMenu = document.getElementById("subMenu" + menuIndex);
-
         if (menu && subMenu) {
             if (subMenu.style.display === "none" || subMenu.style.display === "") {
                 subMenu.style.display = "block";
@@ -144,20 +145,19 @@
             }
         }
     }
-
     const subMenuItems = document.querySelectorAll(".sub-menu li");
     // Add click event listener to submenu items
     subMenuItems.forEach(item => {
         item.addEventListener('click', (event) => {
             // Prevent the event from propagating to the parent menu item
             event.stopPropagation();
-
             // Handle the click action here
             // For example, switch the content
             encodeURIComponent(item.textContent)
         });
     });
 
+    //页面切换操作
     function switchPage(pageName) {
         const content = document.querySelector('.content');
         // 使用 fetch 或其他方法获取新内容的 HTML 或数据
@@ -179,10 +179,22 @@
     function highlightMenuItem(item) {
         item.style.backgroundColor = "#ccc";
     }
-
     function unhighlightMenuItem(item) {
         item.style.backgroundColor = "";
     }
+
+    function updateUsername(tn) {
+        if (tn) {
+            $("#username-placeholder").text(tn);
+        } else {
+            $("#username-placeholder").text("未登录");
+        }
+    }
+    // 在页面加载时或登录成功后，调用函数并传递 tn 的值
+    $(document).ready(function() {
+        var tn = 高翔/* 这里获取 tn 的值，例如从后端传递的数据 */;
+        updateUsername(tn);
+    });
 </script>
 </body>
 </html>
