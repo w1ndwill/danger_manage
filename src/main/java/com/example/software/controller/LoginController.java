@@ -36,7 +36,6 @@ public class LoginController {
     @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
     public ModelAndView login(String name, String password) {
         ModelAndView modelAndView = new ModelAndView();
-
         UserBean userBean = userService.loginIn(name, password);
         String tn = userService.getIdByUsernameAndPassword(name, password);
         modelAndView.addObject("tn", tn); // 将tn存储在Model中
@@ -45,7 +44,6 @@ public class LoginController {
         } else {
             modelAndView.setViewName("error");
         }
-
         return modelAndView;
     }
 

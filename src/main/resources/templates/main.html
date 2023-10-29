@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,6 +91,13 @@
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<!--    在 Thymeleaf 模板中-->
+    <script th:inline="javascript">
+        /* 将 tn 的值传递给 JavaScript 变量 */
+        var tnValue = /*[[${tn}]]*/ 'default_value';
+    </script>
+
+
 </head>
 <body>
 <div class="navbar">
@@ -127,6 +135,8 @@
 <div class="content">
     Content goes here...
 </div>
+
+
 
 <script>
 
@@ -183,6 +193,7 @@
         item.style.backgroundColor = "";
     }
 
+// 更新用户名称
     function updateUsername(tn) {
         if (tn) {
             $("#username-placeholder").text(tn);
@@ -190,11 +201,11 @@
             $("#username-placeholder").text("未登录");
         }
     }
-    // 在页面加载时或登录成功后，调用函数并传递 tn 的值
     $(document).ready(function() {
-        var tn = 高翔/* 这里获取 tn 的值，例如从后端传递的数据 */;
+        var tn = tnValue; // 使用服务器端传递的值
         updateUsername(tn);
     });
+
 </script>
 </body>
 </html>

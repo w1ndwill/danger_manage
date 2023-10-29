@@ -6,10 +6,10 @@ spring:
     password: cd5fb86ea3094a42  #??
     driver-class-name: com.mysql.cj.jdbc.Driver  #???????
 
-  spring:
-    thymeleaf:
-      prefix: classpath:/templates/
-      suffix: .html
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false # 设置为false以便在开发期间可以实时查看模板更改
 
   resources:
     static-locations:classpath:/templates/
