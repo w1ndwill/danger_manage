@@ -3,16 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录页</title>
+    <title>Login and Registration</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-image: url("background.PNG");
-            background-size: cover;
+            background-image: url("background.png");
+            background-size: 100% 100%;
             background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+        }
 
+        .top-bar {
+            left: 0;
+            position: absolute;
+            width: 100%;
+            height: 150px;
+        }
+
+        .red-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius :0;
+            width: 100%;
+            height: 10px;
+            background-color: rgba(255, 0, 0, 1);
+        }
+
+        .white-bar {
+            margin-top: 10px;
+            display: flex;
+            justify-content:left;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        #title {
+            font-size: 24px;
+            font-weight: bold;
         }
 
         .container {
@@ -20,22 +54,34 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            /*background: rgba(255, 255, 255, 0.8); !* 设置登录注册窗口的背景颜色和透明度 *!*/
+            background: rgba(255, 255, 255, 0.6);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slide-in 0.5s ease-out;
+            width: 20%; /* Set a fixed width */
         }
 
         h2 {
             text-align: center;
+            margin-bottom: 20px;
         }
 
-        input[type="text"], input[type="password"], input[type="email"] {
+        input {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            background-color: transparent;
+            font-size: 16px;
+            color: #333;
+            transition: border-bottom-color 0.3s ease-out;
+        }
+
+        input:focus {
+            outline: none;
+            border-bottom-color: #007BFF;
         }
 
         button {
@@ -46,23 +92,73 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease-out;
+        }
+
+        button:hover {
+            background-color: #0062cc;
         }
 
         .register-link {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
         }
+
+        .register-link a {
+            color: #007BFF;
+            text-decoration: none;
+            transition: color 0.3s ease-out;
+        }
+
+        .register-link a:hover {
+            color: #0062cc;
+        }
+
+        /* Style for the select dropdown */
+        select {
+            font-family: "微软雅黑";
+            background: rgba(0, 0, 0, 0);
+            font-size: 18px;
+            color: rgba(0, 0, 0, 0.1);;
+            border: 1px solid #1a1a1a;
+            border-radius: 5px;
+            padding: 8px;
+            transition: all 0.3s ease;
+        }
+
+        /* Style for the options within the dropdown */
+        option {
+            color: #333; /* Darker text color for better readability */
+            background: #fff; /* White background for contrast */
+            line-height: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* Style when the select dropdown is hovered or focused */
+        select:hover,
+        select:focus {
+            border: 2px solid #ccc;
+            box-shadow: 0 0 15px 1px #DDDDDD;
+            color: #555; /* Slightly darker text color on hover or focus */
+        }
+
+        /* Style for options when hovered */
+        option:hover {
+            background: #EBCCD1;
+            color: #fff; /* White text color on hover for better contrast */
+        }
+
     </style>
-    <link rel="stylesheet" type="text/css" href="common.css">
+
 </head>
 <body>
 <div class="top-bar">
     <div class="red-bar"></div>
     <div class="white-bar">
-        <img src="国徽.jpg"  class="logo">
-        <div id="title">
-            <p style="display: inline-block; font-size: 30px; font-weight: bold;">苏州市安全生产委员会安全隐患应急管理系统</p>
-        </div>
+        <img src="国徽.jpg" class="logo" alt="Logo">
+        <div id="title">苏州市安全生产委员会安全隐患应急管理系统</div>
     </div>
 </div>
 
@@ -73,20 +169,31 @@
         <input type="password" name="password" placeholder="请输入你的密码" required>
         <button type="submit">登录</button>
     </form>
-
-    <p class="register-link">Don't have an account? <a href="javascript:void(0);" onclick="showRegistrationForm()">Register</a></p>
+    <p class="register-link"><a href="javascript:void(0);" onclick="showRegistrationForm()">点击注册</a></p>
 </div>
 
 <div class="container" id="register-container" style="display: none;">
-    <h2>Register</h2>
+    <h2>注册</h2>
     <form action="register.php" method="POST">
-        <input type="text" name="new_username" placeholder="New Username" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="new_password" placeholder="New Password" required>
+        <input type="text" name="new_username" placeholder="请输入用户名" required>
+        <input type="password" name="new_password" placeholder="请输入您的密码" required>
+        <input type="password" name="confirm_password" placeholder="请确认您的密码" onkeyup="checkPassword() "required>
+        <input type="text" name="new_id" placeholder="请输入您的身份证号" onkeyup="checkId()" required>
+        <input type="text" name="new_phone" placeholder="请输入您的电话号码" required>
+        <div class="option">
+            <select class="select">
+                <option value="0">请选择您的身份</option>
+                <option value="1">安全生产管理员</option>
+                <option value="2">安全生产巡查员</option>
+                <option value="3">企业安全生产负责人</option>
+            </select>
+        </div>
+        <input type="text" name="new_key" placeholder="请输入您的密钥" required>
+
+
         <button type="submit">注册</button>
     </form>
-
-    <p class="register-link">Already have an account? <a href="javascript:void(0);" onclick="showLoginForm()">Login</a></p>
+    <p class="register-link"><a href="javascript:void(0);" onclick="showLoginForm()">点击登录</a></p>
 </div>
 
 <script>
@@ -98,6 +205,26 @@
     function showLoginForm() {
         document.getElementById('login-container').style.display = 'block';
         document.getElementById('register-container').style.display = 'none';
+    }
+
+    function checkPassword() {
+        var password = document.getElementById('new_password').value;
+        var confirm_password = document.getElementById('confirm_password').value;
+        if (password != confirm_password) {
+            alert('两次输入的密码不一致，请重新输入！');
+            document.getElementById('new_password').value = '';
+            document.getElementById('confirm_password').value = '';
+        }
+    }
+
+    function checkId() {
+        //验证身份证号
+        var id = document.getElementById('new_id').value;
+        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if (!reg.test(id)) {
+            alert('身份证号格式不正确，请重新输入！');
+            document.getElementById('new_id').value = '';
+        }
     }
 </script>
 </body>
