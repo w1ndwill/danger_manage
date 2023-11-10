@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class LoginController {
 
-    //将Service注入Web层2
+    //将Service注入Web层
     @Autowired
     UserService userService;
 
