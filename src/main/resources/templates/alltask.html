@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务管理页面</title>
+    <link rel="stylesheet" href="styles.css"> <!-- 添加样式表链接，可根据需要自定义样式 -->
+</head>
+<body>
+
+<div class="filter-section">
+    <div class="filter">
+        <label for="taskStatus">任务状态:</label>
+        <select id="taskStatus">
+            <option value="all">不限</option>
+            <option value="unpublished">未发布</option>
+            <option value="inProgress">进行中</option>
+            <option value="completed">已结束</option>
+            <option value="reviewPassed">复查通过</option>
+        </select>
+
+        <label for="taskTime">任务时效:</label>
+        <select id="taskTime">
+            <option value="all">不限</option>
+            <option value="notOverdue">未逾期</option>
+            <option value="overdue">已逾期</option>
+        </select>
+
+    </div>
+
+    <div class="filter">
+    </div>
+</div>
+
+<div class="date-search">
+
+    <div class="calendar">
+        <label for="calendar">日历:</label>
+        <input type="date" id="calendar">
+
+        <label for="search">搜索:</label>
+        <input type="text" id="search">
+
+        <button id="searchButton">搜索</button>
+        <button id="resetButton">重置</button>
+    </div>
+
+    <div class="search">
+    </div>
+
+    <div class="buttons">
+    </div>
+</div>
+
+<script src="script.js"></script> <!-- 添加脚本链接，可根据需要编写JavaScript代码 -->
+</body>
+</html>

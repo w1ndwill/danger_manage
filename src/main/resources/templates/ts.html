@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        /* 基本样式，可根据需要进行定制 */
+        .carousel {
+            /*position: relative;*/
+            max-width: 60%;
+            max-height: 400px;
+            float: left;
+            /*overflow: hidden;*/
+            /*height: 200px; !* 减小.carousel的高度 *!*/
+        }
+
+        .info {
+            width: 40%; /* Set the width of the table to make it larger */
+            /*margin: 0 auto; !* Center the table horizontally on the page *!*/
+            text-align: left; /* Center the text within the table cells */
+            padding: 10px; /* Add some padding for space on the left and right */
+        }
+        .news{
+            width: 60%;
+            text-align: left;/* 文本左对齐 */
+            height: 300px;
+            /*padding: 10px;*//* 设置内边距，增加左右边距 */
+            border: 1px solid #000 ;/* 设置表格边框，1px宽度，黑色边框 */
+        }
+        .news2{
+            width: 39%;
+            text-align: left;/* 文本左对齐 */
+            height: 300px;
+            /*padding: 10px;*//* 设置内边距，增加左右边距 */
+            border: 1px solid #000 ;/* 设置表格边框，1px宽度，黑色边框 */
+        }
+        .carousel img {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        .dots {
+            text-align: left;
+            /*margin-left: 300px;*/
+            /*position: relative;*/
+            /*top: 100%; !* 将.dots元素向下移动到.carousel的正下方 *!*/
+            /*margin-top: 10px; !* 可以根据需要调整上边距 *!*/
+        }
+        .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin: 0 5px;
+            background-color: #888;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+<div class="carousel">
+    <img src="image1.jpg" alt="Image 1">
+    <img src="image2.jpg" alt="Image 2">
+    <img src="image3.jpg" alt="Image 3">
+</div>
+    <!-- 可以添加更多图片 -->
+    <form class="info">
+        <fieldset>
+            <legend>信息中心</legend>
+
+               <ul>
+                   <li>第一个新闻</li>
+                   <li>第二个新闻</li>
+               </ul>
+
+        </fieldset>
+    </form>
+
+</div>
+
+
+<div class="dots">
+    <span class="dot" onclick="setSlide(0)"></span>
+    <span class="dot" onclick="setSlide(1)"></span>
+    <span class="dot" onclick="setSlide(2)"></span>
+    <!-- 根据轮播图片数量添加更多小圆点 -->
+</div>
+<div class="container">
+    <form class="news">
+    <h2 style=" font-size:20px"><strong>我的任务列表</strong></h2>
+    <ul>
+        <li>任务一</li>
+        <li>任务二</li>
+    </ul>
+    </form>
+
+    <form class="news2">
+        <h2 style=" font-size:20px"><strong>我的任务列表</strong></h2>
+        <ul>
+            <li>任务一</li>
+            <li>任务二</li>
+        </ul>
+    </form>
+</div>
+
+
+<script>
+    // JavaScript 用于轮播
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.carousel img');
+    const dots = document.querySelectorAll('.dot');
+
+    function showSlide(n) {
+        if (n >= slides.length) {
+            slideIndex = 0;
+        } else if (n < 0) {
+            slideIndex = slides.length - 1;
+        }
+
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+            dots[i].style.backgroundColor = "#888";
+        }
+
+        slides[slideIndex].style.display = "block";
+        dots[slideIndex].style.backgroundColor = "red";
+    }
+
+    function nextSlide() {
+        slideIndex++;
+        showSlide(slideIndex);
+    }
+    function previousSlide() {
+        slideIndex--;
+        showSlide(slideIndex);
+    }
+    function setSlide(n) {
+        slideIndex = n;
+        showSlide(slideIndex);
+    }
+    showSlide(slideIndex);
+    setInterval(nextSlide, 3000); // 自动轮播，每3秒切换一张图片
+</script>
+</body>
+</html>

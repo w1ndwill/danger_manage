@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* 样式化导航栏 */
+        ul.n1 {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        li.n2 {
+            float: left;
+            cursor: pointer;
+            margin-right: 20px; /* 设置间距，可以根据需要调整 */
+        }
+        /* 样式化内容区域 */
+        .tent {
+            flex: 1;
+            padding: 20px;
+            margin-top: 20px; /* 将 .sidebar 向下移动 20 像素 */
+        }
+
+        /* 隐藏页面 */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<ul class="n1">
+<!--    页面跳转方法在main中已写-->
+    <li class="n2" onclick="show('/alltask')">我的巡查任务</li>
+    <li class="n2" onclick="show('/login')">我的</li>
+</ul>
+
+<!-- 内容区域 -->
+<div class="tent">
+    <div id="myTasks" class="page">
+        <h2>我的巡查任务</h2>
+        <!-- 这里放置我的巡查任务的内容 -->
+    </div>
+
+<!--    <div id="option1" class="page hidden">-->
+<!--        <h2>选项1</h2>-->
+<!--        &lt;!&ndash; 这里放置选项1的内容 &ndash;&gt;-->
+<!--    </div>-->
+
+</div>
+
+<script>
+    // JavaScript函数用于显示指定页面并隐藏其他页面
+
+</script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-level Vertical Menu with Persistent Submenu and Hover Effect</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #eeeeee;
+            overflow: auto;
+            height: 150vh;
+            border-right: 1px solid #ddd;
+            margin-top: 20px; /* 将 .sidebar 向下移动 20 像素 */
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar li {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .sidebar li:hover {
+            background-color: #eee;
+        }
+        .sub-menu {
+            display: none;
+            padding-left: 20px;
+        }
+        .arrow {
+            float: right;
+            margin-right: 5px;
+            font-size: 10px; /* 调整箭头大小 */
+        }
+        .opened .arrow {
+            transform: rotate(30deg);
+        }
+        .sub-menu li:hover {
+            background-color: #ccc;
+        }
+        .menu-item {
+            /* 初始样式属性，例如颜色 */
+        }
+        /* 设置被点击后的.menu-item样式 */
+        .menu-item.active {
+            background-color: #007BFF;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            margin-top: 20px; /* 将 .sidebar 向下移动 20 像素 */
+        }
+        .navbar {
+            position: fixed; /* 将导航栏固定在页面顶部 */
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #333; /* 设置导航栏背景颜色 */
+            color: #fff; /* 设置导航栏文字颜色 */
+            padding: 1px;
+            display: flex;/* 使其成为弹性容器 */
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+
+        .login-button {
+            width: 40px; /* 设置按钮宽度 */
+            height: 40px; /* 设置按钮高度，使其成为圆形 */
+            background-color: #dddddd;
+            color: #333333;
+            text-decoration: none;
+            border: none;
+            border-radius: 50%; /* 设置边框半径以实现圆形按钮 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+        }
+        .login-button span {
+            font-size: 10px; /* 设置文字大小 */
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!--    在 Thymeleaf 模板中-->
+    <script th:inline="javascript">
+        /* 将 tn 的值传递给 JavaScript 变量 */
+        var tnValue = /*[[${tn}]]*/ 'default_value';
+    </script>
+
+
+</head>
+<body>
+<div class="navbar">
+    <div class="logo">苏州市安全生产委员会网格化巡查系统</div>
+    <a href="login" class="login-button">
+        <span id="username-placeholder" th:text="${tn} ? ${tn} : '未登录'"></span>
+    </a>
+
+</div>
+<div class="sidebar">
+    <ul>
+        <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('/ts')">首页</li>
+        <li>信息中心</li>
+        <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('/Index')">我的任务</li>
+        <li class="menu-item" id="menu1" onclick="toggleSubMenu(1)">
+            监督巡查 <span class="arrow">◄</span>
+            <ul class="sub-menu" id="subMenu1">
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('/login')">巡查计划</li>
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('/task')">我的巡查任务</li>
+            </ul>
+        </li>
+
+        <li class="menu-item" id="menu2" onclick="toggleSubMenu(2)">
+            下辖企业管理 <span class="arrow">◄</span>
+            <ul class="sub-menu" id="subMenu2">
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('Page 2.1')">下辖企业管理</li>
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('Page 2.2')">企业风险指数</li>
+                <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('Page 00')">包管干部列表</li>
+            </ul>
+        </li>
+        <li onmouseover="highlightMenuItem(this)" onmouseout="unhighlightMenuItem(this)" onclick="switchPage('Page 3')">第三方机构/专家</li>
+    </ul>
+</div>
+
+<!--导航栏右侧要改变的的内容-->
+<div class="content">
+    Content goes here...
+</div>
+
+<script>
+
+    //使下拉菜单展开并且保持展开方法
+    let submenuStates = [false, false]; // Initial submenu states
+    function toggleSubMenu(menuIndex) {
+        const menu = document.getElementById("menu" + menuIndex);
+        const subMenu = document.getElementById("subMenu" + menuIndex);
+        if (menu && subMenu) {
+            if (subMenu.style.display === "none" || subMenu.style.display === "") {
+                subMenu.style.display = "block";
+                menu.classList.add("opened");
+                // subMenu.classList.add("active"); // 添加 .active 类
+                // menu.classList.add("active");
+            } else {
+                subMenu.style.display = "none";
+                menu.classList.remove("opened");
+                // subMenu.classList.remove("active"); // 移除 .active 类
+                // menu.classList.remove("active");
+            }
+        }
+        // // 添加或移除.menu-item的类以改变其颜色
+        // menu.classList.toggle("active");
+    }
+    const subMenuItems = document.querySelectorAll(".sub-menu li");
+    // Add click event listener to submenu items
+    subMenuItems.forEach(item => {
+        item.addEventListener('click', (event) => {
+            // Prevent the event from propagating to the parent menu item
+            event.stopPropagation();
+            // Handle the click action here
+            // For example, switch the content
+            encodeURIComponent(item.textContent)
+        });
+    });
+
+    //页面切换操作
+    function switchPage(pageName) {
+        const content = document.querySelector('.content');
+        fetch(pageName)
+            .then(response => response.text())
+            .then(data => {
+                content.innerHTML = data;
+                // 在页面加载后重新初始化图片轮播功能
+                initializeSlideshow();
+            });
+    }
+    function initializeSlideshow() {
+        changeSlide(0);
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel img');
+        const dots = document.querySelectorAll('.dot');
+
+        function nextSlide() {
+            slides[currentSlide].style.display = "none";
+            dots[currentSlide].style.backgroundColor = "#888";
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].style.display = "block";
+            dots[currentSlide].style.backgroundColor = "red";
+        }
+
+        // 设置轮播定时器，每隔一定时间切换到下一张图片
+        const interval = 2000; // 切换间隔，以毫秒为单位（这里设置为2秒）
+        setInterval(nextSlide, interval);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        switchPage('/ts'); // 切换到ts.html
+    });
+    function changeSlide(slideIndex) {
+        const slides = document.querySelectorAll('.carousel img');
+        const dots = document.querySelectorAll('.dot');
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+            dots[i].style.backgroundColor = "#888";
+        }
+        slides[slideIndex].style.display = "block";
+        dots[slideIndex].style.backgroundColor = "red";
+    }
+
+
+    function highlightMenuItem(item) {
+        item.style.backgroundColor = "#ccc";
+    }// 鼠标浮选显示
+    function unhighlightMenuItem(item) {
+        item.style.backgroundColor = "";
+    }//鼠标离开显示
+//页面中的页面跳转方法
+    function show(pageId) {
+        const tent = document.querySelector('.tent');
+        fetch(pageId)
+            .then(response => response.text())
+            .then(data => {
+                tent.innerHTML = data;
+            });
+    }
+
+// 更新用户名称
+    function updateUsername(tn) {
+        if (tn) {
+            $("#username-placeholder").text(tn);
+        } else {
+            $("#username-placeholder").text("未登录");
+        }
+    }
+    $(document).ready(function() {
+        var tn = tnValue; // 使用服务器端传递的值
+        updateUsername(tn);
+    });
+</script>
+</body>
+</html>
