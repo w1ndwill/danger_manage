@@ -1,59 +1,289 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <style>
-        /* 样式化导航栏 */
-        ul.n1 {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        li.n2 {
-            float: left;
-            cursor: pointer;
-            margin-right: 20px; /* 设置间距，可以根据需要调整 */
-        }
-        /* 样式化内容区域 */
-        .tent {
-            flex: 1;
-            padding: 20px;
-            margin-top: 20px; /* 将 .sidebar 向下移动 20 像素 */
-        }
-
-        /* 隐藏页面 */
-        .hidden {
-            display: none;
-        }
-    </style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <!-- 引入 Vue.js 和 Element-UI -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
-<body>
-<!-- 导航栏 -->
-<ul class="n1">
-<!--    页面跳转方法在main中已写-->
-    <li class="n2" onclick="show('/alltask')">我的巡查任务</li>
-    <li class="n2" onclick="show('/login')">我的</li>
-</ul>
+<style>
+    .year-label {
+        margin-left: 2em; /* 或者使用 padding-left: 2em; */
+    }
 
-<!-- 内容区域 -->
-<div class="tent">
-    <div id="myTasks" class="page">
-        <h2>我的巡查任务</h2>
-        <!-- 这里放置我的巡查任务的内容 -->
+    .search-input {
+        width: 30%; /* 设置搜索框的宽度，可以根据需要调整 */
+        /*margin-right: 1em; !* 可以调整右侧的间距 *!*/
+    }
+    .e1{
+        width: 60%;
+    }
+
+    .form-item-flex {
+        /*display: flex;*/
+        /*align-items: center;*/
+        margin-bottom: 10px; /* 添加一些底边距，使其与下一个form-item有一定间隔 */
+    }
+</style>
+
+<style scoped>
+    /* 标题行和偶数行背景颜色为灰色 */
+    .el-table tr:nth-child(even), .el-table thead {
+        background-color: #f0f0f0;
+    }
+    /* 奇数行背景颜色为白色 */
+    .el-table tr:nth-child(odd) {
+        background-color: #ffffff;
+    }
+    /*.search-bar {*/
+    /*    display: flex;*/
+    /*    justify-content: flex-end;*/
+    /*    align-items: center;*/
+    /*    margin-bottom: 15px;*/
+    /*}*/
+</style>
+<body>
+
+<div id="app">
+    <!-- 任务和实施选项 -->
+    <div>
+        <label>我的巡查任务:</label>
+        <el-radio v-model="taskType" label="巡查">巡查</el-radio>
+        <el-radio v-model="taskType" label="实施">实施</el-radio>
     </div>
 
-<!--    <div id="option1" class="page hidden">-->
-<!--        <h2>选项1</h2>-->
-<!--        &lt;!&ndash; 这里放置选项1的内容 &ndash;&gt;-->
-<!--    </div>-->
+    <!-- 任务状态和任务时效下拉框 -->
+    <div>
+        <label>任务状态:</label>
+        <el-select v-model="taskStatus" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="未发布" value="未发布"></el-option>
+            <el-option label="进行中" value="进行中"></el-option>
+            <el-option label="已结束" value="已结束"></el-option>
+            <el-option label="复查通过" value="复查通过"></el-option>
+        </el-select>
 
+        <label>任务时效:</label>
+        <el-select v-model="taskDeadline" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="未逾期" value="未逾期"></el-option>
+            <el-option label="已逾期" value="已逾期"></el-option>
+        </el-select>
+    </div>
+
+    <!-- 年份选择和搜索框 -->
+    <div class="search-bar">
+        <label  class="year-label">年份:</label>
+        <el-date-picker v-model="selectedDate" type="date" placeholder="选择年月日"></el-date-picker>
+
+        <el-input  class="search-input" v-model="search" placeholder="输入关键字"></el-input>
+        <el-button @click="searchTasks" type="primary">搜索</el-button>
+        <el-button @click="reset">重置</el-button>
+
+        <el-button @click="openTemporaryTaskDialog" type="info" icon="el-icon-edit">发起临时任务</el-button>
+        <el-button @click="exportList" type="success" icon="el-icon-download">导出列表</el-button>
+    </div>
+
+        <div>
+            <el-table :data="tasks" style="width: 100%">
+                <el-table-column type="selection" width="55"></el-table-column>
+                <el-table-column prop="taskName" label="任务名称" width="300"  ></el-table-column>
+                <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
+                <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
+                <el-table-column prop="hiddenDangerCount" label="隐患数" width="100"></el-table-column>
+                <el-table-column prop="inspector" label="检查人" width="120"></el-table-column>
+                <el-table-column prop="inspectorType" label="检查人类型" width="120"></el-table-column>
+                <el-table-column prop="dateRange" label="任务起止日期" width="200"></el-table-column>
+                <el-table-column label="操作" width="300">
+                    <template slot-scope="scope">
+                        <div style="display: flex; justify-content: space-around;">
+                            <el-button type="primary" icon="el-icon-edit" @click="editTask(scope.row)">编辑</el-button>
+                            <el-button type="success" icon="el-icon-view" @click="viewTask(scope.row)">详情</el-button>
+                            <el-button type="danger" icon="el-icon-delete" @click="deleteTask(scope.row)">删除</el-button>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+
+    <!-- 弹窗：发起临时任务 -->
+    <el-dialog :visible.sync="temporaryTaskDialogVisible" title="发起临时任务" :width="600">
+        <!-- 巡查计划信息部分 -->
+        <el-form ref="temporaryTaskForm" :model="temporaryTaskForm" label-width="80px">
+            <el-form-item class="form-item-flex" label="检查类型:" prop="inspectionType">
+                <el-radio-group v-model="temporaryTaskForm.inspectionType">
+                    <el-radio label="综合检查">综合检查</el-radio>
+                    <el-radio label="专项检查">专项检查</el-radio>
+                    <el-radio label="日常检查">日常检查</el-radio>
+                    <el-radio label="节假日检查">节假日检查</el-radio>
+                    <el-radio label="季节性检查">季节性检查</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item  label="任务名称:" class="form-item-flex" prop="taskName">
+                <el-input class="e1" v-model="temporaryTaskForm.taskName" placeholder="请输入任务名称"></el-input>
+            </el-form-item>
+            <el-form-item class="form-item-flex" label="检查要求:" prop="inspectionRequirement">
+                <el-input class="e1" v-model="temporaryTaskForm.inspectionRequirement" placeholder="请输入检查要求"></el-input>
+            </el-form-item>
+            <el-form-item class="form-item-flex" label="检查人:" prop="inspectionRequirement">
+                <el-input class="e1" v-model="temporaryTaskForm.inspectionRequirement" placeholder="请输入检查要求"  >
+                    <i slot="suffix" class="el-icon-user-solid" @click="openDialog"></i>
+                </el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="temporaryTaskDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="submitTemporaryTaskForm">确定</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 设定查询表部分 -->
+    <el-dialog title="选择检查人" :visible.sync="dialogVisible" @close="closeDialog">
+        <!-- 顶部选项卡 -->
+        <el-tabs v-model="currentTab" @tab-click="handleTabClick">
+            <el-tab-pane label="政府" name="government"></el-tab-pane>
+            <el-tab-pane label="网格员" name="gridOfficer"></el-tab-pane>
+            <el-tab-pane label="巡查员" name="inspector"></el-tab-pane>
+        </el-tabs>
+
+        <!-- 搜索框 -->
+        <el-form ref="searchForm" :model="searchForm" label-width="80px">
+            <el-form-item>
+                <el-input v-model="searchForm.keyword" placeholder="请输入关键词"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="search">搜索</el-button>
+                <el-button @click="resetSearch">重置</el-button>
+            </el-form-item>
+        </el-form>
+
+        <!-- 表格 -->
+        <el-table :data="tableData" style="width: 100%">
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column prop="#" label="#"></el-table-column>
+            <!-- 其他列省略，请根据你的数据结构添加 -->
+
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            :type="scope.row.used ? 'danger' : 'primary'"
+                            @click="handleButtonClick(scope.row)">
+                        {{ scope.row.used ? '已使用' : '未使用' }}
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="temporaryTaskDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="submitTemporaryTaskForm">确定</el-button>
+        </div>
+    </el-dialog>
+    <!-- 这里可以添加设定查询表的内容，比如el-table等 -->
 </div>
 
 <script>
-    // JavaScript函数用于显示指定页面并隐藏其他页面
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                taskType: '巡查',
+                taskStatus: '不限',
+                taskDeadline: '不限',
+                selectedDate: '',
+                search: '',
+                temporaryTaskDialogVisible: false,
+                temporaryTaskForm: {
+                    inspectionType: [],
+                    taskName: '',
+                    inspectionRequirement: ''
+                },
+                tasks: [] ,// 请确保有这个数据属性
+                dialogVisible: false,
+                selectedCheckers: ["red","green","blue"],
 
+                currentTab: 'government', // 默认选中政府
+                searchForm: {
+                    keyword: '',
+                },
+                tableData: [], // 表格数据
+            };
+        },
+        mounted() {
+
+            this.getAllTasks();
+        },
+        methods: {
+            getAllTasks() {
+                // 发起HTTP请求，获取数据
+                axios.get('/all')
+                    .then(response => {
+                        // 将从后端获取的数据赋值给tasks属性
+                        this.tasks = response.data;
+                    })
+                    .catch(error => {
+                        console.error('获取任务时发生错误', error);
+                        console.log('完整的错误响应:', error.response);
+                    });
+            },
+            searchTasks() {
+                // 处理搜索逻辑
+                console.log('Searching tasks...');
+            },
+            reset() {
+                // 重置表单
+                this.taskType = '巡查';
+                this.taskStatus = '不限';
+                this.taskDeadline = '不限';
+                this.selectedDate = '';
+                this.search = '';
+            },
+            editTask(task) {
+                // 编辑任务的逻辑
+                console.log("Edit task:", task);
+            },
+            viewTask(task) {
+                // 查看任务的逻辑
+                console.log("View task:", task);
+            },
+            deleteTask(task) {
+                // 删除任务的逻辑
+                console.log("Delete task:", task);
+            },
+            openTemporaryTaskDialog() {
+                this.temporaryTaskDialogVisible = true;
+            },
+
+            // 提交发起临时任务表单
+            submitTemporaryTaskForm() {
+                // 在这里处理提交逻辑，例如发送请求
+                // 提交成功后关闭弹窗
+                this.temporaryTaskDialogVisible = false;
+            },
+            exportList(){
+
+            },
+
+            openDialog() {
+                console.log('openDialog called');
+                this.dialogVisible = true;
+            },
+            closeDialog() {
+                this.dialogVisible = false;
+            },
+            confirmSelection() {
+                // 将选择的内容拼接到单行框中，这里可以根据需求进行调整
+                this.temporaryTaskForm.inspectionRequirement = this.selectedItems.join(', ');
+                this.dialogVisible = false;
+            },
+        }
+    });
 </script>
+
 </body>
 </html>
