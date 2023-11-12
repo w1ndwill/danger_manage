@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <title>Login and Registration</title>
+    <style>
+        body {
+            background:#888888;
+        }
+
+        .login {
+            height: 100vh;
+            display: flex;
+            justify-content: right;
+            align-items: center;
+        }
+
+        .login-title {
+            font-size: 20px;
+        }
+
+        .register {
+            height: 100vh;
+            display: flex;
+            justify-content: right;
+            align-items: center;
+        }
+
+        .register-title {
+            font-size: 20px;
+        }
+
+        .box-card {
+            width: 400px;
+            margin-right: 200px;
+        }
+    </style>
+</head>
+<body>
+<div id="login">
+    <div class="login">
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span class="login-title">登录</span>
+            </div>
+            <div class="login-form">
+                <el-form :model="form" :rules="loginRules" ref="loginForm">
+                    <el-form-item prop="username">
+                        <el-input type="text" name="name" v-model="form.username" auto-complete="off" placeholder="请输入用户名" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input type="password" name="password" v-model="form.password" auto-complete="off" placeholder="请输入密码" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-key"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button style="width: 210px;" type="primary" @click="handleLogin"
+                                   :loading="loading">登录</el-button>
+                        <el-button style="width: 110px;" @click="showRegistrationForm()">注册</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-card>
+    </div>
+</div>
+
+<div id="register">
+<div class="register">
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span class="login-title">注册</span>
+            </div>
+            <div class="register-form">
+                <el-form :model="form" :rules="registerRules" ref="registerForm">
+                    <el-form-item prop="username">
+                        <el-input type="text" name="name" v-model="form.username" auto-complete="off" placeholder="请输入用户名" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input type="password" name="password" v-model="form.password" auto-complete="off" placeholder="请输入密码" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-key"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="email">
+                        <el-input type="email" name="email" v-model="form.email" auto-complete="off" placeholder="请输入邮箱" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-message"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button style="width: 210px;" type="primary" @click="handleRegister"
+                                   :loading="loading">注册</el-button>
+                        <el-button style="width: 110px;" @click="showLoginForm()">登录</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-card>
+    </div>
+
+</div>
+</body>
+
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/qs@6.11.1/dist/qs.js"></script>
+
+<script>
+
+    new Vue({
+        el: '#login',
+        data: {
+            loading: false,
+            form: {
+                username: '',
+                password: ''
+            },
+            loginRules: {
+                username: [
+                    { required: true, message: '请输入账户', trigger: 'blur' },
+                ],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' }
+                ]
+            },
+        },
+        methods: {
+            handleLogin() {
+                this.$refs.loginForm.validate().then(() => {
+                    this.loading = true;
+                    axios.post('./api/login', Qs.stringify(this.form)
+                    ).then(res => {
+                        this.loading = false;
+                        console.log(res.data)
+                        if (res.data.code === 0) {
+                            this.$message({
+                                message: '登录成功',
+                                type: 'success'
+                            });
+                            window.location.href = "/goods"
+                        } else {
+                            this.$message({
+                                message: '登陆失败',
+                                type: 'warning'
+                            });
+                        }
+                    }, err => {
+                        this.loading = false;
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                        console.log(err);
+                    })
+
+                }).catch((error => {
+                    console.log(error)
+                    this.$message({
+                        message: '输入错误！',
+                        type: 'warning'
+                    });
+                }))
+            },
+            showRegistrationForm() {
+                document.getElementById("login").style.display = "none";
+                document.getElementById("register").style.display = "block";
+            }
+        }
+    })
+
+    new Vue({
+        el: '#register',
+        data: {
+            loading: false,
+            form: {
+                username: '',
+                password: '',
+                email: ''
+            },
+            registerRules: {
+                username: [
+                    { required: true, message: '请输入账户', trigger: 'blur' },
+                ],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' }
+                ],
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' }
+                ]
+            },
+        },
+        methods: {
+            handleRegister() {
+                this.$refs.registerForm.validate().then(() => {
+                    this.loading = true;
+                    axios.post('./api/register', Qs.stringify(this.form)
+                    ).then(res => {
+                        this.loading = false;
+                        console.log(res.data)
+                        if (res.data.code === 0) {
+                            this.$message({
+                                message: '注册成功',
+                                type: 'success'
+                            });
+                            window.location.href = "/goods"
+                        } else {
+                            this.$message({
+                                message: '注册失败',
+                                type: 'warning'
+                            });
+                        }
+                    }, err => {
+                        this.loading = false;
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                        console.log(err);
+                    })
+
+                }).catch((error => {
+                    console.log(error)
+                    this.$message({
+                        message: '输入错误！',
+                        type: 'warning'
+                    });
+                }))
+            },
+            showLoginForm() {
+                document.getElementById("login").style.display = "block";
+                document.getElementById("register").style.display = "none";
+            }
+        }
+    })
+</script>
+</html>
