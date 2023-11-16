@@ -1,5 +1,7 @@
 package com.example.software.bean;
 
+import org.apache.catalina.User;
+
 public class UserBean {
     private int id;
     private String name;
@@ -23,4 +25,5 @@ public class UserBean {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

@@ -17,6 +17,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.getInfo(name,password);
     }
 
+    @Override
+    public UserBean register(String name, String password, String account) {
+        return userMapper.insertInfo(name,password,account);
+    }
+
     public String getIdByUsernameAndPassword(String name, String password) {
         return userMapper.getUserIdByUsernameAndPassword(name, password);}
 }

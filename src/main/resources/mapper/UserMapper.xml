@@ -12,4 +12,13 @@
           AND password = #{password}
     </select>
 
+
+    <select id="insertInfo" resultType="com.example.software.bean.UserBean">
+        SELECT truename
+        FROM user
+        WHERE name = #{name}
+    </select>
+
+
+
 </mapper>
