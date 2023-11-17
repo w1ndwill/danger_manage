@@ -4,94 +4,296 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Login and Registration</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            /*background-image: url('background.jpg'); !* 设置网页背景图片的路径 *!*/
-            background-size: cover; /* 让背景图片充满整个页面 */
-
-        }
-        .container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            /*background: rgba(255, 255, 255, 0.8); !* 设置登录注册窗口的背景颜色和透明度 *!*/
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background:#888888;
         }
 
-        h2 {
-            text-align: center;
+        .login {
+            height: 100vh;
+            display: flex;
+            justify-content: right;
+            align-items: center;
         }
 
-        input[type="text"], input[type="password"], input[type="email"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .login-title {
+            font-size: 20px;
         }
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .register {
+            height: 100vh;
+            display: flex;
+            justify-content: right;
+            align-items: center;
         }
 
-        .register-link {
-            text-align: center;
-            margin-top: 10px;
+        .register-title {
+            font-size: 20px;
+        }
+
+        .box-card {
+            width: 400px;
+            margin-right: 200px;
         }
     </style>
 </head>
 <body>
-
 <div id="login">
-<div class="container" id="login-container">
-    <h2>Login</h2>
-    <form action="/loginIn" method="POST">
-        <input type="text" name="name" placeholder="请输入用户名" required>
-        <input type="password" name="password" placeholder="请输入你的密码" required>
-        <button type="submit">登录</button>
-    </form>
-
-    <p class="register-link">Don't have an account? <a href="javascript:void(0);" onclick="showRegistrationForm()">Register</a></p>
+    <div class="login">
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span class="login-title">登录</span>
+            </div>
+            <div class="login-form">
+                <el-form :model="form" :rules="loginRules" ref="loginForm">
+                    <el-form-item prop="name">
+                        <el-input type="text" name="name" v-model="form.name" auto-complete="off" placeholder="请输入用户名" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input type="password" name="password" v-model="form.password" auto-complete="off" placeholder="请输入密码" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-key"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button style="width: 210px;" type="primary" @click="handleLogin"
+                                   :loading="loading">登录</el-button>
+                        <el-button style="width: 110px;" @click="showRegistrationForm()">注册</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-card>
+    </div>
 </div>
 
-<div class="container" id="register-container" style="display: none;">
-    <h2>Register</h2>
-    <form action="register.php" method="POST">
-        <input type="text" name="new_username" placeholder="New Username" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="new_password" placeholder="New Password" required>
-        <button type="submit">注册</button>
-    </form>
+<div id="register">
+<div class="register">
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span class="login-title">注册</span>
+            </div>
+            <div class="register-form">
+                <el-form :model="form" :rules="registerRules" ref="registerForm">
+                    <el-form-item prop="name1">
+                        <el-input type="text" name="name1" v-model="form.name1" auto-complete="off" placeholder="请输入用户名" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input type="password" name="password" v-model="form.password" auto-complete="off" placeholder="请输入密码" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-key"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="password_confirm">
+                        <el-input type="password" name="password_confirm" v-model="form.password_confirm" auto-complete="off" placeholder="请检验您的密码" @blur="checkPassword" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-key"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-input type="text" name="truename" v-model="form.truename" auto-complete="off" placeholder="请输入您的姓名" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-edit"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="auth_code">
+                        <el-input type="text" name="auth_code" v-model="form.auth_code" auto-complete="off" placeholder="请输入校验码" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-lock"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="identity">
+                        <el-radio-group v-model="form.identity" required>
+                            <el-radio :label="1">巡查员</el-radio>
+                            <el-radio :label="2">管理人员</el-radio>
+                            <el-radio :label="3">企业人员</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button style="width: 210px;" type="primary" @click="handleRegister"
+                                   :loading="loading">注册</el-button>
+                        <el-button style="width: 110px;" @click="showLoginForm()">登录</el-button>
+                    </el-form-item>
 
-    <p class="register-link">没有账号<a href="javascript:void(0);" onclick="showLoginForm()">Login</a></p>
-</div>
-
-<script>
-    function showRegistrationForm() {
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('register-container').style.display = 'block';
-    }
-
-    function showLoginForm() {
-        document.getElementById('login-container').style.display = 'block';
-        document.getElementById('register-container').style.display = 'none';
-    }
-</script>
+                </el-form>
+            </div>
+        </el-card>
+    </div>
 </div>
 </body>
 
+<script src="https://unpkg.com/qs@6.11.1/dist/qs.js"></script>
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
+
+<script>
+    new Vue({
+        el: '#login',
+        data: {
+            loading: false,
+            form: {
+                name: '',
+                password: ''
+            },
+            loginRules: {
+                username: [
+                    { required: true, message: '请输入账户', trigger: 'blur' },
+                ],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' }
+                ]
+            },
+        },
+        methods: {
+            handleLogin() {
+                const formData = {
+                    name: this.form.name,
+                    password: this.form.password
+                }
+                axios.post('/loginIn', formData // 直接发送 formData 对象
+                ).then(res => {
+                    this.loading = false;
+                    console.log('Status', res.status);
+                    console.log(res.data)
+                    //显示状态码
+
+                    if (res.status === 200) { // 登录成功
+                        this.$message({
+                            message: '登录成功',
+                            type: 'success'
+                        });
+                        window.location.href = "/main"
+                    } else {
+                        this.$message({
+                            message: '登录失败',
+                            type: 'warning'
+                        });
+                    }
+                }, err => {
+                    this.loading = false;
+                    this.$message({
+                        message: err.message,
+                        type: 'warning'
+                    });
+                    console.log(err);
+                })
+            },
+            showRegistrationForm() {
+                document.getElementById("login").style.display = "none";
+                document.getElementById("register").style.display = "block";
+            }
+        }
+    })
+
+    new Vue({
+        el: '#register',
+        data:{
+            return:{
+                selected : false,
+            },
+            loading: false,
+            form: {
+                name1: '',
+                password: '',
+                password_confirm: '',
+                truename: '',
+                auth_code: '',
+                identity : ''
+            },
+            registerRules: {
+                name1: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                ],
+                password: [
+                    { required: true, message: '请输入您的密码，长度在6-20个字符', trigger: 'blur' },
+                    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
+                ],
+                password_confirm: [
+                    { required: true, message: '请确认您的密码', trigger: 'blur' },
+                ],
+                truename: [
+                    { required: true, message: '请输入您的姓名', trigger: 'blur' },
+                ],
+                auth_code: [
+                    { required: true, message: '请输入校验码', trigger: 'blur' },
+                ],
+                identity: [
+                    { required: true, message: '请选择您的身份', trigger: 'blur' },
+                ]
+            },
+        },
+        methods: {
+            handleRegister() {
+                this.$refs.registerForm.validate().then(() => {
+                    this.loading = true;
+                    const formData = {
+                        name1: this.form.name1,
+                        password: this.form.password,
+                        truename: this.form.truename,
+                        auth_code: this.form.auth_code,
+                        identity: this.form.identity
+                    }
+                    axios.post('/register', formData
+                    ).then(res => {
+                        this.loading = false;
+                        console.log(res.data)
+                        if (res.status === 200) { // 登录成功
+                            this.$message({
+                                message: '注册成功',
+                                type: 'success'
+                            });
+                            //显示登录
+                            document.getElementById("login").style.display = "block";
+                            document.getElementById("register").style.display = "none";
+                        } else {
+                            this.$message({
+                                message: '注册失败',
+                                type: 'warning'
+                            });
+                        }
+                    }, err => {
+                        this.loading = false;
+                        this.$message({
+                            message: err.response.data.message,
+                            type: 'warning'
+                        });
+                        console.log(err);
+                    })
+
+                }).catch((error => {
+                    this.loading = false;
+                    if (error.response) {
+                        this.$message({
+                            message: error.response.data.message,
+                            type: 'warning'
+                        });
+                    } else {
+                        this.$message({
+                            message: '输入错误！',
+                            type: 'warning'
+                        });
+                    }
+                    console.log(error)
+                }))
+            },
+            showLoginForm() {
+                document.getElementById("login").style.display = "block";
+                document.getElementById("register").style.display = "none";
+            },
+            checkPassword() {
+                if (this.form.password !== this.form.password_confirm) {
+                    this.$message({
+                        message: '两次输入的密码不一致,请重新输入！',
+                        type: 'warning'
+                        //删除
+                    });
+                    this.form.password_confirm = '';
+                }
+            }
+        }
+    })
+</script>
 </html>

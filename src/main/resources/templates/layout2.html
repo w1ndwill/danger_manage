@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <style>
+        .el-header {
+            background-color: #409EFF;''
+            color: #333;
+
+            line-height: 60px;
+        }
+        .el-header1 {
+            background-color: #ffffff;
+            color: #333;
+
+            line-height: 300px;
+        }
+
+        .el-aside {
+            background-color: #FFFFFF;
+            color: #333;
+            text-align: center;
+            line-height: 600px;
+        }
+
+        .el-main {
+            background-color: #FFFFFF;
+            color: #333;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        body > .el-container {
+            margin-bottom: 0px;
+        }
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 300px;
+        }
+
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+
+
+
+        .logo {
+            color: #FFFFFF;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+
+        /* 侧边栏大小 */
+        .el-menu-vertical-demo:not(.el-menu--collapse) {
+            width: 200px;
+            min-height: 660px;
+        }
+        /*走马灯 */
+        .carousel-container {
+            width: 600px; /* 设置容器元素的宽度 */
+        }
+        .el-carousel__item h3 {
+            color: #475669;
+            font-size: 14px;
+            opacity: 0.75;
+            line-height: 350px;
+            margin: 0;
+        }
+
+        .el-carousel__item:nth-child(2n) {
+            background-color: #99a9bf;
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-color: #d3dce6;
+        }
+        /*走马灯内容*/
+        .el-carousel__item h3 {
+
+            color: #475669;
+            font-size: 14px;
+            opacity: 0.75;
+            line-height: 150px;
+            margin: 0;
+        }
+
+        .el-carousel__item:nth-child(2n) {
+            background-color: #99a9bf;
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-color: #d3dce6;
+        }
+
+
+        /*main中的表格 */
+        .td{
+            width:600px;
+        }
+        .table{
+            bgcolor:#ccaabb ;bordercolor:#00ff00; bordercolorlight:#ff0000 ;bordercolordark:#0000ff;
+            width:1200px;
+            line-height: 300px;
+            border: 1px solid #409EFF
+        }
+        .name-cell {
+            height: 60px;
+        }
+        .box1{
+            position: absolute;
+            top:100px;
+            left:250px;
+            hight:300px;
+            width: 600px;
+
+        }
+        .box2{
+            position: absolute;
+            top:370px;
+            left:250px;
+            hight:300px;
+            width: 650px;
+        }
+        .el-table__header tr,
+        .el-table__header th {
+            padding: 0;
+            height: 40px;
+        }
+        .el-table__body tr,
+        .el-table__body td {
+            padding: 0;
+            height: 40px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div id="app">
+    <el-container>
+        <el-header>
+            <div class="navbar">
+                <div class="logo">苏州市安全生产委员会网格化巡查系统</div>
+                <a href="login" class="login-button">
+                    <span id="username-placeholder" th:text="${tn} ? ${tn} : '未登录'"></span>
+                </a>
+
+            </div>
+        </el-header>
+        <el-container>
+            <el-aside width="205x" >
+                <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                         :collapse="isCollapse">
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+
+                            <span slot="title">导航一</span>
+                            <el-tag type="danger">12</el-tag>
+
+                            </el-badge>
+                        </template>
+                        <el-menu-item-group>
+
+                            <el-menu-item index="1-1">选项1</el-menu-item>
+                            <el-menu-item index="1-2">选项2</el-menu-item>
+                        </el-menu-item-group>
+                        <el-menu-item index="1-3">选项3</el-menu-item>
+                        </el-menu-item-group>
+                        <el-submenu index="1-4">
+                            <span slot="title">选项4</span>
+                            <el-menu-item index="1-4-1">选项1</el-menu-item>
+                        </el-submenu>
+                    </el-submenu>
+                    <el-menu-item index="2">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">导航二</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">导航三</span>
+                    </el-menu-item>
+                    <el-menu-item index="4">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">导航四</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
+            <el-main>
+
+                <div class="box1">
+                    <div class="block">
+                        <el-carousel trigger="click" height="250px" indicator-position="none">
+                            <el-carousel-item v-for="item in 4" :key="item">
+                                <h3 class="small">{{ item }}</h3>
+                            </el-carousel-item>
+                        </el-carousel>
+                    </div>
+
+                </div>
+                <div class="box2">
+                    <template>
+                        <el-table
+                                :data="tableData"
+                                border
+                                style="width: 100%"
+                                :header-row-style="{height:'50px', background: 'white'}"
+                        >
+                            <el-table-column
+                                    prop="date"
+                                    label="日期"
+                                    width="180"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    label="姓名"
+                                    width="180"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="address"
+                                    label="地址"
+                            >
+                            </el-table-column>
+                        </el-table>
+                    </template>
+
+                </div>
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+
+</body>
+<!-- import Vue before Element -->
+<script>
+
+</script>
+
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    tableData: [{
+                        date: '2016-05-03',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-02',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-04',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-01',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-08',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-06',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-07',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }],
+                    visible: false }
+            },
+        }
+    )
+</script>
+
+
+</html>
