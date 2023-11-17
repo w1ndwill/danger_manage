@@ -6,5 +6,31 @@
         SELECT * FROM task;
     </select>
 
+    <select id="getAllofficial"  resultType="com.example.software.bean.Official">
+        SELECT * FROM official;
+    </select>
 
+    <delete id="deleteTask" parameterType="com.example.software.bean.Task">
+        DELETE FROM task
+        WHERE number = #{number}
+    </delete>
+
+    <update id="updateTask" parameterType="com.example.software.bean.Task">
+        UPDATE task
+        SET
+            taskName = #{taskName},
+            company = #{company},
+            inspectionType = #{inspectionType},
+            hiddenDangerCount = #{hiddenDangerCount},
+            inspector = #{inspector},
+            inspectorType= #{inspectorType},
+            startDate = #{startDate},
+            endDate = #{endDate}
+            WHERE
+            number = #{number}
+    </update>
+    <insert id="addTask" parameterType="com.example.software.bean.Task">
+        INSERT INTO task (number,taskName, company, inspectionType,hiddenDangerCount,inspector,inspectorType,startDate,endDate)
+        VALUES (#{number},#{taskName}, #{company}, #{inspectionType},#{hiddenDangerCount},#{inspector},#{inspectorType},#{startDate},#{endDate})
+    </insert>
 </mapper>

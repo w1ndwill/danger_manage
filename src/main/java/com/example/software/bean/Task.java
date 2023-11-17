@@ -1,13 +1,32 @@
 package com.example.software.bean;
 
 public class Task {
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    private String number;
     private String taskName;
     private String company;
     private String inspectionType;
     private String hiddenDangerCount;
     private String inspector;
     private String inspectorType;
-    private String dateRange;
+    private String startDate;
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    private String endDate;
 
     public String getTaskName() {
         return taskName;
@@ -57,12 +76,12 @@ public class Task {
         this.inspectorType = inspectorType;
     }
 
-    public String getDateRange() {
-        return dateRange;
+    public String getstartDate() {
+        return startDate;
     }
 
-    public void setDateRange(String dateRange) {
-        this.dateRange = dateRange;
+    public void setstartDate(String startDate) {
+        this.startDate = startDate;
     }
 
 
