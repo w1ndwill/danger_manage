@@ -17,6 +17,20 @@ public class UserServiceImpl implements UserService {
         return userMapper.getInfo(name,password);
     }
 
+    @Override
+    public boolean checkUserExists(String name) {
+        return userMapper.checkUserExists(name);
+    }
+    @Override
+    public boolean register(UserBean user) {
+        int result = userMapper.insertInfo(user);
+        return result > 0;
+    }
+    @Override
+    public boolean checkAuthCode(String authCode, int identity) {
+        return userMapper.checkAuthCode(authCode, identity);
+    }
+
     public String getIdByUsernameAndPassword(String name, String password) {
         return userMapper.getUserIdByUsernameAndPassword(name, password);}
 }

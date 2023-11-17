@@ -1,9 +1,9 @@
 spring:
   datasource:
-    name: springboot  #????
-    url: jdbc:mysql://mysql.sqlpub.com:3306/danger_manage?useSSL=false
-    username: gaox999250  #???
-    password: cd5fb86ea3094a42  #??
+    name: danger_manage  #????
+    url: jdbc:mysql://sh-cynosdbmysql-grp-bfnqd438.sql.tencentcdb.com:20160/danger_manage?useSSL=false
+    username: root
+    password: Gao200310
     driver-class-name: com.mysql.cj.jdbc.Driver  #???????
 
   thymeleaf:
@@ -18,6 +18,10 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml  #??????
   type-aliases-package: com.example.software.bean #?????
+
+  logging:
+    level:
+      root: DEBUG
 
 
 

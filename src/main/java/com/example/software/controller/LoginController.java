@@ -3,11 +3,18 @@ package com.example.software.controller;
 
 import com.example.software.bean.UserBean;
 import com.example.software.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class LoginController {
@@ -40,20 +47,75 @@ public class LoginController {
         return "alltask";
     }
 
-    @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
-    public ModelAndView login(String name, String password) {
-        ModelAndView modelAndView = new ModelAndView();
-        UserBean userBean = userService.loginIn(name, password);
-        String tn = userService.getIdByUsernameAndPassword(name, password);
-        modelAndView.addObject("tn", tn); // 将tn存储在Model中
-        if (userBean != null) {
-            modelAndView.setViewName("main1");
-        } else {
-            modelAndView.setViewName("error");
-        }
-        return modelAndView;
+    @RequestMapping("/main")
+    public String main() {
+        return "main";
     }
 
+    @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
+    public ResponseEntity<?> loginIn(@RequestBody Map<String, String> request, HttpSession session) {
+        String name = request.get("name");
+        String password = request.get("password");
+        System.out.println("name: " + name + ", password: " + password);
+        // 从数据库中获取用户信息
+        UserBean userBean = userService.loginIn(name, password);
+        if (userBean != null) { // 用户存在
+            System.out.println("登录成功");
+            session.setAttribute("user", userBean); // 将用户信息保存到Session中
+            return ResponseEntity.ok(userBean); // 返回200状态码
+        } else {
+            System.out.println("登录失败");
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build(); // 返回401状态码
+        }
+    }
 
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public ResponseEntity<?> register(@RequestBody Map<String, String> request, HttpSession session) {
+        String name = request.get("name1");
+        String password = request.get("password");
+        String truename = request.get("truename");
+        String auth_code = request.get("auth_code");
+        int identity = Integer.parseInt(request.get("identity"));
+        System.out.println("接收到了");
+        System.out.println("name: " + name + ", password: " + password + ", truename: " + truename + ", auth_code: " + auth_code + ", identity: " + identity);
+
+        // 检查验证码和身份是否正确
+        if (!checkAuthCode(auth_code, identity)) { // 验证码或身份不正确
+            System.out.println("验证码或身份不正确");
+            //返回验证码或身份不正确的信
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "验证码或身份不正确");
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build(); //返回401状态码
+        }
+        //System.out.println("1");
+        // 从数据库中获取用户信息
+        boolean exists = userService.checkUserExists(name);
+        if (!exists) {  // 用户不存在
+            System.out.println("用户不存在");
+            System.out.println("name: " + name + ", password: " + password + ", truename: " + truename + ", auth_code: " + auth_code + ", identity: " + identity);
+            UserBean userBean= new UserBean(name,password,truename,identity);
+            boolean success = userService.register(userBean);
+            if (success) {
+                System.out.println("注册成功");
+                session.setAttribute("user", userBean); // 将用户信息保存到Session中
+                return ResponseEntity.ok(userBean); // 返回200状态码
+            } else {
+                System.out.println("注册失败");
+                //返回注册失败的信息
+                Map<String, String> map = Map.of("msg", "注册失败");
+                return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build(); //返回401状态码
+            }
+        } else {
+            System.out.println("用户已存在");
+            //返回用户已存在的信息
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "用户已存在");
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build(); //返回401状态码
+        }
+    }
+
+    private boolean checkAuthCode(String authCode, int identity) {
+        return userService.checkAuthCode(authCode, identity);
+    }
 }
 
