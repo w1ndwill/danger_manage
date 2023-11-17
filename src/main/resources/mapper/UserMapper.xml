@@ -13,12 +13,21 @@
     </select>
 
 
-    <select id="insertInfo" resultType="com.example.software.bean.UserBean">
-        SELECT truename
-        FROM user
-        WHERE name = #{name}
+    <insert id="insertInfo" parameterType="com.example.software.bean.UserBean">
+        INSERT INTO user (name, password, truename, identity)
+        VALUES (#{name}, #{password}, #{truename}, #{identity})
+    </insert>
+
+    <select id="checkAuthCode" parameterType="map" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM auth_code
+        WHERE auth_code = #{authCode}
+          AND identity = #{identity}
     </select>
 
+    <select id="checkUserExists" parameterType="String" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM user WHERE name = #{name}
+    </select>
 
 
 </mapper>

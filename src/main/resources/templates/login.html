@@ -78,8 +78,8 @@
             </div>
             <div class="register-form">
                 <el-form :model="form" :rules="registerRules" ref="registerForm">
-                    <el-form-item prop="username">
-                        <el-input type="text" name="name" v-model="form.username" auto-complete="off" placeholder="请输入用户名" required>
+                    <el-form-item prop="name1">
+                        <el-input type="text" name="name1" v-model="form.name1" auto-complete="off" placeholder="请输入用户名" required>
                             <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
                         </el-input>
                     </el-form-item>
@@ -91,6 +91,11 @@
                     <el-form-item prop="password_confirm">
                         <el-input type="password" name="password_confirm" v-model="form.password_confirm" auto-complete="off" placeholder="请检验您的密码" @blur="checkPassword" required>
                             <template slot="prepend"><i style="font-size:20px" class="el-icon-key"></i></template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-input type="text" name="truename" v-model="form.truename" auto-complete="off" placeholder="请输入您的姓名" required>
+                            <template slot="prepend"><i style="font-size:20px" class="el-icon-edit"></i></template>
                         </el-input>
                     </el-form-item>
                     <el-form-item prop="auth_code">
@@ -191,14 +196,15 @@
             },
             loading: false,
             form: {
-                username: '',
+                name1: '',
                 password: '',
                 password_confirm: '',
+                truename: '',
                 auth_code: '',
                 identity : ''
             },
             registerRules: {
-                username: [
+                name1: [
                     { required: true, message: '请输入用户名', trigger: 'blur' },
                 ],
                 password: [
@@ -207,6 +213,9 @@
                 ],
                 password_confirm: [
                     { required: true, message: '请确认您的密码', trigger: 'blur' },
+                ],
+                truename: [
+                    { required: true, message: '请输入您的姓名', trigger: 'blur' },
                 ],
                 auth_code: [
                     { required: true, message: '请输入校验码', trigger: 'blur' },
@@ -221,21 +230,24 @@
                 this.$refs.registerForm.validate().then(() => {
                     this.loading = true;
                     const formData = {
-                        username: this.form.username,
+                        name1: this.form.name1,
                         password: this.form.password,
+                        truename: this.form.truename,
                         auth_code: this.form.auth_code,
                         identity: this.form.identity
                     }
-                    axios.post('/loginIn', Qs.stringify(formData)
+                    axios.post('/register', formData
                     ).then(res => {
                         this.loading = false;
                         console.log(res.data)
-                        if (res.data.code === 200) { // 登录成功
+                        if (res.status === 200) { // 登录成功
                             this.$message({
                                 message: '注册成功',
                                 type: 'success'
                             });
-                            window.location.href = "/main.html"
+                            //显示登录
+                            document.getElementById("login").style.display = "block";
+                            document.getElementById("register").style.display = "none";
                         } else {
                             this.$message({
                                 message: '注册失败',
@@ -245,18 +257,26 @@
                     }, err => {
                         this.loading = false;
                         this.$message({
-                            message: res.data.msg,
+                            message: err.response.data.message,
                             type: 'warning'
                         });
                         console.log(err);
                     })
 
                 }).catch((error => {
+                    this.loading = false;
+                    if (error.response) {
+                        this.$message({
+                            message: error.response.data.message,
+                            type: 'warning'
+                        });
+                    } else {
+                        this.$message({
+                            message: '输入错误！',
+                            type: 'warning'
+                        });
+                    }
                     console.log(error)
-                    this.$message({
-                        message: '输入错误！',
-                        type: 'warning'
-                    });
                 }))
             },
             showLoginForm() {

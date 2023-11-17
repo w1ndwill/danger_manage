@@ -19,5 +19,9 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml  #??????
   type-aliases-package: com.example.software.bean #?????
 
+  logging:
+    level:
+      root: DEBUG
+
 
 
