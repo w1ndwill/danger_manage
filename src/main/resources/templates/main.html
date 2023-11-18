@@ -27,7 +27,9 @@
         /*    text-align: center;*/
         /*    line-height: 160px;*/
         /*}*/
-
+        .logo {
+            float: left; /* 设置头像浮动到左侧 */
+        }
         body > .el-container {
             margin-bottom: 0px;
         }
@@ -41,15 +43,46 @@
             line-height: 320px;
         }
 
+        .intro {
+            /*!* 靠着最右边   */
 
+            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+        }
+        .login-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .login-img2 {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-left: 20px;
+            cursor:pointer;
+            position: absolute;
+            left: 0;
+            top: 12px;
+
+        }
+        .logo{
+            margin-left: 50px;
+            font-size: 30px;
+        }
+        .logo,.login-img2{
+            display: inline-block;
+        }
         /*.logo {*/
         /*    font-size: 1.5em;*/
         /*    font-weight: bold;*/
         /*    margin-left: 20px;*/
         /*}*/
-        .logo {
-            font-size: 18px;
-        }
+
 
         /*.login-button {*/
         /*    text-decoration: none;*/
@@ -77,10 +110,16 @@
     <el-container>
         <el-header>
 
-            <!--                <div class="logo">苏州市安全生产委员会网格化巡查系统</div>-->
-            <a href="login" class="login-button">
+            <div class="logo" >苏州市安全生产委员会网格化巡查系统
+                <img src="../static/国徽.jpg" class="login-img2" alt="头像"></div>
+            <div class="intro">
+                <img src="../static/groupimage.jpg" class="login-img" alt="头像">
+                <span>Gaox</span>
+
+            </div>
+            <!--<a href="login" class="login-button">
                 <span id="username-placeholder" th:text="${tn} ? ${tn} : '未登录'"></span>
-            </a>
+            </a>-->
 
         </el-header>
 
