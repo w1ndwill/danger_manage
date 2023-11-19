@@ -23,7 +23,8 @@
     }
     .form-item-flex {
         /*align-items: baseline; !* 单行框头部对齐 *!*/
-        margin-bottom: 10px;
+        margin-bottom: 20px;
+        padding: 10px;
     }
     .form-item-flex label {
         white-space: nowrap; /* label文字不换行 */
@@ -33,6 +34,21 @@
     }
     .form-item-flex span {
         margin-right: 5px;
+    }
+    #app {
+        background-color: white;
+        border-radius: 10px;
+    }
+    label {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+        color: #000000;
+        font-weight: bold;
+    }
+    #boder {
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px;
     }
 </style>
 
@@ -48,6 +64,7 @@
 </style>
 <body>
 <div id="app">
+    <div id="boder">
     <!-- 任务和实施选项 -->
     <div>
         <label>我的巡查任务</label>
@@ -323,6 +340,7 @@
         </div>
     </el-dialog>
     <!-- 这里可以添加设定查询表的内容，比如el-table等 -->
+    </div>
 </div>
 
 <script>
