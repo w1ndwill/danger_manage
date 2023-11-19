@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <style>
+        .el-header {
+            background-color: #B3C0D1;
+            color: #333;
+
+            line-height: 60px;
+        }
+
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height: 600px;
+        }
+
+        /*.el-main {*/
+        /*    background-color: #E9EEF3;*/
+        /*    color: #333;*/
+        /*    text-align: center;*/
+        /*    line-height: 160px;*/
+        /*}*/
+
+        body > .el-container {
+            margin-bottom: 0px;
+        }
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 300px;
+        }
+
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+
+
+        /*.logo {*/
+        /*    font-size: 1.5em;*/
+        /*    font-weight: bold;*/
+        /*    margin-left: 20px;*/
+        /*}*/
+        .logo {
+            font-size: 18px;
+        }
+
+        /*.login-button {*/
+        /*    text-decoration: none;*/
+        /*    color: #333;*/
+        /*}*/
+
+        /* 侧边栏大小 */
+        .el-menu-vertical-demo:not(.el-menu--collapse) {
+            width: 200px;
+            min-height: 600px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+<!--<div class="navbar">-->
+<!--    <div class="logo">苏州市安全生产委员会网格化巡查系统</div>-->
+<!--    <a href="login" class="login-button">-->
+<!--        <span id="username-placeholder" th:text="${tn} ? ${tn} : '未登录'"></span>-->
+<!--    </a>-->
+<!--</div>-->
+<div id="app">
+    <el-container>
+        <el-header>
+<!--                <div class="logo">苏州市安全生产委员会网格化巡查系统</div>-->
+                <a href="login" class="login-button">
+                    <span id="username-placeholder" th:text="${tn} ? ${tn} : '未登录'"></span>
+                </a>
+
+        </el-header>
+        <el-container>
+            <el-aside width="205x" >
+                <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                         :collapse="isCollapse">
+                    <el-menu-item index="1">
+                        <i class="el-icon-s-home"></i>
+                        <span slot="title">主页</span>
+                    </el-menu-item>
+                    <el-submenu index="2">
+                        <template slot="title">
+                            <i class="el-icon-menu"></i>
+                            <span slot="title">监督巡查</span>
+                            </el-badge>
+                        </template>
+                        <el-menu-item-group>
+                            <el-menu-item index="1-1" @click="switchPage()">巡查计划</el-menu-item>
+                            <el-menu-item index="1-2">巡查任务进度</el-menu-item>
+                            <el-menu-item index="1-3">发布任务</el-menu-item>
+                            <el-menu-item index="1-4">接收报告</el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                    <el-submenu index="3">
+                        <template slot="title">
+                            <i class="el-icon-menu"></i>
+                            <span slot="title">企业模块</span>
+                            </el-badge>
+                        </template>
+                        <el-menu-item index="1-1">下辖企业管理</el-menu-item>
+                        <el-menu-item index="1-2">企业管理人员</el-menu-item>
+                    </el-submenu>
+                    <el-menu-item index="4" >
+                        <i class="el-icon-document"></i>
+                        <span slot="title">KPI对比</span>
+                    </el-menu-item>
+                    <el-menu-item index="5" >
+                        <i class="el-icon-document"></i>
+                        <span slot="title">隐患查询中心</span>
+                    </el-menu-item>
+                    <el-menu-item index="6">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">标准查询中心</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
+
+                <el-main>
+                    <iframe :src="flowSrc" style="height:100%; width:100%;margin:0;border:0;" v-if="loading" ref="iframeId" id="myFrameId" name="myFrameName">
+                    </iframe>
+                </el-main>
+        </el-container>
+    </el-container>
+</div>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script>
+
+</script>
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: function () {
+            return { visible: false,
+                loading: true,
+                flowSrc: '',
+                showReture: false}
+        },
+        methods: {
+            switchPage:function (){
+                var iframe=document.querySelector("iframe");
+                iframe.src="/task";
+            },
+            handleIframe(e) {
+                console.log('切换', e)
+                this.warehouse.cloudId = e
+                this.loading = false
+                this.flowSrc = 'http://10.0.11.9:2080/#/grain-room/condition/current?user=grainszy&pass=bupt%40Htl301&grainRoomId=' + this.warehouse.cloudId;  //直接给flowSrc赋值链接
+                setTimeout(()=>{
+                    this.loading = true
+                },1000)
+            },
+        }
+    })
+</script>
+
+<script>
+    function updateUsername(tn) {
+        if (tn) {
+            $("#username-placeholder").text(tn);
+        } else {
+            $("#username-placeholder").text("未登录");
+        }
+    }
+    $(document).ready(function() {
+        var tn = tnValue; // 使用服务器端传递的值
+        updateUsername(tn);//
+    });
+</script>
+
+</html>
