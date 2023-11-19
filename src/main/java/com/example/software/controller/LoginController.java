@@ -1,6 +1,5 @@
 package com.example.software.controller;
 
-
 import com.example.software.bean.UserBean;
 import com.example.software.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,9 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -83,9 +79,8 @@ public class LoginController {
         if (!checkAuthCode(auth_code, identity)) { // 验证码或身份不正确
             System.out.println("验证码或身份不正确");
             //返回验证码或身份不正确的信
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "验证码或身份不正确");
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build(); //返回401状态码
+            Map<String, String> map = Map.of("msg", "验证码或身份不正确");
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(map);
         }
         //System.out.println("1");
         // 从数据库中获取用户信息
@@ -103,19 +98,30 @@ public class LoginController {
                 System.out.println("注册失败");
                 //返回注册失败的信息
                 Map<String, String> map = Map.of("msg", "注册失败");
-                return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build(); //返回401状态码
+                return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(map); //返回401状态码
             }
         } else {
             System.out.println("用户已存在");
             //返回用户已存在的信息
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "用户已存在");
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build(); //返回401状态码
+            Map<String, String> map = Map.of("msg", "用户已存在");
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(map); //返回401状态码
         }
     }
 
     private boolean checkAuthCode(String authCode, int identity) {
         return userService.checkAuthCode(authCode, identity);
     }
+
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public ResponseEntity<?> getUser(HttpSession session) {
+        UserBean userBean = (UserBean) session.getAttribute("user");
+        if (userBean != null) {
+            return ResponseEntity.ok(userBean);
+        } else {
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+        }
+    }
+
+
 }
 

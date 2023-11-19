@@ -33,4 +33,9 @@ public class UserServiceImpl implements UserService {
 
     public String getIdByUsernameAndPassword(String name, String password) {
         return userMapper.getUserIdByUsernameAndPassword(name, password);}
+
+    @Override
+    public UserBean getname(String name) {
+        return userMapper.getname(name);
+    }
 }

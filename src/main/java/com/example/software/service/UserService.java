@@ -13,4 +13,6 @@ public interface UserService {
 
     boolean checkAuthCode(String authCode, int identity);
 
+    UserBean getname(String name);
+
 }

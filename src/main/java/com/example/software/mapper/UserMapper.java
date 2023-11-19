@@ -10,4 +10,6 @@ public interface UserMapper {
     String getUserIdByUsernameAndPassword(@Param("name") String username, @Param("password") String password);
     boolean checkUserExists(String name);
     boolean checkAuthCode(String authCode, int identity);
+
+    UserBean getname(String name);
 }

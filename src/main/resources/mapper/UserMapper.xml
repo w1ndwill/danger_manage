@@ -12,7 +12,6 @@
           AND password = #{password}
     </select>
 
-
     <insert id="insertInfo" parameterType="com.example.software.bean.UserBean">
         INSERT INTO user (name, password, truename, identity)
         VALUES (#{name}, #{password}, #{truename}, #{identity})
@@ -27,6 +26,10 @@
 
     <select id="checkUserExists" parameterType="String" resultType="boolean">
         SELECT COUNT(*) > 0 FROM user WHERE name = #{name}
+    </select>
+
+    <select id="getname" parameterType="com.example.software.bean.UserBean">
+        SELECT truename FROM user WHERE truename = #{truename} AND identity = #{identity}
     </select>
 
 
