@@ -39,9 +39,7 @@
     }
     .e1{
         width: 60%;/*设置el-input属性的宽度*/
-
     }
-
     .form-item-flex {
         /*align-items: baseline; !* 单行框头部对齐 *!*/
         margin-bottom: 10px;
@@ -66,12 +64,6 @@
     .el-table tr:nth-child(odd) {
         background-color: #ffffff;
     }
-    /*.search-bar {*/
-    /*    display: flex;*/
-    /*    justify-content: flex-end;*/
-    /*    align-items: center;*/
-    /*    margin-bottom: 15px;*/
-    /*}*/
 </style>
 <body>
 <div id="app">
@@ -120,7 +112,11 @@
                 <el-table-column prop="taskName" label="任务名称" width="300"  ></el-table-column>
                 <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
                 <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
-                <el-table-column prop="hiddenDangerCount" label="隐患数" width="100"></el-table-column>
+                <el-table-column label="隐患数/检查数" width="100">
+                    <template slot-scope="scope">
+                        {{ scope.row.hiddenDangerCount }} / {{ scope.row.checkcount }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="inspector" label="检查人" width="120"></el-table-column>
                 <el-table-column prop="inspectorType" label="检查人类型" width="120"></el-table-column>
                 <el-table-column label="任务起止日期" width="200">
@@ -160,6 +156,9 @@
                 </el-form-item>
                 <el-form-item class="form-item-flex" label="隐患数:">
                     <el-input class="e1" v-model="editedTask.hiddenDangerCount"></el-input>
+                </el-form-item>
+                <el-form-item class="form-item-flex" label="检查数:">
+                    <el-input class="e1" v-model="editedTask.checkcount"></el-input>
                 </el-form-item>
                 <el-form-item class="form-item-flex" label="检查人:">
                     <el-input class="e1" v-model="editedTask.inspector"></el-input>
@@ -201,7 +200,7 @@
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage"
-                    :page-sizes="[2, 10, 20, 50]"
+                    :page-sizes="[10, 20, 50]"
                     :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="tasks.length">
@@ -235,6 +234,10 @@
 
             <el-form-item class="form-item-flex" label="隐患数量:" prop="hiddenDangerCount">
                 <el-input class="e1" v-model="temporaryTaskForm.hiddenDangerCount" placeholder="请输入隐患数量"></el-input>
+            </el-form-item>
+
+            <el-form-item class="form-item-flex" label="隐患数量:" prop="checkcount">
+                <el-input class="e1" v-model="temporaryTaskForm.checkcount" placeholder="请输入检查数量"></el-input>
             </el-form-item>
 
             <el-form-item class="form-item-flex" label="检查人:" prop="inspector">
@@ -327,7 +330,7 @@
                 @size-change="SizeChange"
                 @current-change="CurrentChange"
                 :current-page="Page"
-                :page-sizes="[2, 10, 20, 50]"
+                :page-sizes="[10, 20, 50]"
                 :page-size="Size"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="tableData.length">
@@ -356,12 +359,14 @@
                 search: '',
                 temporaryTaskDialogVisible: false,
                 temporaryTaskForm: {
+                    inspector: '', // 添加一个默认的初始值
                     inspectionType: [],
                     taskName: '',
-                    inspectionRequirement: '',
-                    checkedcompany:'',
-                    checker:'',
-                    date:[],
+                    checkcount:'',
+                    // inspectionRequirement: '',
+                    // checkedcompany:'',
+                    // checker:'',
+                    // date:[],
                     startDate: '',
                     endDate: '',
                     checktimes:[],
@@ -384,7 +389,7 @@
                 editedTask: {},
 
                 currentPage: 1, // 当前页数
-                pageSize: 2, // 每页显示的记录数
+                pageSize: 10, // 每页显示的记录数
 
                 dialogVisible: false,//检察人员弹窗
 
@@ -394,7 +399,7 @@
                 },
                 tableData:[], // 表格数据
                 Page: 1, // 当前页数
-                Size: 2, // 每页显示的记录数
+                Size: 10, // 每页显示的记录数
             };
         },
         mounted() {

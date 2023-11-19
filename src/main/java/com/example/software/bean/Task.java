@@ -14,6 +14,16 @@ public class Task {
     private String company;
     private String inspectionType;
     private String hiddenDangerCount;
+
+    public String getCheckcount() {
+        return checkcount;
+    }
+
+    public void setCheckcount(String checkcount) {
+        this.checkcount = checkcount;
+    }
+
+    private String checkcount;
     private String inspector;
     private String inspectorType;
     private String startDate;
