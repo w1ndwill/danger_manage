@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <style>
         .el-header {
             background-color: #B3C0D1;
@@ -77,10 +76,10 @@
 <div id="app">
     <el-container>
         <el-header>
-            <!--                <div class="logo">苏州市安全生产委员会网格化巡查系统</div>-->
-            <a href="login" class="login-button">
-                <span id="username-placeholder">{{ userBean ? userBean.truename : '未登录' }}</span>
-            </a>
+<!--                <div class="logo">苏州市安全生产委员会网格化巡查系统</div>-->
+                <a href="login" class="login-button">
+                    <span id="username-placeholder" th:text="${tn} ? ${tn} : '未登录'"></span>
+                </a>
 
         </el-header>
         <el-container>
@@ -128,16 +127,19 @@
                 </el-menu>
             </el-aside>
 
-            <el-main>
-                <iframe :src="flowSrc" style="height:100%; width:100%;margin:0;border:0;" v-if="loading" ref="iframeId" id="myFrameId" name="myFrameName">
-                </iframe>
-            </el-main>
+                <el-main>
+                    <iframe :src="flowSrc" style="height:100%; width:100%;margin:0;border:0;" v-if="loading" ref="iframeId" id="myFrameId" name="myFrameName">
+                    </iframe>
+                </el-main>
         </el-container>
     </el-container>
 </div>
 </div>
 </body>
+<!-- import Vue before Element -->
+<script>
 
+</script>
 <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
 <!-- import JavaScript -->
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
@@ -148,11 +150,7 @@
             return { visible: false,
                 loading: true,
                 flowSrc: '',
-                userBean: null,
                 showReture: false}
-        },
-        mounted: function () {
-            this.fetchUser();
         },
         methods: {
             switchPage:function (){
@@ -168,14 +166,22 @@
                     this.loading = true
                 },1000)
             },
-            fetchUser: function () {
-                axios.get('/user').then(function (response) {
-                    this.userBean = response.data;
-                }.bind(this)).catch(function (error) {
-                    console.log(error);
-                });
-            }
         }
     })
 </script>
+
+<script>
+    function updateUsername(tn) {
+        if (tn) {
+            $("#username-placeholder").text(tn);
+        } else {
+            $("#username-placeholder").text("未登录");
+        }
+    }
+    $(document).ready(function() {
+        var tn = tnValue; // 使用服务器端传递的值
+        updateUsername(tn);//
+    });
+</script>
+
 </html>
