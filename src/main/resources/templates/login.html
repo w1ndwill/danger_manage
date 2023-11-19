@@ -263,11 +263,11 @@
                         console.log(err);
                     })
 
-                }).catch((error => {
+                }).catch((err => {
                     this.loading = false;
-                    if (error.response) {
+                    if (err.response) {
                         this.$message({
-                            message: error.response.data.message,
+                            message: err.response.data.message,
                             type: 'warning'
                         });
                     } else {
@@ -276,7 +276,7 @@
                             type: 'warning'
                         });
                     }
-                    console.log(error)
+                    console.log(err)
                 }))
             },
             showLoginForm() {
