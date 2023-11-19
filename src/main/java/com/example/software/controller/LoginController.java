@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -48,17 +50,44 @@ public class LoginController {
         return "main";
     }
 
+    @RequestMapping("/company")
+    public String company() {
+        return "company";
+    }
+
+    @RequestMapping("/inspector")
+    public String inspector() {
+        return "inspector";
+    }
+
     @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
     public ResponseEntity<?> loginIn(@RequestBody Map<String, String> request, HttpSession session) {
         String name = request.get("name");
         String password = request.get("password");
-        System.out.println("name: " + name + ", password: " + password);
+        System.out.println("name: " + name + ", password: " + password );
         // 从数据库中获取用户信息
         UserBean userBean = userService.loginIn(name, password);
         if (userBean != null) { // 用户存在
             System.out.println("登录成功");
             session.setAttribute("user", userBean); // 将用户信息保存到Session中
-            return ResponseEntity.ok(userBean); // 返回200状态码
+            String page = "main";
+            switch (userBean.getIdentity()) {
+                case 1:
+                    page = "inspector";
+                    break;
+                case 2:
+                    page = "main";
+                    break;
+                case 3:
+                    page = "company";
+                    break;
+            }
+            System.out.println("123");
+            System.out.println("page: " + page);
+            Map<String, Object> map = new HashMap<>();
+            map.put("user", userBean);
+            map.put("page", page);
+            return ResponseEntity.ok(map); // 返回200状态码
         } else {
             System.out.println("登录失败");
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build(); // 返回401状态码
