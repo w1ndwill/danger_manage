@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <style>
+        .el-header {
+            background-color: #B3C0D1;
+            color: #333;
+
+            line-height: 60px;
+        }
+
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height: 600px;
+        }
+
+        /*.el-main {*/
+        /*    background-color: #E9EEF3;*/
+        /*    color: #333;*/
+        /*    text-align: center;*/
+        /*    line-height: 160px;*/
+        /*}*/
+        .logo {
+            float: left; /* 设置头像浮动到左侧 */
+        }
+        body > .el-container {
+            margin-bottom: 0px;
+        }
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 300px;
+        }
+
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+
+        .intro {
+            /*!* 靠着最右边   */
+
+            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+        }
+        .login-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .login-img2 {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-left: 20px;
+            cursor:pointer;
+            position: absolute;
+            left: 0;
+            top: 12px;
+
+        }
+        .logo{
+            margin-left: 50px;
+            font-size: 30px;
+        }
+        .logo,.login-img2{
+            display: inline-block;
+        }
+        /*.logo {*/
+        /*    font-size: 1.5em;*/
+        /*    font-weight: bold;*/
+        /*    margin-left: 20px;*/
+        /*}*/
+
+
+        /*.login-button {*/
+        /*    text-decoration: none;*/
+        /*    color: #333;*/
+        /*}*/
+
+        /* 侧边栏大小 */
+        .el-menu-vertical-demo:not(.el-menu--collapse) {
+            width: 200px;
+            min-height: 600px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+<!--<div class="navbar">-->
+<!--    <div class="logo">苏州市安全生产委员会网格化巡查系统</div>-->
+<!--    <a href="login" class="login-button">-->
+<!--        <span id="username-placeholder" th:text="${tn} ? ${tn} : '未登录'"></span>-->
+<!--    </a>-->
+<!--</div>-->
+<div id="app">
+    <el-container>
+        <el-header>
+
+            <div class="logo" >苏州市安全生产委员会网格化巡查系统
+                <img src="../static/国徽.jpg" class="login-img2" alt="头像"></div>
+            <div class="intro">
+                <img src="../static/groupimage.jpg" class="login-img" alt="头像">
+                <span>Gaox</span>
+
+            </div>
+            <!--<a href="login" class="login-button">
+                <span id="username-placeholder" th:text="${tn} ? ${tn} : '未登录'"></span>
+            </a>-->
+
+        </el-header>
+
+        <el-container>
+            <el-aside width="205x" >
+                <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                         :collapse="isCollapse">
+                    <el-menu-item index="1">
+                        <i class="el-icon-folder"></i>
+                        <span slot="title">首页&nbsp;&nbsp;&nbsp;</span>
+                    </el-menu-item>
+
+                    <el-menu-item index="2">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">我的任务</span>
+                    </el-menu-item>
+
+                    <el-submenu index="3">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+
+                            <span slot="title">导航一</span>
+                            <!--                            <el-tag type="danger">12</el-tag>-->
+
+                            </el-badge>
+                        </template>
+                        <el-menu-item-group>
+
+                            <el-menu-item index="3-1" @click="switchPage()">选项1</el-menu-item>
+                            <el-menu-item index="3-2">选项2</el-menu-item>
+                        </el-menu-item-group>
+                        <el-menu-item index="3-3">选项3</el-menu-item>
+                        </el-menu-item-group>
+                        <el-submenu index="3-4">
+                            <span slot="title">选项4</span>
+                            <el-menu-item index="3-4-1">选项1</el-menu-item>
+                        </el-submenu>
+                    </el-submenu>
+
+                    <el-menu-item index="4">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">导航二</span>
+                    </el-menu-item>
+
+                    <el-menu-item index="5" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">导航三</span>
+                    </el-menu-item>
+                    <el-menu-item index="6">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">导航四</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
+
+            <el-main>
+                <iframe style="width: 100%; height: 100%;" frameborder="0"></iframe>
+            </el-main>
+
+
+        </el-container>
+    </el-container>
+</div>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script>
+
+</script>
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: function () {
+            return { visible: false }
+        },
+        methods: {
+            switchPage:function (){
+                var iframe=document.querySelector("iframe");
+                iframe.src="/task";
+            }
+        }
+    })
+</script>
+
+<script>
+    function updateUsername(tn) {
+        if (tn) {
+            $("#username-placeholder").text(tn);
+        } else {
+            $("#username-placeholder").text("未登录");
+        }
+    }
+    $(document).ready(function() {
+        var tn = tnValue; // 使用服务器端传递的值
+        updateUsername(tn);
+    });
+</script>
+
+</html>
