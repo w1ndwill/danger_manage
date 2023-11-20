@@ -20,6 +20,6 @@ mybatis:
   type-aliases-package: com.example.software.bean #?????
 
 
-logging:
-  level:
-    root: DEBUG
+#logging:
+#  level:
+#    root: DEBUG

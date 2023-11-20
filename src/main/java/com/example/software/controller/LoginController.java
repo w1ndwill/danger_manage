@@ -21,6 +21,7 @@ public class LoginController {
     @Autowired
     UserService userService;
 
+
     @RequestMapping("/login")
     public String showLogin() {
         return "login";
@@ -28,21 +29,21 @@ public class LoginController {
 
     @RequestMapping("/task") // 映射到前端页面的URL
     public String getIndexPage() {
-        return "manage_task"; // 这里的字符串是前端页面的名称，Spring Boot将根据它返回前端页面
+        return "mytask"; // 这里的字符串是前端页面的名称，Spring Boot将根据它返回前端页面
+    }
+    @RequestMapping("/巡查计划")
+    public String showInspectionPlan() {
+        return "login"; // 返回与巡查计划相关的视图
     }
 
-//    @RequestMapping("/巡查计划")
-//    public String showInspectionPlan() {
-//        return "login"; // 返回与巡查计划相关的视图
-//    }
-    @RequestMapping("/mychecktask")
+    @RequestMapping("/ts")
     public String showts() {
-        return "mychecktask";
+        return "ts";
     }
 
-    @RequestMapping("/manage")
+    @RequestMapping("/manager")
     public String main() {
-        return "manage";
+        return "manager";
     }
 
     @RequestMapping("/company")
@@ -54,8 +55,6 @@ public class LoginController {
     public String inspector() {
         return "inspector";
     }
-
-
 
     @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
     public ResponseEntity<?> loginIn(@RequestBody Map<String, String> request, HttpSession session) {
@@ -73,7 +72,7 @@ public class LoginController {
                     page = "inspector";
                     break;
                 case 2:
-                    page = "manage";
+                    page = "manager";
                     break;
                 case 3:
                     page = "company";
@@ -147,7 +146,5 @@ public class LoginController {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
         }
     }
-
-
 }
 
