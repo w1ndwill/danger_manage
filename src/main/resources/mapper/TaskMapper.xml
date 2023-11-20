@@ -22,6 +22,7 @@
             company = #{company},
             inspectionType = #{inspectionType},
             hiddenDangerCount = #{hiddenDangerCount},
+            checkcount= #{checkcount},
             inspector = #{inspector},
             inspectorType= #{inspectorType},
             startDate = #{startDate},
@@ -30,7 +31,21 @@
             number = #{number}
     </update>
     <insert id="addTask" parameterType="com.example.software.bean.Task">
-        INSERT INTO task (number,taskName, company, inspectionType,hiddenDangerCount,inspector,inspectorType,startDate,endDate)
-        VALUES (#{number},#{taskName}, #{company}, #{inspectionType},#{hiddenDangerCount},#{inspector},#{inspectorType},#{startDate},#{endDate})
+        INSERT INTO task (number,taskName, company, inspectionType,hiddenDangerCount,checkcount,inspector,inspectorType,startDate,endDate)
+        VALUES (#{number},#{taskName}, #{company}, #{inspectionType},#{hiddenDangerCount},#{checkcount},#{inspector},#{inspectorType},#{startDate},#{endDate})
     </insert>
+
+    <insert id="addchildtask" parameterType="java.util.List">
+        INSERT INTO childtask (number, inspector, taskName)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.number}, #{item.inspector}, #{item.taskName})
+        </foreach>
+    </insert>
+
+<!--    <delete id="deletechildtask" parameterType="com.example.software.bean.Task">-->
+<!--        DELETE FROM childtask-->
+<!--        WHERE number = #{number} AND inspector = #{inspector} AND taskName = #{taskName}-->
+<!--    </delete>-->
+
 </mapper>

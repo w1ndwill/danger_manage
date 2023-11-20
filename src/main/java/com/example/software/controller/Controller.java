@@ -59,4 +59,25 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating task: " + e.getMessage());
         }
     }
+
+    @PostMapping("/saveData")
+    public ResponseEntity<String> addchildtask(@RequestBody List<Task> data) {
+        try {
+            // 调用Service层的方法更新任务信息
+            taskMapper.addchildtask(data);
+            return ResponseEntity.ok("Task updated successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating task: " + e.getMessage());
+        }
+    }
+
+//    @DeleteMapping("/deleteRecord")
+//    public ResponseEntity<String> deleteRecord(@RequestBody Task task) {
+//        try {
+//            taskMapper.deletechildtask(task);
+//            return new ResponseEntity<>("任务删除成功", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("删除任务时出错: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }

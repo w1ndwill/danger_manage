@@ -15,4 +15,6 @@ public interface TaskMapper {
     void deleteTask(Task task);
     void updateTask(Task task);
     void addTask(Task task);
+    void addchildtask(List<Task> task);
+//    void deletechildtask(Task task);
 }

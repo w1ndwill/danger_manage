@@ -13,7 +13,6 @@
 </head>
 <style>
     .logo{
-
         height: 24px; /* 设置标题高度为24像素 */
         font-family: Arial, sans-serif; /* 字体 */
         font-size: 24px; /* 字体大小 */
@@ -87,7 +86,6 @@
     <!-- 任务和实施选项 -->
     <div class="logo">
         <label>当前页面:我的巡查任务</label>
-
     </div>
     <!-- 任务状态和任务时效下拉框 -->
     <div class="status">
@@ -126,7 +124,7 @@
             <el-table :data="tasksPage" style="width: 100%">
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="number" label="#" width="20"></el-table-column>
-                <el-table-column prop="taskName" label="任务名称" width="300"  ></el-table-column>
+                <el-table-column prop="taskName" label="任务名称" width="150"  ></el-table-column>
                 <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
                 <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
                 <el-table-column label="隐患数/检查数" width="100">
@@ -363,9 +361,6 @@
 </div>
 
 <script>
-    // import EditForm from './EditForm.vue';
-    // import Table from './Table.vue';
-    //
     new Vue({
         el: '#app',
 
@@ -381,10 +376,6 @@
                     inspectionType: [],
                     taskName: '',
                     checkcount:'',
-                    // inspectionRequirement: '',
-                    // checkedcompany:'',
-                    // checker:'',
-                    // date:[],
                     startDate: '',
                     endDate: '',
                     checktimes:[],
@@ -418,6 +409,8 @@
                 tableData:[], // 表格数据
                 Page: 1, // 当前页数
                 Size: 10, // 每页显示的记录数
+
+                changedRows: [], // 存储所有切换后的行信息
             };
         },
         mounted() {
@@ -554,6 +547,15 @@
                         console.log(this.editedTask);
                         console.error('保存失败：', error);
                     });
+
+                let dataToSave = this.changedRows.map(row => ({
+                    number: row.number,
+                    inspector: row.inspector,
+                    taskName: row.taskName,
+
+                }));
+                this. saveToDatabase(dataToSave);
+                this.changedRows=[];
             },
             exportList(){
                 // 创建一个隐藏的表单元素
@@ -572,12 +574,19 @@
                 this.dialogVisible = false;
             },
             submitTaskForm(){
-                // 等待数据更新后再关闭弹窗
-                this.$nextTick(() => {
-                    // 提交表单逻辑
-                    // 关闭弹窗
-                    this.closeDialog();
-                });
+                // 将所有切换按钮的信息保存到数据库
+                // 调用保存数据库的方法，例如 this.saveToDatabaseMethod(this.changedRows);
+                // let dataToSave = this.changedRows.map(row => ({
+                //     number: row.number,
+                //     inspector: row.inspector,
+                //     taskName: row.taskName,
+                //
+                // }));
+                // this. saveToDatabase(dataToSave);
+                // this.changedRows=[];
+
+                this.closeDialog();
+
             },
             // confirmSelection() {
             //     // 将选择的内容拼接到单行框中，这里可以根据需求进行调整
@@ -599,10 +608,29 @@
             },
             handleButtonClick(row) {
                 row.used = !row.used;
-
                 if (row.used) {
                     // 如果行被标记为已使用，将人员姓名添加到检查人单行框中
                     this.temporaryTaskForm.inspector += (this.temporaryTaskForm.inspector ? ',' : '') + row.name;
+
+                    const index = row.number;
+                    const inspectorName = row.name;
+                    const taskName = this.temporaryTaskForm.taskName;
+
+                    // 将相关信息存储到数组中
+                    const changedRow = {
+                        number: index,
+                        inspector: inspectorName,
+                        taskName: taskName,
+                    };
+                    // 检查 changedRows 数组中是否已存在该行信息
+                    const existingIndex = this.changedRows.findIndex(item => item.number === index && item.inspector === inspectorName);
+                    if (existingIndex !== -1) {
+                        // 如果已存在，则更新该行信息
+                        this.changedRows[existingIndex] = changedRow;
+                    } else {
+                        // 如果不存在，则添加新的行信息
+                        this.changedRows.push(changedRow);
+                    }
                 } else {
                     // 如果行被标记为未使用，将人员姓名从检查人单行框中删除
                     const inspectorNames =  this.temporaryTaskForm.inspector.split(',').map(n => n.trim());
@@ -611,10 +639,46 @@
                         inspectorNames.splice(indexToRemove, 1);
                         this.temporaryTaskForm.inspector = inspectorNames.join(',');
                     }
+                    const index2 = row.number;
+                    const inspectorName2 = row.name;
+                    const taskName2 = this.temporaryTaskForm.taskName;
+                    // this.deleteRecordFromBackend(index2, inspectorName2, taskName2);
+
+                    // 从 changedRows 数组中删除相应的行信息
+                    this.changedRows = this.changedRows.filter(item => !(item.number === index2 && item.inspector === inspectorName2 && item.taskName === taskName2));
+
                 }
                 // 清空单行框的背景颜色
-                this.$refs.inspectorInput.$children[0].$el.style.backgroundColor = '';
+                // this.$refs.inspectorInput.$children[0].$el.style.backgroundColor = '';
             },
+            saveToDatabase(data) {
+                axios.post('/saveData', data)
+                    .then(response => {
+                        // 处理响应
+                        console.log('Data saved to database:', response.data);
+                    })
+                    .catch(error => {
+                        // 处理错误
+                        console.error('Error saving data to database:', error);
+                    });
+            },
+            // deleteRecordFromBackend(index, inspectorName, taskName) {
+            //     axios.delete('/deleteRecord', {
+            //         data: {
+            //             number: index,
+            //             inspector: inspectorName,
+            //             taskName: taskName
+            //         }
+            //     })
+            //         .then(response => {
+            //             // 处理成功删除记录的响应
+            //             console.log('记录删除成功:', response.data);
+            //         })
+            //         .catch(error => {
+            //             // 处理删除记录时的错误
+            //             console.error('删除记录失败:', error);
+            //         });
+            // },
             fetchTableData() {
                 // 根据选项卡名称请求对应的表格数据
             },
