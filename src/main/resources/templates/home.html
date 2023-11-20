@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <!-- 引入 Vue.js 和 Element-UI -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<style>
+    .box2, .box3, .box4 {
+        margin: 5px;
+        padding: 5px;
+        background-color: white;
+        border-radius: 10px;
+        height: 350px;
+        width: 660px;
+    }
+    .box1{
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        height:350px;
+        width: 660px;
+        margin: 5px;
+        padding: 5px;
+        background-color: white;
+        border-radius: 10px;
+    }
+    .box2{
+        position: absolute;
+        left: 20px;
+        top: 410px;
+        margin-top:10px;
+    }
+    .box3{
+        position: absolute;
+        left: 720px;
+        top: 20px;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .box4{
+        position: absolute;
+        left: 720px;
+        top: 410px;
+    }
+    label {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+        color: #000000;
+        font-weight: bold;
+    }
+    body {
+        margin: 0;
+        background-color: #ececec;
+        overflow: hidden;
+    }
+    .logo {
+        color: #FFFFFF;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-left: 20px;
+    }
+    /*走马灯 */
+    .carousel-container {
+        width: 600px; /* 设置容器元素的宽度 */
+    }
+    .el-carousel__item h3 {
+        color: #475669;
+        font-size: 14px;
+        opacity: 0.75;
+        line-height: 350px;
+        margin: 0;
+    }
+
+    .el-carousel__item:nth-child(2n) {
+        background-color: #99a9bf;
+    }
+    .el-carousel__item:nth-child(2n+1) {
+        background-color: #d3dce6;
+    }
+    /*走马灯内容*/
+    .el-carousel__item h3 {
+        color: #475669;
+        font-size: 14px;
+        opacity: 0.75;
+        line-height: 150px;
+        margin: 0;
+    }
+
+    .el-carousel__item:nth-child(2n) {
+        background-color: #99a9bf;
+    }
+
+    .el-carousel__item:nth-child(2n+1) {
+        background-color: #d3dce6;
+    }
+
+    /*main中的表格 */
+    .td{
+        width:600px;
+    }
+    .table{
+        bgcolor:#ccaabb ;bordercolor:#00ff00; bordercolorlight:#ff0000 ;bordercolordark:#0000ff;
+        width:1200px;
+        line-height: 300px;
+        border: 1px solid #409EFF
+    }
+    .name-cell {
+        height: 60px;
+    }
+    .el-table__header tr,
+    .el-table__header th {
+        padding: 0;
+        height: 40px;
+    }
+    .el-table__body tr,
+    .el-table__body td {
+        padding: 0;
+        height: 40px;
+    }
+    .title{
+        color: #409EFF;
+        text-align: left;
+        font-weight: bold;
+    }
+    /*box3中的row*/
+    .button{
+        padding: 20px; /* 设置按钮内部的边距 */
+        height: 80px; /* 设置按钮的高度 */
+        width: 80px; /* 设置按钮的宽度 */
+        margin: 0 30px;
+    }
+    .button i {
+        font-size: 50px; /* 设置图标的大小 */
+    }
+    .link{
+        padding: 20px; /* 设置按钮内部的边距 */
+        /* 设置按钮的高度 */
+        width: 80px; /* 设置按钮的宽度 */
+    }
+</style>
+<body>
+<div id="app">
+    <el-main>
+        <div class="box1">
+            <div class="block">
+                <el-carousel trigger="click" height="350px" indicator-position="none">
+                    <el-carousel-item v-for="item in 4" :key="item">
+                        <h3 class="small">{{ item }}</h3>
+                    </el-carousel-item>
+                </el-carousel>
+            </div>
+        </div>
+
+        <div class="box2">
+            <div class="title">我的代办</div>
+            <template>
+                <el-table
+                        :data="tableData"
+                        stripe
+                        style="width: 100%">
+                    <el-table-column
+                            prop="date"
+                            label="日期"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="name"
+                            label="发布人员"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="address"
+                            label="隐患地址"
+                            width="220">
+                    </el-table-column>
+                </el-table>
+            </template>
+        </div>
+
+        <div class="box3">
+            <div class="title">主要功能</div>
+            <br>
+            <el-row>
+                <el-button class="button" type="primary" icon="el-icon-s-claim" circle  ></el-button>
+                <el-button class="button" type="primary" icon="el-icon-edit" circle></el-button>
+                <el-button class="button" type="primary" icon="el-icon-check" circle></el-button>
+                <el-button class="button" type="primary" icon="el-icon-message" circle></el-button>
+                <el-link class="link" type="primary">主要链接</el-link>
+                <el-link class="link" type="primary">主要链接</el-link>
+                <el-link class="link" type="primary">主要链接</el-link>
+                <el-link class="link" type="primary">主要链接</el-link>
+                <br>
+                <el-button class="button" type="primary" icon="el-icon-s-claim" circle  ></el-button>
+                <el-button class="button" type="primary" icon="el-icon-edit" circle></el-button>
+                <el-button class="button" type="primary" icon="el-icon-check" circle></el-button>
+                <el-button class="button" type="primary" icon="el-icon-message" circle></el-button>
+                <el-link class="link" type="primary">主要链接</el-link>
+                <el-link class="link" type="primary">主要链接</el-link>
+                <el-link class="link" type="primary">主要链接</el-link>
+                <el-link class="link" type="primary">主要链接</el-link>
+            </el-row>
+        </div>
+
+        <div class="box4">
+            <div class="title">信息中心</div>
+            <br>
+        </div>
+    </el-main>
+    </el-container>
+</div>
+</body>
+<script>
+    new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    tableData: [{
+                        date: '2016-05-03',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    },  {
+                        date: '2016-05-01',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-08',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-07',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }],
+
+                    visible: false }
+                return{ tableData1: [ {
+                        date: '2016-05-07',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }],
+
+                    visible: false
+
+                }
+            },
+        }
+    )
+</script>
+</html>

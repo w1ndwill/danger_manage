@@ -30,15 +30,6 @@ public class LoginController {
     public String getIndexPage() {
         return "manage_task"; //这里的字符串是前端页面的名称，Spring Boot将根据它返回前端页面
     }
-    @RequestMapping("/巡查计划")
-    public String showInspectionPlan() {
-        return "login"; //返回与巡查计划相关的视图
-    }
-
-    @RequestMapping("/ts")
-    public String showts() {
-        return "ts";
-    }
 
     @RequestMapping("/manager")
     public String main() {
@@ -53,6 +44,11 @@ public class LoginController {
     @RequestMapping("/inspector")
     public String inspector() {
         return "inspector";
+    }
+
+    @RequestMapping("/home")
+    public String home() {
+        return "home";
     }
 
     @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
