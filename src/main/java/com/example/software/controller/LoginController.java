@@ -28,7 +28,7 @@ public class LoginController {
 
     @RequestMapping("/task") // 映射到前端页面的URL
     public String getIndexPage() {
-        return "mytask"; // 这里的字符串是前端页面的名称，Spring Boot将根据它返回前端页面
+        return "manage_task"; // 这里的字符串是前端页面的名称，Spring Boot将根据它返回前端页面
     }
     @RequestMapping("/巡查计划")
     public String showInspectionPlan() {

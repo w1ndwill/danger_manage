@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <style>
+        .el-header {
+            background-color: #409EFF;''
+        color: #333;
+
+            line-height: 60px;
+        }
+        .el-header1 {
+            background-color: #ffffff;
+            color: #333;
+
+            line-height: 300px;
+        }
+
+        .el-aside {
+            background-color: #FFFFFF;
+            color: #333;
+            text-align: center;
+            line-height: 600px;
+        }
+
+        .el-main {
+            background-color: #FFFFFF;
+            color: #333;
+            text-align: center;
+        }
+
+        body > .el-container {
+            margin-bottom: 0px;
+        }
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 300px;
+        }
+
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+
+
+
+        .logo {
+            color: #FFFFFF;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+
+        /* 侧边栏大小 */
+        .el-menu-vertical-demo:not(.el-menu--collapse) {
+            width: 200px;
+            min-height: 660px;
+        }
+
+        /*走马灯 */
+        .carousel-container {
+            width: 600px; /* 设置容器元素的宽度 */
+        }
+        .el-carousel__item h3 {
+            color: #475669;
+            font-size: 14px;
+            opacity: 0.75;
+            line-height: 350px;
+            margin: 0;
+        }
+
+        .el-carousel__item:nth-child(2n) {
+            background-color: #99a9bf;
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-color: #d3dce6;
+        }
+        /*走马灯内容*/
+        .el-carousel__item h3 {
+
+            color: #475669;
+            font-size: 14px;
+            opacity: 0.75;
+            line-height: 150px;
+            margin: 0;
+        }
+
+        .el-carousel__item:nth-child(2n) {
+            background-color: #99a9bf;
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-color: #d3dce6;
+        }
+
+
+        /*main中的表格 */
+        .td{
+            width:600px;
+        }
+        .table{
+            bgcolor:#ccaabb ;bordercolor:#00ff00; bordercolorlight:#ff0000 ;bordercolordark:#0000ff;
+            width:1200px;
+            line-height: 300px;
+            border: 1px solid #409EFF
+        }
+        .name-cell {
+            height: 60px;
+        }
+        .box1{
+            position: absolute;
+            top:100px;
+            left:250px;
+            hight:300px;
+            width: 600px;
+
+        }
+        .box2{
+            position: absolute;
+            top:370px;
+            left:250px;
+            hight:300px;
+            width: 650px;
+        }
+        .el-table__header tr,
+        .el-table__header th {
+            padding: 0;
+            height: 40px;
+        }
+        .el-table__body tr,
+        .el-table__body td {
+            padding: 0;
+            height: 40px;
+        }
+        .box3{
+            position: absolute;
+            top:100px;
+            left:900px;
+
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            vertical-align: middle;
+
+            width: 550px;
+
+        }
+        .title{
+            color: #409EFF;
+            text-align: left;
+            font-weight: bold;
+
+        }
+        .box4{
+            position: absolute;
+            top:420px;
+            left:920px;
+            hight:300px;
+            width: 550px;
+
+
+        }
+        /*box3中的row*/
+        .button{
+            padding: 20px; /* 设置按钮内部的边距 */
+            height: 80px; /* 设置按钮的高度 */
+            width: 80px; /* 设置按钮的宽度 */
+            margin: 0 30px;
+
+        }
+        .button i {
+            font-size: 50px; /* 设置图标的大小 */
+        }
+        .link{
+            padding: 20px; /* 设置按钮内部的边距 */
+            /* 设置按钮的高度 */
+            width: 80px; /* 设置按钮的宽度 */
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div id="app">
+    <el-container>
+        <el-header>
+            <div class="navbar">
+                <div class="logo">苏州市安全生产委员会网格化巡查系统（网格员）</div>
+            </div>
+        </el-header>
+
+
+
+
+
+
+
+        <!--        side-->
+        <el-aside width="205x" >
+            <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                     :collapse="isCollapse">
+                <el-menu-item index="1">
+                    <i class="el-icon-s-home"></i>
+                    <span slot="title">主页</span>
+                </el-menu-item>
+                <el-submenu index="2">
+                    <template slot="title">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">监督巡查</span>
+<!--123-->
+                    </template>
+                    <el-menu-item-group>
+
+                        <el-menu-item index="1-1">巡查任务</el-menu-item>
+                        <el-menu-item index="1-2">隐患复查</el-menu-item>
+                    </el-menu-item-group>
+
+                    <el-submenu index="1-3">
+                        <span slot="title">巡查报告</span>
+                        <el-menu-item index="1-3-1">发出给管理员的报告</el-menu-item>
+                        <el-menu-item index="1-3-2">发出给企业的报告</el-menu-item>
+                        <el-menu-item index="1-3-3">接收的企业报告</el-menu-item>
+                    </el-submenu>
+                </el-submenu>
+                <el-submenu index="3">
+                    <template slot="title">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">企业模块</span>
+
+                    </template>
+                    <el-menu-item index="1-1">下辖企业管理</el-menu-item>
+                    <el-menu-item index="1-2">企业管理人员</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="4" >
+                    <i class="el-icon-document"></i>
+                    <span slot="title">KPI查询</span>
+                </el-menu-item>
+                <el-menu-item index="5" >
+                    <i class="el-icon-document"></i>
+                    <span slot="title">隐患查询中心</span>
+                </el-menu-item>
+                <el-menu-item index="6">
+                    <i class="el-icon-setting"></i>
+                    <span slot="title">标准查询中心</span>
+                </el-menu-item>
+            </el-menu>
+        </el-aside>
+
+
+
+
+
+
+
+        <!--        main-->
+        <el-main>
+            <div class="box1">
+                <div class="block">
+                    <el-carousel trigger="click" height="250px" indicator-position="none">
+                        <el-carousel-item v-for="item in 4" :key="item">
+                            <h3 class="small">{{ item }}</h3>
+                        </el-carousel-item>
+                    </el-carousel>
+                </div>
+
+            </div>
+            <div class="box2">
+                <div class="title">我的代办</div>
+
+                <template>
+                    <el-table
+                            :data="tableData"
+                            stripe
+                            style="width: 100%">
+                        <el-table-column
+                                prop="date"
+                                label="日期"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="发布人员"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="address"
+                                label="隐患地址">
+                        </el-table-column>
+                    </el-table>
+                </template>
+            </div>
+
+
+
+            <div class="box3">
+                <div class="title">主要功能</div>
+                <br>
+                <el-row>
+                    <el-button class="button" type="primary" icon="el-icon-s-claim" circle  ></el-button>
+                    <el-button class="button" type="primary" icon="el-icon-edit" circle></el-button>
+                    <el-button class="button" type="primary" icon="el-icon-check" circle></el-button>
+                    <el-button class="button" type="primary" icon="el-icon-message" circle></el-button>
+                    <el-link class="link" type="primary">主要链接</el-link>
+                    <el-link class="link" type="primary">主要链接</el-link>
+                    <el-link class="link" type="primary">主要链接</el-link>
+                    <el-link class="link" type="primary">主要链接</el-link>
+                    <br>
+                    <el-button class="button" type="primary" icon="el-icon-s-claim" circle  ></el-button>
+                    <el-button class="button" type="primary" icon="el-icon-edit" circle></el-button>
+                    <el-button class="button" type="primary" icon="el-icon-check" circle></el-button>
+                    <el-button class="button" type="primary" icon="el-icon-message" circle></el-button>
+                    <el-link class="link" type="primary">主要链接</el-link>
+                    <el-link class="link" type="primary">主要链接</el-link>
+                    <el-link class="link" type="primary">主要链接</el-link>
+                    <el-link class="link" type="primary">主要链接</el-link>
+
+                </el-row>
+
+            </div>
+            <div class="box4">
+                <div class="title">信息中心</div>
+                <br>
+
+
+            </div>
+        </el-main>
+    </el-container>
+
+</div>
+
+</body>
+<!-- import Vue before Element -->
+<script>
+
+</script>
+
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    tableData: [{
+                        date: '2016-05-03',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    },  {
+                        date: '2016-05-01',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-08',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }, {
+                        date: '2016-05-07',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }],
+
+                    visible: false }
+                return{ tableData1: [ {
+                        date: '2016-05-07',
+                        name: '王小虎',
+                        address: '上海市普陀区金沙江路 1518 弄'
+                    }],
+
+                    visible: false
+
+                }
+            },
+        }
+    )
+</script>
+</html>
