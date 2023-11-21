@@ -113,7 +113,7 @@
                  :collapse="isCollapse">
           <el-menu-item index="1">
             <i class="el-icon-s-home"></i>
-            <span slot="title">我的主页</span>
+            <span slot="title" @click="switchPage_home()">我的主页</span>
           </el-menu-item>
           <el-menu-item index="2">
             <i class="el-icon-document"></i>
@@ -181,6 +181,10 @@
         var iframe=document.querySelector("iframe");
         iframe.src="/mychecktask";
       },
+      switchPage_home:function (){
+        var iframe=document.querySelector("iframe");
+        iframe.src="/home";
+      },
       fetchUser: function () {
         axios.get('/user').then(function (response) {
           this.userBean = response.data;
@@ -191,6 +195,7 @@
     },
     mounted: function () {
       this.fetchUser();
+      this.switchPage_home();
     }
   })
 </script>

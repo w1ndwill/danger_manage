@@ -169,21 +169,13 @@
                         :data="tableData"
                         stripe
                         style="width: 100%">
-                    <el-table-column
-                            prop="date"
-                            label="日期"
-                            width="180">
+                    <el-table-column label="任务日期" width="250">
+                        <template slot-scope="scope">
+                            {{ scope.row.startDate }} - {{ scope.row.endDate }}
+                        </template>
                     </el-table-column>
-                    <el-table-column
-                            prop="name"
-                            label="发布人员"
-                            width="180">
-                    </el-table-column>
-                    <el-table-column
-                            prop="address"
-                            label="隐患地址"
-                            width="220">
-                    </el-table-column>
+                    <el-table-column prop="taskName" label="任务名称" width="180"  ></el-table-column>
+                    <el-table-column prop="company" label="被检查企业" width="220"></el-table-column>
                 </el-table>
             </template>
         </div>
@@ -227,35 +219,35 @@
             el: '#app',
             data: function () {
                 return {
-                    tableData: [{
-                        date: '2016-05-03',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    },  {
-                        date: '2016-05-01',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-08',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-07',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }],
-
+                    tableData:[],
                     visible: false }
-                return{ tableData1: [ {
-                        date: '2016-05-07',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }],
-
-                    visible: false
-
-                }
             },
+        mounted() {
+            this.fetchUser();
+        },
+        methods:{
+            fetchUser: function () {
+                axios.get('/user').then(function (response) {
+                    this.userBean = response.data;
+                    this.loadContentFromDatabase();
+                }.bind(this)).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            loadContentFromDatabase() {
+                // 根据this.userBean.id和this.userBean.name获取数据库中的内容
+                // 例如，可以构建请求的URL，然后使用axios再次发起请求
+                const url = `/getContent?number=${this.userBean.id}&inspector=${this.userBean.truename}`;
+                axios.get(url)
+                    .then(response => {
+                        // 处理获取到的数据库内容，更新iframe的src等操作
+                        this.tableData= response.data; // 假设数据库内容返回的是用于iframe的src
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+        }
         }
     )
 </script>
