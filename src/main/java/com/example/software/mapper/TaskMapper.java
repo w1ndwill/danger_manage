@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
+
 @Mapper
 public interface TaskMapper {
     List<Task> getAllTasks();
@@ -17,4 +19,5 @@ public interface TaskMapper {
     void addTask(Task task);
     void addchildtask(List<Task> task);
 //    void deletechildtask(Task task);
+    List<Task> getContent(int number, String inspector);
 }

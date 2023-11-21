@@ -6,26 +6,24 @@
   <!-- import CSS -->
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-  <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
-  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <style>
     /* 侧边栏大小 */
     .el-menu-vertical-demo:not(.el-menu--collapse) {
       margin-top: 5px;
-      margin-bottom: 0;
       width: 200px;
-      height : 100vh;
+      height: 100vh;
+      min-height: 100%;
       background-color: #d0dfe6;
       border-radius: 10px;
       font-weight: bold;
       font-size: 18px;
       color: white; !important;
-      overflow: hidden;
     }
 
     .el-header {
       padding : 0 0;
+      width: 100%;
     }
     .top-bar {
       box-sizing: border-box;
@@ -44,12 +42,12 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      margin-right: 10px;
     }
     .login-img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      margin-left: 10px;
       cursor: pointer;
     }
     .login-img2 {
@@ -60,8 +58,7 @@
       cursor:pointer;
       position: absolute;
       left: 0;
-      top: 8px;
-
+      top: 12px;
     }
     .logo{
       float: left;
@@ -70,7 +67,6 @@
     }
     .logo,.login-img2{
       display: inline-block;
-      margin-right: 5px;
     }
     .logo p {
       font-family: 'Arial', sans-serif;
@@ -81,9 +77,9 @@
     }
 
     body {
-      margin: 0;
+      height: 100%;
+      width: 100%;
       background-color: #ececec;
-      overflow: hidden;
     }
   </style>
 </head>
@@ -137,45 +133,37 @@
         </el-menu>
       </el-aside>
 
-      <el-main>
-        <iframe style="width: 100%; height: 100%;" frameborder="0"></iframe>
-      </el-main>
 
+      <el-main>
+        <iframe :src="flowSrc" style="height:100%; width:100%;margin:0;border:0;" v-if="loading" ref="iframeId" id="myFrameId" name="myFrameName">
+        </iframe>
+      </el-main>
 
     </el-container>
   </el-container>
 </div>
 </div>
 </body>
+<!-- import Vue before Element -->
+<script>
 
+</script>
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script>
   new Vue({
     el: '#app',
     data: function () {
-      return { visible: false,
+      return {
+        visible: false,
         loading: true,
         flowSrc: '',
         userBean: null,
-        showReture: false}
-    },
-    mounted: function () {
-      this.fetchUser();
-      this.switchPage_home();
+        showReture: false
+      }
     },
     methods: {
-      switchPage_home:function (){
-        var iframe=document.querySelector("iframe");
-        iframe.src="/home";
-      },
-      handleIframe(e) {
-        console.log('切换', e)
-        this.warehouse.cloudId = e
-        this.loading = false
-        this.flowSrc = 'http://10.0.11.9:2080/#/grain-room/condition/current?user=grainszy&pass=bupt%40Htl301&grainRoomId=' + this.warehouse.cloudId;  //直接给flowSrc赋值链接
-        setTimeout(()=>{
-          this.loading = true
-        },1000)
-      },
       fetchUser: function () {
         axios.get('/user').then(function (response) {
           this.userBean = response.data;
@@ -183,6 +171,9 @@
           console.log(error);
         });
       }
+    },
+    mounted: function () {
+      this.fetchUser();
     }
   })
 </script>
