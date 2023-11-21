@@ -36,10 +36,10 @@
     </insert>
 
     <insert id="addchildtask" parameterType="java.util.List">
-        INSERT INTO childtask (number, inspector, taskName)
+        INSERT INTO childtask (number, inspector, taskName,company, inspectionType, startDate, endDate)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.number}, #{item.inspector}, #{item.taskName})
+            (#{item.number}, #{item.inspector}, #{item.taskName}, #{item.company}, #{item.inspectionType}, #{item.startDate}, #{item.endDate})
         </foreach>
     </insert>
 
@@ -47,5 +47,9 @@
 <!--        DELETE FROM childtask-->
 <!--        WHERE number = #{number} AND inspector = #{inspector} AND taskName = #{taskName}-->
 <!--    </delete>-->
+    <select id="getContent" resultType="com.example.software.bean.Task">
+        SELECT * FROM childtask
+        WHERE number = #{number} AND inspector = #{inspector}
+    </select>
 
 </mapper>

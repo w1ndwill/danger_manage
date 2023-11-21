@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <!-- 引入 Vue.js 和 Element-UI -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<style>
+    .status{
+        padding:8px;
+    }
+    .search-bar{
+        padding:8px;
+    }
+    .year-label {
+        margin-left: 2em; /* 设置年份标签，可以调整左间距 */
+    }
+    .search-input {
+        width: 30%; /* 设置搜索框的宽度，可以根据需要调整 */
+    }
+</style>
+<style scoped>
+    /* 标题行和偶数行背景颜色为灰色 */
+    .el-table tr:nth-child(even), .el-table thead {
+        background-color: #f0f0f0;
+    }
+    /* 奇数行背景颜色为白色 */
+    .el-table tr:nth-child(odd) {
+        background-color: #ffffff;
+    }
+</style>
+<body>
+<div id="app">
+    <div class="status">
+        <label>任务状态:</label>
+        <el-select v-model="taskStatus" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="未发布" value="未发布"></el-option>
+            <el-option label="进行中" value="进行中"></el-option>
+            <el-option label="已结束" value="已结束"></el-option>
+            <el-option label="复查通过" value="复查通过"></el-option>
+        </el-select>
+        <label>任务时效:</label>
+        <el-select v-model="taskDeadline" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="未逾期" value="未逾期"></el-option>
+            <el-option label="已逾期" value="已逾期"></el-option>
+        </el-select>
+    </div>
+    <!-- 年份选择和搜索框 -->
+    <div class="search-bar">
+        <label  class="year-label">年份:</label>
+        <el-date-picker v-model="selectedDate" type="date" placeholder="选择年月日"></el-date-picker>
+        <el-input  class="search-input" v-model="search" placeholder="输入关键字"></el-input>
+        <el-button @click="searchTasks" type="primary">搜索</el-button>
+        <el-button @click="reset">重置</el-button>
+        <el-button style="float:right;"  type="success" icon="el-icon-download">导出列表</el-button>
+    </div>
+
+    <div>
+    <el-table :data="tasksPage" style="width: 100%">
+        <el-table-column type="selection" width="55"></el-table-column>
+<!--        <el-table-column prop="number" label="#" width="20"></el-table-column>-->
+        <el-table-column prop="taskName" label="任务名称" width="150"  ></el-table-column>
+        <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
+        <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
+        <el-table-column label="隐患数/检查数" width="150">
+            <template slot-scope="scope">
+                {{ scope.row.hiddenDangerCount }} / {{ scope.row.checkcount }}
+            </template>
+        </el-table-column>
+        <el-table-column label="任务起止日期" width="200">
+            <template slot-scope="scope">
+                {{ scope.row.startDate }} - {{ scope.row.endDate }}
+            </template>
+        </el-table-column>
+        <el-table-column  fixed="right" label="操作" width="250">
+            <template slot-scope="scope">
+                <div style="display: flex; justify-content: space-around;">
+                    <el-button size="small" type="success" icon="el-icon-view" @click="viewTask(scope.row)">详情</el-button>
+                    <el-button size="small" type="primary" icon="el-icon-view" @click="check(scope.row)">检查</el-button>
+                </div>
+            </template>
+        </el-table-column>
+    </el-table>
+    <!--           所有任务表格的 分页设置，currentPage当前页码，pageSize一页显示多少数据-->
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[10, 20, 50]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="tasks.length">
+    </el-pagination>
+    </div>
+
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                taskStatus: '不限',
+                taskDeadline: '不限',
+                selectedDate: '',
+                search: '',
+                tasks:[],
+                currentPage: 1, // 当前页数
+                pageSize: 10, // 每页显示的记录数
+                userBean:null,
+            }
+        },
+        mounted() {
+            this.fetchUser();
+        },
+        computed: {
+            // 对tasks[]数组进行分页的设置
+            tasksPage() {
+                // 根据currentPage和pageSize计算分页后的数据
+                const startIndex = (this.currentPage - 1) * this.pageSize;
+                const endIndex = startIndex + this.pageSize;
+                return this.tasks.slice(startIndex, endIndex);
+            },
+        },
+        methods:{
+            fetchUser: function () {
+                axios.get('/user').then(function (response) {
+                    this.userBean = response.data;
+                    this.loadContentFromDatabase();
+                }.bind(this)).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            searchTasks() {
+                // 处理搜索逻辑
+                console.log('Searching tasks...');
+            },
+            reset() {
+                // 重置表单
+                this.search = '';
+            },
+            loadContentFromDatabase() {
+                // 根据this.userBean.id和this.userBean.name获取数据库中的内容
+                // 例如，可以构建请求的URL，然后使用axios再次发起请求
+                const url = `/getContent?number=${this.userBean.id}&inspector=${this.userBean.truename}`;
+                axios.get(url)
+                    .then(response => {
+                        // 处理获取到的数据库内容，更新iframe的src等操作
+                        this.tasks = response.data; // 假设数据库内容返回的是用于iframe的src
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            //tasks[]中的分页方法，获取每页显示几条记录的pageSize和当前页数的currentPage
+            handleSizeChange(val) {
+                this.pageSize = val;
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+            },
+            check(task){
+
+            },
+            viewTask(task) {
+                // 查看任务的逻辑
+                console.log("View task:", task);
+            },
+        }
+    });
+</script>
+</body>
+</html>

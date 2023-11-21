@@ -38,7 +38,6 @@ public class Controller {
             return new ResponseEntity<>("删除任务时出错: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     @PostMapping("/updateTask")
     public ResponseEntity<String> updateTask(@RequestBody Task editedTask) {
         try {
@@ -80,4 +79,10 @@ public class Controller {
 //            return new ResponseEntity<>("删除任务时出错: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
+      @GetMapping("/getContent")
+      public List<Task> getDatabaseContent( @RequestParam int number,
+                                            @RequestParam String inspector) {
+         List xx= taskMapper.getContent(number,inspector);
+         return xx;
+}
 }

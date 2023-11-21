@@ -117,7 +117,6 @@
 <!--        <el-button @click="openDialog" type="info" icon="el-icon-edit">发起临时任务</el-button>-->
         <el-button style="float:right;" @click="exportList" type="success" icon="el-icon-download">导出列表</el-button>
         <el-button style="float:right;" @click="openTemporaryTaskDialog" type="info" icon="el-icon-edit">发起临时任务</el-button>
-
     </div>
 
     <div>
@@ -128,7 +127,7 @@
                 <el-table-column prop="taskName" label="任务名称" width="150"  ></el-table-column>
                 <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
                 <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
-                <el-table-column label="隐患数/检查数" width="100">
+                <el-table-column label="隐患数/检查数" width="150">
                     <template slot-scope="scope">
                         {{ scope.row.hiddenDangerCount }} / {{ scope.row.checkcount }}
                     </template>
@@ -140,12 +139,12 @@
                         {{ scope.row.startDate }} - {{ scope.row.endDate }}
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="300">
+                <el-table-column  fixed="right" label="操作" width="250">
                     <template slot-scope="scope">
                         <div style="display: flex; justify-content: space-around;">
-                            <el-button type="primary" icon="el-icon-edit" @click="editTask(scope.row)">编辑</el-button>
-                            <el-button type="success" icon="el-icon-view" @click="viewTask(scope.row)">详情</el-button>
-                            <el-button type="danger" icon="el-icon-delete" @click="deleteTask(scope.row)">删除</el-button>
+                            <el-button size="small" type="primary" icon="el-icon-edit" @click="editTask(scope.row)">编辑</el-button>
+                            <el-button size="small" type="success" icon="el-icon-view" @click="viewTask(scope.row)">详情</el-button>
+                            <el-button size="small" type="danger" icon="el-icon-delete" @click="deleteTask(scope.row)">删除</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -323,11 +322,11 @@
             <el-table-column prop="job" label="岗位" width="80"></el-table-column>
             <el-table-column prop="role" label="角色" width="120"></el-table-column>
             <!-- 其他列省略，请根据你的数据结构添加 -->
-            <el-table-column label="操作" width="150">
+            <el-table-column  fixed="right" label="操作" width="100">
                 <template slot-scope="scope">
                     <el-button
                             :type="scope.row.used ? 'danger' : 'primary'"
-                            @click="handleButtonClick(scope.row)">
+                            @click="handleButtonClick(scope.row)" size="small">
                         {{ scope.row.used ? '已使用' : '未使用' }}
                     </el-button>
                 </template>
@@ -356,7 +355,6 @@
 <script>
     new Vue({
         el: '#app',
-
         data() {
             return {
                 taskStatus: '不限',
@@ -426,7 +424,7 @@
             }
         },
         methods: {
-            //第一个弹窗的方法
+            //第一个表格获取数据的方法
             getAllTasks() {
                 // 发起HTTP请求，获取数据
                 axios.get('/all')
@@ -540,12 +538,15 @@
                         console.log(this.editedTask);
                         console.error('保存失败：', error);
                     });
-
+                //将数组中内容依次保存到数据库中
                 let dataToSave = this.changedRows.map(row => ({
                     number: row.number,
                     inspector: row.inspector,
                     taskName: row.taskName,
-
+                    company:row.company,
+                    inspectionType:row.inspectionType,
+                    startDate:row.startDate,
+                    endDate:row.endDate,
                 }));
                 this. saveToDatabase(dataToSave);
                 this.changedRows=[];
@@ -567,25 +568,9 @@
                 this.dialogVisible = false;
             },
             submitTaskForm(){
-                // 将所有切换按钮的信息保存到数据库
-                // 调用保存数据库的方法，例如 this.saveToDatabaseMethod(this.changedRows);
-                // let dataToSave = this.changedRows.map(row => ({
-                //     number: row.number,
-                //     inspector: row.inspector,
-                //     taskName: row.taskName,
-                //
-                // }));
-                // this. saveToDatabase(dataToSave);
-                // this.changedRows=[];
-
                 this.closeDialog();
 
             },
-            // confirmSelection() {
-            //     // 将选择的内容拼接到单行框中，这里可以根据需求进行调整
-            //     this.temporaryTaskForm.inspectionRequirement = this.selectedItems.join(', ');
-            //     this.dialogVisible = false;
-            // },
             handleTabClick(tab) {
                 // 切换选项卡时，可以在这里根据选项卡的名称请求对应的数据，更新表格内容
                 this.currentTab = tab.name;
@@ -604,16 +589,23 @@
                 if (row.used) {
                     // 如果行被标记为已使用，将人员姓名添加到检查人单行框中
                     this.temporaryTaskForm.inspector += (this.temporaryTaskForm.inspector ? ',' : '') + row.name;
-
+                    //将点击切换成已使用的信息加入到数组中
                     const index = row.number;
                     const inspectorName = row.name;
                     const taskName = this.temporaryTaskForm.taskName;
-
+                    const company=this.temporaryTaskForm.company;
+                    const inspectionType=this.temporaryTaskForm.inspectionType;
+                    const startDate=this.temporaryTaskForm.startDate;
+                    const endDate=this.temporaryTaskForm.endDate;
                     // 将相关信息存储到数组中
                     const changedRow = {
                         number: index,
                         inspector: inspectorName,
                         taskName: taskName,
+                        company:company,
+                        inspectionType:inspectionType,
+                        startDate:startDate,
+                        endDate:endDate
                     };
                     // 检查 changedRows 数组中是否已存在该行信息
                     const existingIndex = this.changedRows.findIndex(item => item.number === index && item.inspector === inspectorName);
@@ -636,13 +628,9 @@
                     const inspectorName2 = row.name;
                     const taskName2 = this.temporaryTaskForm.taskName;
                     // this.deleteRecordFromBackend(index2, inspectorName2, taskName2);
-
                     // 从 changedRows 数组中删除相应的行信息
                     this.changedRows = this.changedRows.filter(item => !(item.number === index2 && item.inspector === inspectorName2 && item.taskName === taskName2));
-
                 }
-                // 清空单行框的背景颜色
-                // this.$refs.inspectorInput.$children[0].$el.style.backgroundColor = '';
             },
             saveToDatabase(data) {
                 axios.post('/saveData', data)

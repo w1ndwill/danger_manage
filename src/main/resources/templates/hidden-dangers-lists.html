@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <!-- 引入 Vue.js 和 Element-UI -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<style>
+    .logo{
+
+        height: 20px; /* 设置标题高度为24像素 */
+        font-family: Arial, sans-serif; /* 字体 */
+        font-size: 18px; /* 字体大小 */
+        color: #007BFF; /* 字体颜色 */
+        text-align: left; /* 对齐方式 */
+        margin-top: 12px; /* 距离顶部的间距 */
+        border-bottom: 1px solid #000000; /* 添加下边框 */
+        border-bottom-color: #007BFF; /* 改变下边框颜色为红色 */
+        width: 10%; /* 设置标题宽度为100% */
+        padding-bottom: 10px; /* 设置标题与下边框之间的间隔 */
+    }
+    .refresh{
+        float: right;
+    }
+
+</style>
+<body>
+<div id="app">
+    <div class="logo">
+        <label>隐患清单</label>
+
+    </div>
+    <div>
+
+        <label>隐患来源：</label>
+        <div  style="display:inline-block;">
+        <el-select size="small" v-model="origin" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="检查表检查" value="检查表检查"></el-option>
+            <el-option label="依据检查" value="依据检查"></el-option>
+            <el-option label="随手拍" value="随手拍"></el-option>
+        </el-select>
+        </div>
+
+        <label>隐患性质:</label>
+        <div  style="display:inline-block;">
+        <el-select size="small" v-model="quality" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="一般隐患" value="一般隐患"></el-option>
+            <el-option label="重大隐患" value="重大隐患"></el-option>
+        </el-select>
+        </div>
+        <label>隐患状态:</label>
+        <div size="small" style="display:inline-block;">
+        <el-select v-model="state" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="一般隐患" value="一般隐患"></el-option>
+            <el-option label="重大隐患" value="重大隐患"></el-option>
+        </el-select>
+        </div>
+    </div>
+    <div>
+        <label>任务名称：</label>
+        <div  style="display:inline-block;">
+            <el-input v-model="name" placeholder="任务名称"></el-input>
+    </div>
+        <el-button
+                type="primary"
+                size="small"
+                icon="el-icon-search">
+            搜索
+        </el-button>
+        <div class="refresh" >
+            <el-button type="primary" size="small" @click="handleDownload">
+                excel导出表格
+            </el-button>
+        <el-button plain size="small" onclick="javascript:location.reload()" icon="el-icon-refresh">刷新</el-button>
+
+
+        </div>
+        <template>
+        <el-table
+                ref="multipleTable"
+                :data="tableData"
+                stripe
+                style="width: 100%"
+                max-height="550"
+                @selection-change="handleSelectionChange">
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+            <el-table-column
+                    fixed
+                    prop="description"
+                    label="隐患描述"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    label="任务名称"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="company"
+                    label="被检查公司"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    prop="state"
+                    label="隐患状态"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    prop="quality"
+                    label="隐患性质"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    prop="check_people"
+                    label="检查人"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    prop="check_time"
+                    label="检查时间"
+                    width="120">
+            </el-table-column>
+                <el-table-column
+                        prop="origin"
+                        label="隐患来源"
+                        width="120">
+                </el-table-column>
+                <el-table-column
+                        prop="rectify_people"
+                        label="整改人"
+                        width="120">
+                </el-table-column>
+                <el-table-column
+                        prop="rectify_time"
+                        label="整改时间"
+                        width="120">
+                </el-table-column>
+                <el-table-column
+                        prop="reviewers"
+                        label="复查人"
+                        width="120">
+                </el-table-column>
+                <el-table-column
+                        prop="review_time"
+                        label="复查时间"
+                        width="120">
+                </el-table-column>
+
+            <el-table-column
+                    fixed="right"
+                    label="操作"
+                    width="200">
+                <template slot-scope="scope">
+                    <el-button
+                            @click.native.prevent="deleteRow(scope.$index, tableData)"
+                            type="danger"
+                            size="small">
+                        移除
+                    </el-button>
+                    <el-button
+                            type="primary"
+                            size="small"
+                            @click="open1">
+                        详情
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </template>
+</div>
+</div>
+</body>
+<script>
+    new Vue({
+            el: '#app',
+        methods: {
+            deleteRow(index, rows) {
+                rows.splice(index, 1);
+            }
+        },
+        toggleSelection(rows) {
+            if (rows) {
+                rows.forEach(row => {
+                    this.$refs.multipleTable.toggleRowSelection(row);
+                });
+            } else {
+                this.$refs.multipleTable.clearSelection();
+            }
+        },
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        data() {
+            return {
+
+                tableData: [{
+                    description: '巴比龙',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                }, {
+                    description: '大巴',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                }, {
+                    description: 'Hello Kitty我也喜欢',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                }, {
+                    description: 'ai ai ',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                }, {
+                    description: '蜘蛛侠吐丝',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                },{
+                    description: '蜘蛛侠吐丝',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                },{
+                    description: '蜘蛛侠吐丝',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                },{
+                    description: '蜘蛛侠吐丝',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                },{
+                    description: '蜘蛛侠吐丝',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                },{
+                    description: '蜘蛛侠吐丝',
+                    name: '张天赐招嫖',
+                    company: '张天赐娱乐公司',
+                    state: '待完善',
+                    quality: '重大隐患',
+                    check_people:'张海洋',
+                    check_time:'2016-05-02',
+                    origin:'随手拍',
+                    rectify_people:'张天赐',
+                    rectify_time:'',
+                    reviewers:'何晨',
+                    review_time:'',
+                }, ],
+
+            }
+        },
+
+        }
+
+    )
+</script>
+</html>
