@@ -17,12 +17,12 @@
         height: 24px; /* 设置标题高度为24像素 */
         font-family: Arial, sans-serif; /* 字体 */
         font-size: 24px; /* 字体大小 */
-        color: #000000; /* 字体颜色 */
+        color: #007BFF; /* 字体颜色 */
         text-align: left; /* 对齐方式 */
         margin-top: 20px; /* 距离顶部的间距 */
         border-bottom: 1px solid #000000; /* 添加下边框 */
-        border-bottom-color: #000000; /* 改变下边框颜色为红色 */
-
+        border-bottom-color: #007BFF; /* 改变下边框颜色为红色 */
+        width: fit-content; /* 设置标题宽度为100% */
         padding-bottom: 10px; /* 设置标题与下边框之间的间隔 */
     }
     .status{
@@ -78,13 +78,13 @@
 
     <!-- 任务和实施选项 -->
     <div class="logo">
-        <label>信息中心 &nbsp&nbsp 信息发布</label>
+        <label>当前页面:我的巡查任务</label>
 
     </div>
     <!-- 任务状态和任务时效下拉框 -->
 
     <div class="status">
-        <label>通知类型:</label>
+        <label>任务状态:</label>
         <el-select v-model="taskStatus" placeholder="请选择">
             <el-option label="不限" value="不限"></el-option>
             <el-option label="未发布" value="未发布"></el-option>
@@ -92,30 +92,27 @@
             <el-option label="已结束" value="已结束"></el-option>
             <el-option label="复查通过" value="复查通过"></el-option>
         </el-select>
-        <label>安全级别:</label>
+        <label>任务时效:</label>
         <el-select v-model="taskDeadline" placeholder="请选择">
             <el-option label="不限" value="不限"></el-option>
             <el-option label="未逾期" value="未逾期"></el-option>
             <el-option label="已逾期" value="已逾期"></el-option>
         </el-select>
-        <label>紧急度:</label>
-        <el-select v-model="taskDeadline" placeholder="请选择">
-            <el-option label="不限" value="不限"></el-option>
-            <el-option label="未逾期" value="未逾期"></el-option>
-            <el-option label="已逾期" value="已逾期"></el-option>
-        </el-select>
-
     </div>
     <!-- 年份选择和搜索框 -->
     <div style="clear:both;"></div> <!-- 添加一个清除浮动的空行 -->
     <div class="search-bar">
 
+        <label  class="year-label">年份:</label>
+        <el-date-picker v-model="selectedDate" type="date" placeholder="选择年月日"></el-date-picker>
 
-
-        <el-input  class="search-input" v-model="search" placeholder="请输入通知标题、通知编号进行模糊查询"></el-input>
+        <el-input  class="search-input" v-model="search" placeholder="输入关键字"></el-input>
         <el-button @click="searchTasks" type="primary">搜索</el-button>
         <el-button @click="reset">重置</el-button>
 
+        <!--        <el-button @click="openDialog" type="info" icon="el-icon-edit">发起临时任务</el-button>-->
+        <el-button style="float:right;" @click="exportList" type="success" icon="el-icon-download">导出列表</el-button>
+        <el-button style="float:right;" @click="openTemporaryTaskDialog" type="info" icon="el-icon-edit">发起临时任务</el-button>
 
     </div>
 
@@ -124,21 +121,18 @@
         <el-table :data="tasksPage" style="width: 100%">
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="number" label="#" width="20"></el-table-column>
-            <el-table-column prop="cover" label="封面" width="100"  ></el-table-column>
-            <el-table-column prop="title" label="通知标题" width="180"></el-table-column>
-            <el-table-column prop="inspectionType" label="检查类型" width="180"></el-table-column>
-            <el-table-column prop="inspectionCount" label="检查频次" width="180"></el-table-column>
-            <el-table-column prop="notificationNumber" label="通知编号" width="100"></el-table-column>
-            <el-table-column prop="notificationType" label="通知类型" width="100"></el-table-column>
-            <el-table-column prop="urgency" label="紧急度"  width="90"></el-table-column>
-            <el-table-column prop="publisher" label="发布人"  width="90"></el-table-column>
-            <el-table-column prop="securityLevel" label="安全级别"  width="90"></el-table-column>
-            <el-table-column label="发布时间" width="200">
+            <el-table-column prop="taskName" label="任务名称" width="300"  ></el-table-column>
+            <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
+            <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
+            <el-table-column prop="hiddenDangerCount" label="隐患数" width="100"></el-table-column>
+            <el-table-column prop="inspector" label="检查人" width="120"></el-table-column>
+            <el-table-column prop="inspectorType" label="检查人类型" width="120"></el-table-column>
+            <el-table-column label="任务起止日期" width="200">
                 <template slot-scope="scope">
                     {{ scope.row.startDate }} - {{ scope.row.endDate }}
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="80">
+            <el-table-column label="操作" width="300">
                 <template slot-scope="scope">
                     <div style="display: flex; justify-content: space-around;">
                         <el-button type="primary" icon="el-icon-edit" @click="editTask(scope.row)">编辑</el-button>
@@ -156,38 +150,28 @@
                 :before-close="handleEditDialogClose">
             <!-- 编辑对话框的表单内容 -->
             <el-form :model="editedTask"  label-width="100px">
-
-                <el-form-item class="form-item-flex" label="封面:" >
-                    <el-input class="e1" v-model="editedTask.cover"></el-input>
+                <el-form-item class="form-item-flex" label="任务编号:" >
+                    <el-input class="e1" v-model="editedTask.number"></el-input>
                 </el-form-item>
-                <el-form-item class="form-item-flex" label="通知标题:">
-                    <el-input class="e1" v-model="editedTask.title"></el-input>
+                <el-form-item class="form-item-flex" label="任务名称:" >
+                    <el-input class="e1" v-model="editedTask.taskName"></el-input>
+                </el-form-item>
+                <el-form-item class="form-item-flex" label="被检查企业:">
+                    <el-input class="e1" v-model="editedTask.company"></el-input>
                 </el-form-item>
                 <el-form-item class="form-item-flex" label="检查类型:">
                     <el-input class="e1" v-model="editedTask.inspectionType"></el-input>
                 </el-form-item>
-                <el-form-item class="form-item-flex" label="检查频次:">
-                    <el-input class="e1" v-model="editedTask.inspectionCount"></el-input>
-                </el-form-item>
-                <el-form-item class="form-item-flex" label="通知编号:" >
-                    <el-input class="e1" v-model="editedTask.notificationNumber"></el-input>
-                </el-form-item>
-                <el-form-item class="form-item-flex" label="通知类型:">
-                    <el-input class="e1" v-model="editedTask.notificationType"></el-input>
-                </el-form-item>
                 <el-form-item class="form-item-flex" label="隐患数:">
                     <el-input class="e1" v-model="editedTask.hiddenDangerCount"></el-input>
                 </el-form-item>
-                <el-form-item class="form-item-flex" label="紧急度:">
-                    <el-input class="e1" v-model="editedTask.urgency"></el-input>
+                <el-form-item class="form-item-flex" label="检查人:">
+                    <el-input class="e1" v-model="editedTask.inspector"></el-input>
                 </el-form-item>
-                <el-form-item class="form-item-flex" label="发布人:">
-                    <el-input class="e1" v-model="editedTask.publisher"></el-input>
+                <el-form-item class="form-item-flex" label="检查人类型:">
+                    <el-input class="e1" v-model="editedTask.inspectorType"></el-input>
                 </el-form-item>
-                <el-form-item class="form-item-flex" label="安全级别:">
-                    <el-input class="e1" v-model="editedTask.securityLevel"></el-input>
-                </el-form-item>
-                <el-form-item class="form-item-flex" label="发布时间:">
+                <el-form-item class="form-item-flex" label="开始时间:">
                     <el-date-picker
                             v-model="editedTask.startDate"
                             type="datetime"
