@@ -66,12 +66,6 @@
     .el-table tr:nth-child(odd) {
         background-color: #ffffff;
     }
-    /*.search-bar {*/
-    /*    display: flex;*/
-    /*    justify-content: flex-end;*/
-    /*    align-items: center;*/
-    /*    margin-bottom: 15px;*/
-    /*}*/
 </style>
 <body>
 <div id="app">
@@ -127,8 +121,6 @@
             <el-table-column prop="cover" label="封面" width="100"  ></el-table-column>
             <el-table-column prop="title" label="通知标题" width="180"></el-table-column>
             <el-table-column prop="inspectionType" label="检查类型" width="180"></el-table-column>
-            <el-table-column prop="inspectionCount" label="检查频次" width="180"></el-table-column>
-            <el-table-column prop="notificationNumber" label="通知编号" width="100"></el-table-column>
             <el-table-column prop="notificationType" label="通知类型" width="100"></el-table-column>
             <el-table-column prop="urgency" label="紧急度"  width="90"></el-table-column>
             <el-table-column prop="publisher" label="发布人"  width="90"></el-table-column>
@@ -166,17 +158,8 @@
                 <el-form-item class="form-item-flex" label="检查类型:">
                     <el-input class="e1" v-model="editedTask.inspectionType"></el-input>
                 </el-form-item>
-                <el-form-item class="form-item-flex" label="检查频次:">
-                    <el-input class="e1" v-model="editedTask.inspectionCount"></el-input>
-                </el-form-item>
-                <el-form-item class="form-item-flex" label="通知编号:" >
-                    <el-input class="e1" v-model="editedTask.notificationNumber"></el-input>
-                </el-form-item>
                 <el-form-item class="form-item-flex" label="通知类型:">
                     <el-input class="e1" v-model="editedTask.notificationType"></el-input>
-                </el-form-item>
-                <el-form-item class="form-item-flex" label="隐患数:">
-                    <el-input class="e1" v-model="editedTask.hiddenDangerCount"></el-input>
                 </el-form-item>
                 <el-form-item class="form-item-flex" label="紧急度:">
                     <el-input class="e1" v-model="editedTask.urgency"></el-input>

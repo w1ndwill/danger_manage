@@ -56,6 +56,11 @@ public class LoginController {
         return "mychecktask";
     }
 
+    @RequestMapping("/information")
+    public String information() {
+        return "information";
+    }
+
     @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
     public ResponseEntity<?> loginIn(@RequestBody Map<String, String> request, HttpSession session) {
         String name = request.get("name");
