@@ -101,6 +101,53 @@
     </el-pagination>
     </div>
 
+    <el-dialog
+            :visible.sync="dialogVisible"
+            title="检查任务"
+            width="50%"
+            @close="handleClose"
+    >
+        <div style="display: flex; justify-content: space-between;align-items: flex-start;">
+            <!-- Left side -->
+            <div style="width: 48%;">
+                <p>任务名称: {{ currentTask.taskName }}</p>
+                <p>任务类型: {{ currentTask.inspectionType }}</p>
+            </div>
+
+            <!-- Right side -->
+            <div style="width: 48%;">
+                <p>被检查企业: {{ currentTask.company }}</p>
+                <p>任务起止日期: {{ currentTask.startDate }} - {{ currentTask.endDate }}</p>
+            </div>
+        </div>
+
+        <!-- Hidden danger reason input -->
+        <el-form style="display: flex; flex-wrap: wrap;">
+            <el-form-item label="隐患原因" style="flex: 0 0 100%;">
+                <el-input type="textarea" v-model="hiddenDangerReason" placeholder="请输入隐患原因" style="width: 100%; display: none;"></el-input>
+            </el-form-item>
+            <!-- 新增的 el-form-item，占48%的宽度 -->
+            <el-form-item style="flex: 0 0 48%; margin-bottom: 15px;">
+                <!-- 这里的 el-input 设置为 100% 宽度，以占据 el-form-item 的宽度 -->
+                <el-input type="textarea" v-model="hiddenDangerReason" placeholder="请输入隐患原因" style="width: 100%;"></el-input>
+            </el-form-item>
+            <!-- 其他表单项可以继续添加 -->
+        </el-form>
+
+        <!-- Image upload -->
+        <el-upload
+                class="upload-demo"
+                action="/your-upload-api-endpoint"
+                :on-success="handleUploadSuccess"
+                :before-upload="beforeImageUpload"
+        >
+            <el-button size="small" type="primary">点击上传图片</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <!-- Display uploaded image -->
+            <img v-if="imageUrl" :src="imageUrl" alt="Uploaded Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;">
+        </el-upload>
+
+    </el-dialog>
 </div>
 <script>
     new Vue({
@@ -115,6 +162,12 @@
                 currentPage: 1, // 当前页数
                 pageSize: 10, // 每页显示的记录数
                 userBean:null,
+                dialogVisible: false,
+                currentTask: {},  // To store details of the current task being checked
+                hiddenDangerReason: '',// To store the hidden danger reason input
+                otherInput:'',
+                uploadedImages: [],
+                imageUrl:''// To store the uploaded images
             }
         },
         mounted() {
@@ -166,12 +219,28 @@
             handleCurrentChange(val) {
                 this.currentPage = val;
             },
-            check(task){
-
+            check(row){
+                this.currentTask = row;
+                this.dialogVisible = true;
             },
             viewTask(task) {
                 // 查看任务的逻辑
                 console.log("View task:", task);
+            },
+            handleUploadSuccess(response, file, fileList) {
+                // Process the uploaded image response if needed
+                console.log(response, file, fileList);
+            },
+            // Before image upload, you can check file type, size, etc.
+            beforeImageUpload(file) {
+                // Implement validation logic here
+                return true; // To allow the upload
+            },
+            handleClose() {
+                // Reset data when the modal is closed
+                this.currentTask = {};
+                this.hiddenDangerReason = '';
+                this.uploadedImages = [];
             },
         }
     });
