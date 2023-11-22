@@ -13,16 +13,14 @@
 </head>
 <style>
     .logo{
-
         height: 24px; /* 设置标题高度为24像素 */
         font-family: Arial, sans-serif; /* 字体 */
         font-size: 24px; /* 字体大小 */
-        color: #000000; /* 字体颜色 */
+        color: #007BFF; /* 字体颜色 */
         text-align: left; /* 对齐方式 */
         margin-top: 20px; /* 距离顶部的间距 */
         border-bottom: 1px solid #000000; /* 添加下边框 */
-        border-bottom-color: #000000; /* 改变下边框颜色为红色 */
-
+        border-bottom-color: #007BFF; /* 改变下边框颜色为红色 */
         padding-bottom: 10px; /* 设置标题与下边框之间的间隔 */
     }
     .status{
@@ -103,14 +101,9 @@
     <!-- 年份选择和搜索框 -->
     <div style="clear:both;"></div> <!-- 添加一个清除浮动的空行 -->
     <div class="search-bar">
-
-
-
         <el-input  class="search-input" v-model="search" placeholder="请输入通知标题、通知编号进行模糊查询"></el-input>
         <el-button @click="searchTasks" type="primary">搜索</el-button>
         <el-button @click="reset">重置</el-button>
-
-
     </div>
 
     <div>

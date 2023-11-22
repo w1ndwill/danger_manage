@@ -61,6 +61,21 @@ public class LoginController {
         return "information";
     }
 
+    @RequestMapping("/release")
+    public String release() {
+        return "release_information";
+    }
+
+    @RequestMapping("/dangerlists")
+    public String dangerlists() {
+        return "dangers_lists";
+    }
+
+    @RequestMapping("/managecompany")
+    public String managecompany() {
+        return "manage_company";
+    }
+
     @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
     public ResponseEntity<?> loginIn(@RequestBody Map<String, String> request, HttpSession session) {
         String name = request.get("name");
