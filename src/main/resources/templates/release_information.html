@@ -89,40 +89,29 @@
         <label>通知类型:</label>
         <template>
             <el-radio-group v-model="radio">
-                <el-radio :label="3">备选项</el-radio>
-                <el-radio :label="6">备选项</el-radio>
-                <el-radio :label="9">备选项</el-radio>
-                <el-radio :label="12">备选项</el-radio>
+                <el-radio :label="3">普通通知</el-radio>
+                <el-radio :label="6">会议通知</el-radio>
+                <el-radio :label="9">检查通知</el-radio>
+                <el-radio :label="12">培训通知</el-radio>
             </el-radio-group>
         </template>
 
         <label style="margin-left: 100px;">安全级别:</label>
-        <label>
-            <input type="radio" name="option5" value="option5">
-            <span class="radio">公开&nbsp</span>
+        <template>
+            <el-radio-group v-model="radio">
+                <el-radio :label="3">公开</el-radio>
+                <el-radio :label="6">机密</el-radio>
 
-        </label>
-        <label>
-            <input type="radio" name="option6" value="option6">
-            <span class="radio">机密&nbsp</span>
-
-        </label>
+            </el-radio-group>
+        </template>
         <label style="margin-left: 100px">紧急度:</label>
-        <label>
-            <input type="radio" name="option7" value="option7">
-            <span class="radio">低&nbsp</span>
-
-        </label>
-        <label>
-            <input type="radio" name="option8" value="option8">
-            <span class="radio">中&nbsp</span>
-
-        </label>
-        <label>
-            <input type="radio" name="option9" value="option9">
-            <span class="radio">高&nbsp</span>
-
-        </label>
+        <template>
+            <el-radio-group v-model="radio">
+                <el-radio :label="3">低</el-radio>
+                <el-radio :label="6">中</el-radio>
+                <el-radio :label="9">高</el-radio>
+            </el-radio-group>
+        </template>
     </div>
     <div class="vice">
         <label>副标题:</label>
@@ -140,22 +129,27 @@
                     <div id="div2" class="text"> <!--可使用 min-height 实现编辑区域自动增加高度-->
                             <!--                        <p>请输入内容</p>-->
                     </div>
-
-                    <div class="row" style="padding: 10px" >
-
-                        <div class="col-md-3 ml-0" style="padding: 5px;margin-right: 5px;">
-                            <button type="button" class="btn btn-primary" id="publishBtn" >发布并预览</button>
-                        </div>
-                        <div class="col-md-3 ml-0"  style="padding: 5px;margin-right: 5px;">
-                            <button type="button" class="btn btn-primary" id="reserve">保存</button>
-                        </div>
-                        <div class="col-md-3"  style="padding: 5px;margin-right: 5px;">
-                            <button type="button" class="btn btn-light">返回</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="circle-choose" style="display: flex; align-items: center;">
+        <label>发布范围:</label>
+        <template>
+            <el-radio-group v-model="radio">
+                <el-radio :label="3">指定对象</el-radio>
+                <el-radio :label="6">全员</el-radio>
+
+            </el-radio-group>
+        </template>
+    </div>
+    <div class="row" style="padding: 10px" >
+
+        <el-row>
+            <el-button type="primary" plain>发布并预览</el-button>
+            <el-button type="primary" plain>保存</el-button>
+            <el-button type="back" plain>返回</el-button>
+        </el-row>
     </div>
 </div>
 <script>
