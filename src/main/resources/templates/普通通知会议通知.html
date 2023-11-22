@@ -24,13 +24,13 @@
         height: 24px; /* 设置标题高度为24像素 */
         font-family: Arial, sans-serif; /* 字体 */
         font-size: 24px; /* 字体大小 */
-        color: #000000; /* 字体颜色 */
+        color: #007BFF; /* 字体颜色 */
         text-align: left; /* 对齐方式 */
         margin-top: 20px; /* 距离顶部的间距 */
         border-bottom: 1px solid #000000; /* 添加下边框 */
-        border-bottom-color: #000000; /* 改变下边框颜色为红色 */
+        border-bottom-color: #007BFF; /* 改变下边框颜色为红色 */
 
-        padding-bottom: 30px; /* 设置标题与下边框之间的间隔 */
+        padding-bottom: 35px; /* 设置标题与下边框之间的间隔 */
     }
 
     .input-bar{
@@ -68,6 +68,12 @@
     .btn {
         padding-left: 10px; /* 增加内边距来减小间距 */
     }
+    .rounded-checkbox {
+        border: 2px solid #000;
+        border-radius: 50%; /* 设置边框为圆形 */
+        width: 20px; /* 设置宽度 */
+        height: 20px; /* 设置高度 */
+    }
 </style>
 
 
@@ -89,26 +95,14 @@
     </div>
     <div class="circle-select" style="display: flex; align-items: center;">
         <label>通知类型:</label>
-        <label>
-            <input type="radio" name="option1" value="option1">
-            <span class="radio"></span>
-            普通通知&nbsp
-        </label>
-        <label>
-            <input type="radio" name="option2" value="option2">
-            <span class="radio"></span>
-            会议通知&nbsp
-        </label>
-        <label>
-            <input type="radio" name="option3" value="option3">
-            <span class="radio"></span>
-            检查通知&nbsp
-        </label>
-        <label>
-            <input type="radio" name="option4" value="option4">
-            <span class="radio"></span>
-            培训通知&nbsp
-        </label>
+        <input type="checkbox" id="option1" class="rounded-checkbox" name="option1" value="option1">
+        <label for="option1"> 普通通知</label><br>
+        <input type="checkbox" id="option2"  class="rounded-checkbox"  name="option2" value="option2">
+        <label for="option2"> 会议通知</label><br>
+        <input type="checkbox" id="option3" class="rounded-checkbox" name="option1" value="option3">
+        <label for="option1"> 普通通知</label><br>
+        <input type="checkbox" id="option4" class="rounded-checkbox" name="option2" value="option4">
+        <label for="option2"> 会议通知</label><br>
 
         <label style="margin-left: 100px;">安全级别:</label>
         <label>
