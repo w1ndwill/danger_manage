@@ -74,7 +74,7 @@
 
   </div>
   <!-- 任务状态和任务时效下拉框 -->
-  <div>
+  <div style="padding: 5px">
     <label>层级:</label>
     <el-select v-model="taskStatus" placeholder="请选择">
       <el-option label="不限" value="不限"></el-option>
@@ -88,7 +88,7 @@
       <el-option label="是" value="是"></el-option>
     </el-select>
   </div>
-  <div>
+  <div style="padding: 5px">
     <label>重点监管领域:</label>
     <el-select v-model="taskStatus" placeholder="请选择">
       <el-option label="不限" value="不限"></el-option>
@@ -133,7 +133,7 @@
       <el-option label="稍有风险" value="稍有风险"></el-option>
     </el-select>
   </div>
-  <div class="search-bar">
+  <div class="search-bar" style="padding: 5px">
     <el-input  class="search-input" v-model="search" placeholder="请输入企业名称、直接监管单位、行业进行模糊查询"></el-input>
     <el-button @click="searchTasks" type="primary">搜索</el-button>
     <el-button @click="reset">重置</el-button>
