@@ -93,7 +93,6 @@
     <div>
     <el-table :data="tasksPage" style="width: 100%">
         <el-table-column type="selection" width="55"></el-table-column>
-<!--        <el-table-column prop="number" label="#" width="20"></el-table-column>-->
         <el-table-column prop="taskName" label="任务名称" width="150"  ></el-table-column>
         <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
         <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
@@ -134,24 +133,28 @@
             width="50%"
             @close="handleClose"
     >
+        <div style="display: flex">
+            <label>是否有隐患:</label>
+            <!-- 包裹整个单选框组 -->
+            <el-radio-group v-model="hasHiddenDanger" style="display: flex; align-items: center;">
+                <el-radio label="true">有隐患</el-radio>
+                <el-radio label="false">无隐患</el-radio>
+            </el-radio-group>
+        </div>
+
         <div style="display: flex; justify-content: space-between;align-items: flex-start;">
-            <!-- Left side -->
             <div style="width: 48%;">
                 <p>任务名称: {{ currentTask.taskName }}</p>
                 <p>任务类型: {{ currentTask.inspectionType }}</p>
             </div>
-
-            <!-- Right side -->
             <div style="width: 48%;">
                 <p>被检查企业: {{ currentTask.company }}</p>
                 <p>任务起止日期: {{ currentTask.startDate }} - {{ currentTask.endDate }}</p>
             </div>
         </div>
-
-        <!-- Hidden danger reason input -->
         <el-form style="display: flex; flex-wrap: wrap;">
-            <el-form-item label="隐患原因" style="flex: 0 0 100%;">
-                <el-input type="textarea" v-model="hiddenDangerReason" placeholder="请输入隐患原因" style="width: 100%; display: none;"></el-input>
+            <el-form-item label="隐患原因:" style="flex: 0 0 100%;">
+                <el-input  style="width: 100%; display: none;"></el-input>
             </el-form-item>
             <!-- 新增的 el-form-item，占48%的宽度 -->
             <el-form-item style="flex: 0 0 48%; margin-bottom: 15px;">
@@ -161,7 +164,6 @@
             <!-- 其他表单项可以继续添加 -->
         </el-form>
 
-        <!-- Image upload -->
         <el-upload
                 class="upload-demo"
                 action="/your-upload-api-endpoint"
@@ -173,6 +175,11 @@
             <!-- Display uploaded image -->
             <img v-if="imageUrl" :src="imageUrl" alt="Uploaded Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;">
         </el-upload>
+
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" @click="handleConfirm">确定</el-button>
+        </span>
 
     </el-dialog>
 </div>
@@ -194,7 +201,9 @@
                 hiddenDangerReason: '',// To store the hidden danger reason input
                 otherInput:'',
                 uploadedImages: [],
-                imageUrl:''// To store the uploaded images
+                imageUrl:'',// To store the uploaded images
+                hasHiddenDanger: false,  // 新增的变量
+
             }
         },
         mounted() {
@@ -268,6 +277,67 @@
                 this.currentTask = {};
                 this.hiddenDangerReason = '';
                 this.uploadedImages = [];
+            },
+            handleConfirm() {
+                // 在这里根据 hasHiddenDanger 的值执行相应的操作
+                if (this.hasHiddenDanger === 'true') {
+                    // 有隐患，增加数据库中隐患数和检查数
+                    this.updateDatabase(true);
+                } else {
+                    // 没有隐患，只增加检查数
+                    this.updateDatabase(false);
+                }
+                // 关闭弹窗
+                this.dialogVisible = false;
+            },
+            updateDatabase(hasHiddenDanger) {
+                const taskData = {
+                    taskName: this.currentTask.taskName,
+                    inspectionType: this.currentTask.inspectionType,
+                    company: this.currentTask.company
+                };
+
+                // 在这里调用实际更新数据库的方法，这里使用伪代码表示
+                if (hasHiddenDanger) {
+                    const formData = {
+                        taskName: this.currentTask.taskName,
+                        inspectionType: this.currentTask.inspectionType,
+                        company: this.currentTask.company,
+                        // startDate: this.currentTask.startDate,
+                        // endDate: this.currentTask.endDate,
+                        reason: this.hiddenDangerReason
+                    };
+                    axios.post('/addcheck', formData)
+                        .then(response => {
+                            // Handle the response if needed
+                            console.log(response.data);
+                        })
+                        .catch(error => {
+                            // Handle errors
+                            console.error('Error inserting data into the database:', error);
+                        });
+                    // this.insertDataIntoDatabase(formData);
+
+                    axios.post('/judge2', taskData)
+                        .then(response => {
+                            // 处理响应
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            // 处理错误
+                            console.error(error);
+                        });
+                } else {
+                    axios.post('/judge1', taskData)
+                        .then(response => {
+                            // 处理响应
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            // 处理错误
+                            console.error(error);
+                        });
+                }
             },
         }
     });

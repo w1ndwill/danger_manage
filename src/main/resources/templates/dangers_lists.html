@@ -104,12 +104,12 @@
             </el-table-column>
             <el-table-column
                     fixed
-                    prop="description"
-                    label="隐患描述"
+                    prop="reason"
+                    label="隐患原因"
                     width="120">
             </el-table-column>
             <el-table-column
-                    prop="name"
+                    prop="taskName"
                     label="任务名称"
                     width="200">
             </el-table-column>
@@ -192,157 +192,40 @@
     new Vue({
             el: '#app',
         methods: {
+            getAllcheck() {
+                // 发起HTTP请求，获取数据
+                axios.get('/allcheck')
+                    .then(response => {
+                        // 将从后端获取的数据赋值给tasks[]属性
+                        this.tableData = response.data;
+                    })
+                    .catch(error => {
+                        console.error('获取任务时发生错误', error);
+                        console.log('完整的错误响应:', error.response);
+                    });
+            },
             deleteRow(index, rows) {
                 rows.splice(index, 1);
-            }
+            },
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.multipleTable.toggleRowSelection(row);
+                    });
+                } else {
+                    this.$refs.multipleTable.clearSelection();
+                }
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
         },
-        toggleSelection(rows) {
-            if (rows) {
-                rows.forEach(row => {
-                    this.$refs.multipleTable.toggleRowSelection(row);
-                });
-            } else {
-                this.$refs.multipleTable.clearSelection();
-            }
-        },
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
+        mounted() {
+            this.getAllcheck();
         },
         data() {
             return {
-
-                tableData: [{
-                    description: '巴比龙',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                }, {
-                    description: '大巴',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                }, {
-                    description: 'Hello Kitty我也喜欢',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                }, {
-                    description: 'ai ai ',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                }, {
-                    description: '蜘蛛侠吐丝',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                },{
-                    description: '蜘蛛侠吐丝',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                },{
-                    description: '蜘蛛侠吐丝',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                },{
-                    description: '蜘蛛侠吐丝',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                },{
-                    description: '蜘蛛侠吐丝',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                },{
-                    description: '蜘蛛侠吐丝',
-                    name: '张天赐招嫖',
-                    company: '张天赐娱乐公司',
-                    state: '待完善',
-                    quality: '重大隐患',
-                    check_people:'张海洋',
-                    check_time:'2016-05-02',
-                    origin:'随手拍',
-                    rectify_people:'张天赐',
-                    rectify_time:'',
-                    reviewers:'何晨',
-                    review_time:'',
-                }, ],
-
+                tableData: [],
             }
         },
 
