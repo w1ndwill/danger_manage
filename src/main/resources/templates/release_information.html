@@ -125,7 +125,7 @@
         </div>
     </div>
     <div class="vice">
-        <label style="padding-left: 15px">副标题:</label>
+        <label style="padding-left: 17px">副标题:</label>
         <el-input  v-model="subtitleinput"   placeholder="请输入副标题" style="width:1200px"></el-input>
     </div>
     <div class="container-fluid">
@@ -145,16 +145,37 @@
         </div>
     </div>
     <div class="annexes">
-        <div>
+        <div style="display: flex">
         <label>附件:</label>
-            <el-button  id="fromattachment" type="primary" icon="el-icon-upload2">从附件库上传</el-button>
-            <el-button  id="fromlocal" type="primary" icon="el-icon-upload2">本地上传</el-button>
+            <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-change="handleChange"
+                    style="padding-left:14px"
+            >
+                <el-button size="big" type="primary"  >从附件库上传</el-button>
+            </el-upload>
+            <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-change="handleChange"
+                    style="padding-left: 20px"
+                    >
+                <el-button size="big" type="primary">本地上传</el-button>
+            </el-upload>
         </div>
     </div>
     <div class="face">
-        <div>
+        <div style="display: flex">
             <label>上传封面:</label>
-            <el-button type="primary" icon="el-icon-upload2">点击添加/更换封面</el-button>
+            <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-change="handleChange"
+                    style="padding-left:10px"
+            >
+                <el-button size="big" type="primary"  >点击添加/更换封面</el-button>
+            </el-upload>
         </div>
     </div>
     <div class="circle-choose" style="display: flex; align-items: center;">
@@ -164,7 +185,7 @@
                 <el-radio id="specify" :label="3">指定对象</el-radio>
                 <el-radio id="all" :label="6">全员</el-radio>
             </el-radio-group>
-            <div style="padding-left: 70px;padding-top: 15px">
+            <div style="padding-left: 85px;padding-top: 15px">
                 <el-button id="localman" type="primary" icon="el-icon-upload2">本单位人员</el-button>
                 <el-button id="regulartory" type="primary" icon="el-icon-upload2">监管单位</el-button>
                 <el-button id="subordinate" type="primary" icon="el-icon-upload2">下辖企业</el-button>
@@ -174,7 +195,7 @@
             </div>
         </div>
     </div>
-    <div class="row" style="padding-left: 95px;padding-top: 20px" >
+    <div class="row" style="padding-left: 110px;padding-top: 20px" >
 
         <el-row>
             <el-button id="publish" type="primary">发布并预览</el-button>
@@ -215,6 +236,7 @@
                     checktimes:[],
 
                 },
+
                 pickerOptions: {
                     shortcuts: [
                         {
@@ -435,6 +457,9 @@
             // submitTemporaryTaskForm() {
             //     // 提交表单逻辑
             // },
+            handleChange(file, fileList) {
+                this.fileList = fileList.slice(-3);
+            }
         }
     });
 </script>
@@ -476,78 +501,8 @@
         })
     })
 </script>
-<script>
-    // 获取附件库上传按钮元素
-    const uploadButton = document.getElementById('fromattachment');
 
-    // 为上传按钮添加点击事件监听器
-    uploadButton.addEventListener('click', () => {
-        // 弹出文件选择对话框
-        document.getElementById('file-input').click();
-    });
 
-    // 为文件输入元素添加 change 事件监听器，以处理文件上传
-    const fileInput = document.getElementById('file-input');
-    fileInput.addEventListener('change', () => {
-        // 获取选择的文件列表
-        const files = fileInput.files;
-
-        // 创建一个 FormData 对象，用于存储文件数据
-        const formData = new FormData();
-
-        // 将文件列表中的每个文件添加到 FormData 对象中
-        for (let i = 0; i < files.length; i++) {
-            formData.append('files[]', files[i]);
-        }
-
-        // 发送文件数据到服务器
-        fetch('/upload', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => {
-                // 处理上传成功的响应
-                console.log('文件上传成功！');
-            })
-            .catch(error => {
-                // 处理上传失败的情况
-                console.error('文件上传失败：', error);
-            });
-    });
-</script>
-<script>
-    // 获取本地上传按钮元素
-    const localUploadButton = document.getElementById('fromlocal');
-
-    // 为上传按钮添加点击事件监听器
-    localUploadButton.addEventListener('click', () => {
-        // 创建一个 FileReader 对象，用于读取本地文件
-        const fileReader = new FileReader();
-
-        // 监听 FileReader 对象的 load 事件，以处理文件上传
-        fileReader.addEventListener('load', (event) => {
-            // 获取上传文件的二进制数据
-            const fileData = event.target.result;
-
-            // 发送文件数据到服务器
-            fetch('/upload', {
-                method: 'POST',
-                body: fileData
-            })
-                .then(response => {
-                    // 处理上传成功的响应
-                    console.log('文件上传成功！');
-                })
-                .catch(error => {
-                    // 处理上传失败的情况
-                    console.error('文件上传失败：', error);
-                });
-        });
-
-        // 使用 FileReader 对象读取本地文件
-        fileReader.readAsBinaryString(document.getElementById('local-file-input').files[0]);
-    });
-</script>
 <script>
     // 获取发布并预览按钮元素
     const publishAndPreviewButton = document.getElementById('publish');
