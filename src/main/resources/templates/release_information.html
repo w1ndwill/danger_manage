@@ -89,7 +89,7 @@
     <div class="input-bar">
         <label style="padding-left:2px">通知标题:</label>
         <el-input  v-model="titleinput"   placeholder="请输入通知标题" style="width:900px"></el-input>
-        <label>通知编号:</label>
+        <label style="padding-left: 40px">通知编号:</label>
         <el-input  v-model="numberinput"  placeholder="请输入通知编号"  style="width: 200px"></el-input>
     </div>
     <div class="circle-select" style="display: flex; align-items: center;">
@@ -127,7 +127,7 @@
     <div class="container-fluid">
         <!--    顶部导航栏-->
         <div class="row">
-            <label style="padding: 20px;">通知内容:</label>
+            <label style="padding: 10px;">通知内容:</label>
             <div class="col-md-6" style="padding-left:0px">
                 <div class="card-body" style="min-height: 100px">
                     <div style="padding:0; color: #ccc"></div>
@@ -143,8 +143,8 @@
     <div class="annexes">
         <div>
         <label>附件:</label>
-            <el-button type="primary" icon="el-icon-upload2">从附件库上传</el-button>
-            <el-button type="primary" icon="el-icon-upload2">本地上传</el-button>
+            <el-button  id="fromattachment" type="primary" icon="el-icon-upload2">从附件库上传</el-button>
+            <el-button  id="fromlocal" type="primary" icon="el-icon-upload2">本地上传</el-button>
         </div>
     </div>
     <div class="face">
@@ -157,13 +157,13 @@
         <div>
             <label>发布范围:</label>
             <el-radio-group v-model="radioScopeRelease">
-                <el-radio :label="3">指定对象</el-radio>
-                <el-radio :label="6">全员</el-radio>
+                <el-radio id="specify" :label="3">指定对象</el-radio>
+                <el-radio id="all" :label="6">全员</el-radio>
             </el-radio-group>
             <div style="padding-left: 70px;padding-top: 15px">
-                <el-button type="primary" icon="el-icon-upload2">本单位人员</el-button>
-                <el-button type="primary" icon="el-icon-upload2">监管单位</el-button>
-                <el-button type="primary" icon="el-icon-upload2">下辖企业</el-button>
+                <el-button id="localman" type="primary" icon="el-icon-upload2">本单位人员</el-button>
+                <el-button id="regulartory" type="primary" icon="el-icon-upload2">监管单位</el-button>
+                <el-button id="subordinate" type="primary" icon="el-icon-upload2">下辖企业</el-button>
             </div>
             <div>
 
@@ -173,9 +173,9 @@
     <div class="row" style="padding-left: 95px;padding-top: 20px" >
 
         <el-row>
-            <el-button type="primary">发布并预览</el-button>
-            <el-button type="primary">保存</el-button>
-            <el-button type="back" plain>返回</el-button>
+            <el-button id="publish" type="primary">发布并预览</el-button>
+            <el-button id="preserve" type="primary">保存</el-button>
+            <el-button id="getback" type="back" plain>返回</el-button>
         </el-row>
     </div>
 </div>
@@ -188,9 +188,7 @@
 
         data() {
             return {
-                taskStatus: '不限',
-                taskDeadline: '不限',
-                selectedDate: '',
+
                 search: '',
                 temporaryTaskDialogVisible: false,
                 radioNoticeType:'',
@@ -226,18 +224,12 @@
                 },
                 tasks: [] , // 获取数据库中所有任务的数组
 
-                editDialogVisible: false,
-                editedTask: {},
+
 
                 currentPage: 1, // 当前页数
                 pageSize: 2, // 每页显示的记录数
 
-                dialogVisible: false,//检察人员弹窗
 
-                currentTab: 'government', // 默认选中政府
-                searchForm: {
-                    keyword: '',
-                },
                 tableData:[], // 表格数据
                 Page: 1, // 当前页数
                 Size: 2, // 每页显示的记录数
@@ -478,6 +470,140 @@
             })
         })
     })
+</script>
+<script>
+    // 获取附件库上传按钮元素
+    const uploadButton = document.getElementById('fromattachment');
+
+    // 为上传按钮添加点击事件监听器
+    uploadButton.addEventListener('click', () => {
+        // 弹出文件选择对话框
+        document.getElementById('file-input').click();
+    });
+
+    // 为文件输入元素添加 change 事件监听器，以处理文件上传
+    const fileInput = document.getElementById('file-input');
+    fileInput.addEventListener('change', () => {
+        // 获取选择的文件列表
+        const files = fileInput.files;
+
+        // 创建一个 FormData 对象，用于存储文件数据
+        const formData = new FormData();
+
+        // 将文件列表中的每个文件添加到 FormData 对象中
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files[]', files[i]);
+        }
+
+        // 发送文件数据到服务器
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                // 处理上传成功的响应
+                console.log('文件上传成功！');
+            })
+            .catch(error => {
+                // 处理上传失败的情况
+                console.error('文件上传失败：', error);
+            });
+    });
+</script>
+<script>
+    // 获取本地上传按钮元素
+    const localUploadButton = document.getElementById('fromlocal');
+
+    // 为上传按钮添加点击事件监听器
+    localUploadButton.addEventListener('click', () => {
+        // 创建一个 FileReader 对象，用于读取本地文件
+        const fileReader = new FileReader();
+
+        // 监听 FileReader 对象的 load 事件，以处理文件上传
+        fileReader.addEventListener('load', (event) => {
+            // 获取上传文件的二进制数据
+            const fileData = event.target.result;
+
+            // 发送文件数据到服务器
+            fetch('/upload', {
+                method: 'POST',
+                body: fileData
+            })
+                .then(response => {
+                    // 处理上传成功的响应
+                    console.log('文件上传成功！');
+                })
+                .catch(error => {
+                    // 处理上传失败的情况
+                    console.error('文件上传失败：', error);
+                });
+        });
+
+        // 使用 FileReader 对象读取本地文件
+        fileReader.readAsBinaryString(document.getElementById('local-file-input').files[0]);
+    });
+</script>
+<script>
+    // 获取发布并预览按钮元素
+    const publishAndPreviewButton = document.getElementById('publish');
+
+    // 为发布并预览按钮添加点击事件监听器
+    publishAndPreviewButton.addEventListener('click', () => {
+        // 获取要发布的数据
+        const data = document.getElementById('data-input').value;
+
+        // 将数据发布到服务器
+        fetch('/publish', {
+            method: 'POST',
+            body: data
+        })
+            .then(response => {
+                // 处理发布成功的响应
+                console.log('数据发布成功！');
+
+                // 预览数据
+                const previewElement = document.getElementById('preview-element');
+                previewElement.innerHTML = data;
+            })
+            .catch(error => {
+                // 处理发布失败的情况
+                console.error('数据发布失败：', error);
+            });
+    });
+</script>
+<script>
+    // 获取保存按钮元素
+    const saveButton = document.getElementById('preserve');
+
+    // 为保存按钮添加点击事件监听器
+    saveButton.addEventListener('click', () => {
+        // 获取要保存的数据
+        const data = document.getElementById('data-input').value;
+
+        // 将数据保存到服务器
+        fetch('/save', {
+            method: 'POST',
+            body: data
+        })
+            .then(response => {
+                // 处理保存成功的响应
+                console.log('数据保存成功！');
+            })
+            .catch(error => {
+                // 处理保存失败的情况
+                console.error('数据保存失败：', error);
+            });
+    });
+</script>
+<script>
+    // 获取返回按钮元素
+    const backButton = document.getElementById('getback');
+
+    // 为返回按钮添加点击事件监听器
+    backButton.addEventListener('click', () => {
+        // 执行返回操作，例如使用 history.back() 方法返回上一页
+        history.back();
+    });
 </script>
 <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js.map"></script>
