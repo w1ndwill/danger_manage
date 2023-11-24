@@ -169,12 +169,7 @@
                     label="操作"
                     width="200">
                 <template slot-scope="scope">
-                    <el-button
-                            @click.native.prevent="deleteRow(scope.$index, tableData)"
-                            type="danger"
-                            size="small">
-                        移除
-                    </el-button>
+                    <el-button size="small" type="danger" icon="el-icon-delete" @click="deletecheck(scope.row)">删除</el-button>
                     <el-button
                             type="primary"
                             size="small"
@@ -204,8 +199,21 @@
                         console.log('完整的错误响应:', error.response);
                     });
             },
-            deleteRow(index, rows) {
-                rows.splice(index, 1);
+            deletecheck(task) {
+                axios.delete('/deletecheck', { data: task })
+                    .then(response => {
+                        // 处理成功的情况，例如更新UI
+                        console.log("成功删除任务");
+                        // 可选：更新本地数据以反映删除
+                        const index = this.tableData.indexOf(task);
+                        if (index !== -1) {
+                            this.tableData.splice(index, 1);
+                        }
+                    })
+                    .catch(error => {
+                        // 处理错误
+                        console.error("删除任务时出错：", error);
+                    });
             },
             toggleSelection(rows) {
                 if (rows) {
@@ -228,9 +236,7 @@
                 tableData: [],
             }
         },
-
         }
-
     )
 </script>
 </html>

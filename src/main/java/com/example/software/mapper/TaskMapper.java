@@ -11,7 +11,6 @@ import java.util.Map;
 @Mapper
 public interface TaskMapper {
     List<Task> getAllTasks();
-
     List<Official> getAllofficial();
 //    @Delete(" DELETE FROM task WHERE number = #{number}")
     void deleteTask(Task task);
@@ -25,4 +24,5 @@ public interface TaskMapper {
     void incrementHiddenDangerCount(Task task);
     void addcheck(Task task);
     List<Task> getAllcheck();
+    void deletecheck(Task task);
 }

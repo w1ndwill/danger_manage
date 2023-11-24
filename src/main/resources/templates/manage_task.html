@@ -110,7 +110,7 @@
         <label  class="year-label">年份:</label>
         <el-date-picker v-model="selectedDate" type="date" placeholder="选择年月日"></el-date-picker>
 
-        <el-input  class="search-input" v-model="search" placeholder="输入关键字"></el-input>
+        <el-input  class="search-input" v-model="search" placeholder="输入任务名称、被检查企业、检查类型、检查人查询"></el-input>
         <el-button @click="searchTasks" type="primary">搜索</el-button>
         <el-button @click="reset">重置</el-button>
 
@@ -121,7 +121,7 @@
 
     <div>
 <!--        用于显示所有任务的表格-->
-            <el-table :data="tasksPage" style="width: 100%">
+        <el-table :data="tasksPage" style="width: 100%">
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="number" label="#" width="20"></el-table-column>
                 <el-table-column prop="taskName" label="任务名称" width="150"  ></el-table-column>
@@ -407,6 +407,7 @@
         mounted() {
             this.getAllTasks();
             this.getAllofficial();
+
         },
         computed: {
             // 对tasks[]数组进行分页的设置
@@ -431,6 +432,7 @@
                     .then(response => {
                         // 将从后端获取的数据赋值给tasks[]属性
                         this.tasks = response.data;
+
                     })
                     .catch(error => {
                         console.error('获取任务时发生错误', error);
@@ -464,12 +466,21 @@
                 this.Page = val;
             },
             searchTasks() {
-                // 处理搜索逻辑
-                console.log('Searching tasks...');
+                const filteredTasks = this.tasks.filter(task => {
+                    return (
+                        (task.taskName && task.taskName.includes(this.search)) ||
+                        (task.company && task.company.includes(this.search)) ||
+                        (task.inspectionType && task.inspectionType.includes(this.search)) ||
+                        (task.inspector && task.inspector.includes(this.search))
+                        // Add more conditions as needed
+                    );
+                });
+                this.tasks = filteredTasks;
             },
             reset() {
                 // 重置表单
                 this.search = '';
+                this.getAllTasks();
             },
             editTask(task) {
                 this.editedTask = { ...task }; // 使用浅拷贝以防止直接修改原始数据
@@ -502,8 +513,6 @@
                 console.log("View task:", task);
             },
             deleteTask(task) {
-                // 删除任务的逻辑
-                // 使用Axios发送删除请求
                 axios.delete('/deleteTask', { data: task })
                     .then(response => {
                         // 处理成功的情况，例如更新UI
@@ -643,23 +652,6 @@
                         console.error('Error saving data to database:', error);
                     });
             },
-            // deleteRecordFromBackend(index, inspectorName, taskName) {
-            //     axios.delete('/deleteRecord', {
-            //         data: {
-            //             number: index,
-            //             inspector: inspectorName,
-            //             taskName: taskName
-            //         }
-            //     })
-            //         .then(response => {
-            //             // 处理成功删除记录的响应
-            //             console.log('记录删除成功:', response.data);
-            //         })
-            //         .catch(error => {
-            //             // 处理删除记录时的错误
-            //             console.error('删除记录失败:', error);
-            //         });
-            // },
             fetchTableData() {
                 // 根据选项卡名称请求对应的表格数据
             },

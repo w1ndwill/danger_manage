@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 @RestController
 public class TaskController {
     @Autowired
@@ -113,5 +111,15 @@ public class TaskController {
     public List<Task> getAllcheck() {
         List check=taskMapper.getAllcheck();
         return check;
+    }
+
+    @DeleteMapping("/deletecheck")
+    public ResponseEntity<String> deletecheck(@RequestBody Task task) {
+        try {
+           taskMapper.deletecheck(task);
+            return new ResponseEntity<>("删除成功", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("删除出错: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
