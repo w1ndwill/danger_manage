@@ -52,4 +52,23 @@
         WHERE number = #{number} AND inspector = #{inspector}
     </select>
 
+    <update id="incrementCheckCount">
+        UPDATE task SET checkcount = checkcount + 1
+        where
+            taskName=#{taskName} AND company = #{company} AND inspectionType = #{inspectionType};
+    </update>
+
+    <update id="incrementHiddenDangerCount">
+        UPDATE task SET checkcount = checkcount + 1, hiddenDangerCount = hiddenDangerCount + 1
+        where
+            taskName=#{taskName} AND company = #{company} AND inspectionType = #{inspectionType};
+    </update>
+
+    <insert id="addcheck" parameterType="com.example.software.bean.Task">
+        INSERT INTO `check` (taskName, company, inspectionType, reason)
+        VALUES (#{taskName}, #{company}, #{inspectionType}, #{reason})
+    </insert>
+    <select id="getAllcheck"  resultType="com.example.software.bean.Task">
+        SELECT * FROM  `check`;
+    </select>
 </mapper>

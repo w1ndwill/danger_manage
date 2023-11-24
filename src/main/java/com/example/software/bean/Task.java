@@ -1,6 +1,15 @@
 package com.example.software.bean;
 
 public class Task {
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    private String reason;
     public String getNumber() {
         return number;
     }

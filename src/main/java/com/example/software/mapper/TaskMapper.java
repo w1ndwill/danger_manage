@@ -20,4 +20,9 @@ public interface TaskMapper {
     void addchildtask(List<Task> task);
 //    void deletechildtask(Task task);
     List<Task> getContent(int number, String inspector);
+    void incrementCheckCount(Task task);
+
+    void incrementHiddenDangerCount(Task task);
+    void addcheck(Task task);
+    List<Task> getAllcheck();
 }
