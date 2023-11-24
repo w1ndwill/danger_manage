@@ -20,7 +20,7 @@
 </head>
 <style>
     .logo{
-
+        !important;
         height: 24px; /* 设置标题高度为24像素 */
         font-family: Arial, sans-serif; /* 字体 */
         font-size: 24px; /* 字体大小 */
@@ -29,7 +29,6 @@
         margin-top: 20px; /* 距离顶部的间距 */
         border-bottom: 1px solid #000000; /* 添加下边框 */
         border-bottom-color: #007BFF; /* 改变下边框颜色为红色 */
-
         padding-bottom: 35px; /* 设置标题与下边框之间的间隔 */
     }
 
@@ -67,25 +66,30 @@
     .toolbar {
         border: 1px solid #ccc;
     }
-
     .text {
         border: 1px solid #ccc;
         height: 500px;
     }
-
+    label {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+        color: #000000;
+        font-weight: bold;
+    }
+    #app {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px;
+    }
 </style>
-
-
 <body>
 <div id="app">
-
     <!-- 任务和实施选项 -->
     <div class="logo">
         <label>信息中心>发布通知</label>
-
     </div>
     <!-- 任务状态和任务时效下拉框 -->
-
     <div class="input-bar">
         <label style="padding-left:2px">通知标题:</label>
         <el-input  v-model="titleinput"   placeholder="请输入通知标题" style="width:900px"></el-input>
@@ -179,6 +183,7 @@
         </el-row>
     </div>
 </div>
+
 <script>
     // import EditForm from './EditForm.vue';
     // import Table from './Table.vue';

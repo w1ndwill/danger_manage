@@ -24,6 +24,30 @@
     .search-input {
         width: 30%; /* 设置搜索框的宽度，可以根据需要调整 */
     }
+    label {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+        color: #000000;
+        font-weight: bold;
+    }
+    .logo{
+        height: 24px; /* 设置标题高度为24像素 */
+        font-family: Arial, sans-serif; /* 字体 */
+        font-size: 24px; /* 字体大小 */
+        color: #007BFF; !important;/* 字体颜色 */
+        text-align: left; /* 对齐方式 */
+        margin-top: 20px; /* 距离顶部的间距 */
+        border-bottom: 1px solid #000000; !important;/* 添加下边框 */
+        border-bottom-color: #007BFF; !important;
+        width: 17%; /* 设置标题宽度为100% */
+        padding-bottom: 10px; /* 设置标题与下边框之间的间隔 */
+    }
+    #app {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px;
+    }
 </style>
 <style scoped>
     /* 标题行和偶数行背景颜色为灰色 */
@@ -37,6 +61,9 @@
 </style>
 <body>
 <div id="app">
+    <div class="logo">
+        <label>任务管理>隐患复查</label>
+    </div>
     <div class="status">
         <label>任务状态:</label>
         <el-select v-model="taskStatus" placeholder="请选择">
