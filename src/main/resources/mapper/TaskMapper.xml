@@ -71,4 +71,9 @@
     <select id="getAllcheck"  resultType="com.example.software.bean.Task">
         SELECT * FROM  `check`;
     </select>
+
+    <delete id="deletecheck" parameterType="com.example.software.bean.Task">
+        DELETE FROM `check`
+        WHERE taskName = #{taskName} AND company = #{company} AND inspectionType = #{inspectionType}
+    </delete>
 </mapper>
