@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.software.mapper.InfoMapper">
+
+    <select id="getAllInfo"  resultType="com.example.software.bean.Info">
+        SELECT * FROM information;
+    </select>
+
+    <insert id="addInfo" parameterType="com.example.software.bean.Info">
+        INSERT INTO Info (numbers, title, check_Type, info_type, eme_degree, issuer, sec_level, issue_time ,details)
+        VALUES (#{numbers}, #{title}, #{check_Type}, #{info_type}, #{eme_degree}, #{issuer}, #{sec_level}, #{issue_time}, #{details});
+    </insert>
+
+</mapper>

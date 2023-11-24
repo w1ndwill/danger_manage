@@ -10,12 +10,17 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-
     <link rel="icon" href="../imgs/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/fonts/w-e-icon.woff">
     <link href="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js.map"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
 
 </head>
 <style>
@@ -35,7 +40,6 @@
     .input-bar{
         padding:8px;
     }
-
 
     .circle-select{
         padding: 10px;
@@ -92,7 +96,7 @@
     <!-- 任务状态和任务时效下拉框 -->
     <div class="input-bar">
         <label style="padding-left:2px">通知标题:</label>
-        <el-input  v-model="titleinput"   placeholder="请输入通知标题" style="width:900px"></el-input>
+        <el-input  v-model="titleinput"   placeholder="请输入通知标题" style="width:600px"></el-input>
         <label style="padding-left: 40px">通知编号:</label>
         <el-input  v-model="numberinput"  placeholder="请输入通知编号"  style="width: 200px"></el-input>
     </div>
@@ -100,27 +104,27 @@
         <label>通知类型:</label>
         <div>
             <el-radio-group v-model="radioNoticeType">
-                <el-radio :label="3">普通通知</el-radio>
-                <el-radio :label="6">会议通知</el-radio>
-                <el-radio :label="9">检查通知</el-radio>
-                <el-radio :label="12">培训通知</el-radio>
+                <el-radio label="普通通知">普通通知</el-radio>
+                <el-radio label="会议通知">会议通知</el-radio>
+                <el-radio label="检查通知">检查通知</el-radio>
+                <el-radio label="培训通知">培训通知</el-radio>
             </el-radio-group>
         </div>
 
         <label style="margin-left: 100px;">安全级别:</label>
         <div>
             <el-radio-group v-model="radioSecurityLevel">
-                <el-radio :label="3">公开</el-radio>
-                <el-radio :label="6">机密</el-radio>
+                <el-radio label="公开">公开</el-radio>
+                <el-radio label="机密">机密</el-radio>
 
             </el-radio-group>
         </div>
         <label style="margin-left: 100px">紧急度:</label>
         <div>
             <el-radio-group v-model="radioUrgencyLevel">
-                <el-radio :label="3">低</el-radio>
-                <el-radio :label="6">中</el-radio>
-                <el-radio :label="9">高</el-radio>
+                <el-radio label="低">低</el-radio>
+                <el-radio label="中">中</el-radio>
+                <el-radio label="高">高</el-radio>
             </el-radio-group>
         </div>
     </div>
@@ -138,7 +142,6 @@
                     <div id="div1" class="toolbar">
                     </div>
                     <div id="div2" class="text"> <!--可使用 min-height 实现编辑区域自动增加高度-->
-                            <!--                        <p>请输入内容</p>-->
                     </div>
                 </div>
             </div>
@@ -182,7 +185,7 @@
         <div>
             <label>发布范围:</label>
             <el-radio-group v-model="radioScopeRelease">
-                <el-radio id="specify" :label="3">指定对象</el-radio>
+                <el-radio id="specify" label="3">指定对象</el-radio>
                 <el-radio id="all" :label="6">全员</el-radio>
             </el-radio-group>
             <div style="padding-left: 85px;padding-top: 15px">
@@ -190,15 +193,11 @@
                 <el-button id="regulartory" type="primary" icon="el-icon-upload2">监管单位</el-button>
                 <el-button id="subordinate" type="primary" icon="el-icon-upload2">下辖企业</el-button>
             </div>
-            <div>
-
-            </div>
         </div>
     </div>
     <div class="row" style="padding-left: 110px;padding-top: 20px" >
-
         <el-row>
-            <el-button id="publish" type="primary">发布并预览</el-button>
+            <el-button id="publish" type="primary" @click="publish_Info">发布</el-button>
             <el-button id="preserve" type="primary">保存</el-button>
             <el-button id="getback" type="back" plain>返回</el-button>
         </el-row>
@@ -214,256 +213,38 @@
 
         data() {
             return {
-
                 search: '',
                 temporaryTaskDialogVisible: false,
-                radioNoticeType:'',
+                radioNoticeType:['普通通知','会议通知','检查通知','培训通知'],
                 radioSecurityLevel:'',
                 radioUrgencyLevel:'',
                 radioScopeRelease:'',
                 titleinput:'',
                 numberinput:'',
                 subtitleinput:'',
-                temporaryTaskForm: {
-                    inspectionType: [],
-                    taskName: '',
-                    inspectionRequirement: '',
-                    checkedcompany:'',
-                    checker:'',
-                    date:[],
-                    startDate: '',
-                    endDate: '',
-                    checktimes:[],
-
-                },
-
-                pickerOptions: {
-                    shortcuts: [
-                        {
-                            onClick(picker) {
-                                const end = new Date();
-                                const start = new Date();
-                                // start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                                picker.$emit('pick', [start, end]);
-                            }
-                        }
-                    ]
-                },
                 tasks: [] , // 获取数据库中所有任务的数组
-
-
-
-                currentPage: 1, // 当前页数
-                pageSize: 2, // 每页显示的记录数
-
-
-                tableData:[], // 表格数据
-                Page: 1, // 当前页数
-                Size: 2, // 每页显示的记录数
             };
         },
-        mounted() {
-            this.getAllTasks();
-            this.getAllofficial();
-        },
-        computed: {
-            // 对tasks[]数组进行分页的设置
-            tasksPage() {
-                // 根据currentPage和pageSize计算分页后的数据
-                const startIndex = (this.currentPage - 1) * this.pageSize;
-                const endIndex = startIndex + this.pageSize;
-                return this.tasks.slice(startIndex, endIndex);
-            },
-            // 对tableData[]数组进行分页的设置
-            tableDataPage() {
-                const Index = (this.Page - 1) * this.Size;
-                const end = Index + this.Size;
-                return this.tableData.slice(Index, end);
-            }
-        },
         methods: {
-            //第一个弹窗的方法
-            getAllTasks() {
-                // 发起HTTP请求，获取数据
-                axios.get('/all')
+            publish_Info() {
+                axios.post('/addInfo', this.information)
                     .then(response => {
-                        // 将从后端获取的数据赋值给tasks[]属性
-                        this.tasks = response.data;
+                        this.information = false;
+                        this.getAllInfo();
                     })
                     .catch(error => {
-                        console.error('获取任务时发生错误', error);
-                        console.log('完整的错误响应:', error.response);
+                        console.log("保存失败：", error);
                     });
-            },
-            //获取所有检查人方法
-            getAllofficial(){
-                axios.get('/allofficial')
-                    .then(response => {
-                        // 将从后端获取的数据赋值给tasks[]属性
-                        this.tableData = response.data;
-                    })
-                    .catch(error => {
-                        console.error('获取任务时发生错误', error);
-                        console.log('完整的错误响应:', error.response);
-                    });
-            },
-            //tasks[]中的分页方法，获取每页显示几条记录的pageSize和当前页数的currentPage
-            handleSizeChange(val) {
-                this.pageSize = val;
-            },
-            handleCurrentChange(val) {
-                this.currentPage = val;
-            },
-            //tableData[]中的分页方法，获取每页显示几条记录的Size和当前页数的Page
-            SizeChange(val) {
-                this.Size = val;
-            },
-            CurrentChange(val) {
-                this.Page = val;
-            },
-            searchTasks() {
-                // 处理搜索逻辑
-                console.log('Searching tasks...');
-            },
-            reset() {
-                // 重置表单
-                this.search = '';
-            },
-            editTask(task) {
-                this.editedTask = { ...task }; // 使用浅拷贝以防止直接修改原始数据
-                this.editDialogVisible = true;
-            },
-            saveEditedTask() {
-                // 发送编辑后的数据到后端
-                axios.post('/updateTask', this.editedTask)
-                    .then(response => {
-                        // 处理保存成功的逻辑
-                        this.editDialogVisible = false;
-                        this.getAllTasks();
-                    })
-                    .catch(error => {
-                        // 处理保存失败的逻辑
-                        console.log(this.editedTask);
-                        console.error('保存失败：', error);
-                    });
-            },
-            updateTableContent() {
-                // 更新表格内容的方法
-                this.getAllTasks();
-            },
-            handleEditDialogClose(done) {
-                // 处理对话框关闭的逻辑，比如重置表单
-                done();
-            },
-            viewTask(task) {
-                // 查看任务的逻辑
-                console.log("View task:", task);
-            },
-            deleteTask(task) {
-                // 删除任务的逻辑
-                // 使用Axios发送删除请求
-                axios.delete('/deleteTask', { data: task })
-                    .then(response => {
-                        // 处理成功的情况，例如更新UI
-                        console.log("成功删除任务");
-                        // 可选：更新本地数据以反映删除
-                        const index = this.tasksPage.indexOf(task);
-                        if (index !== -1) {
-                            this.tasksPage.splice(index, 1);
-                        }
-                    })
-                    .catch(error => {
-                        // 处理错误
-                        console.error("删除任务时出错：", error);
-                    });
-            },
-            openTemporaryTaskDialog() {
-                this.temporaryTaskDialogVisible = true;
-            },
-            // 提交发起临时任务表单
-            submitTemporaryTaskForm() {
-                // 在这里处理提交逻辑，例如发送请求
-                // 提交成功后关闭弹窗
-                axios.post('/addTask', this.temporaryTaskForm)
-                    .then(response => {
-                        // 处理保存成功的逻辑
-                        this.temporaryTaskDialogVisible = false;
-                        this.getAllTasks();
-                    })
-                    .catch(error => {
-                        // 处理保存失败的逻辑
-                        console.log(this.editedTask);
-                        console.error('保存失败：', error);
-                    });
-            },
-            exportList(){
-                // 创建一个隐藏的表单元素
-                var form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/table'; // 表单提交的目标 URL
-                document.body.appendChild(form);
-                form.submit();
-            },
-            //第二个弹窗的方法
-            openDialog() {
-                console.log('openDialog called');
-                this.dialogVisible = true;
-            },
-            closeDialog() {
-                this.dialogVisible = false;
-            },
-            submitTaskForm(){
-                this.dialogVisible = false;
+                let dataToSave = this.changeRows.map(row => {
+                    return {
+                        number: row.number,
 
-            },
-            // confirmSelection() {
-            //     // 将选择的内容拼接到单行框中，这里可以根据需求进行调整
-            //     this.temporaryTaskForm.inspectionRequirement = this.selectedItems.join(', ');
-            //     this.dialogVisible = false;
-            // },
-            handleTabClick(tab) {
-                // 切换选项卡时，可以在这里根据选项卡的名称请求对应的数据，更新表格内容
-                this.currentTab = tab.name;
-                this.fetchTableData();
-            },
-            search() {
-                // 根据关键词搜索
-                // 更新表格内容
-            },
-            resetSearch() {
-                // 重置搜索条件
-                // 更新表格内容
-            },
-            handleButtonClick(row) {
-                row.used = !row.used;
-                if (row.used) {
-                    // 如果行被标记为已使用，将人员姓名添加到检查人单行框中
-                    this.temporaryTaskForm.inspector += (this.temporaryTaskForm.inspector ? ',' : '') + row.name;
-                } else {
-                    // 如果行被标记为未使用，将人员姓名从检查人单行框中删除
-                    const inspectorNames = this.temporaryTaskForm.inspector.split(',');
-                    const indexToRemove = inspectorNames.indexOf(row.name);
-                    if (indexToRemove !== -1) {
-                        inspectorNames.splice(indexToRemove, 1);
-                        this.temporaryTaskForm.inspector = inspectorNames.join(',');
-                    }
-                }
-                // 清空单行框的背景颜色
-                this.$refs.inspectorInput.$children[0].$el.style.backgroundColor = '';
-            },
-            fetchTableData() {
-                // 根据选项卡名称请求对应的表格数据
-            },
-            // submitTemporaryTaskForm() {
-            //     // 提交表单逻辑
-            // },
-            handleChange(file, fileList) {
-                this.fileList = fileList.slice(-3);
+                    };
+                });
             }
         }
     });
 </script>
-<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
 <script>
     $(function () {
         //富文本编辑器初始化代码
@@ -487,7 +268,6 @@
             //替换双引号为两个单引号，方便编写SQL语句插入数据库中
             var content = editor.txt.html().replaceAll("\"", "\'\'");
             postData.content = content;
-
             console.info(content);
             postData.author_acc = "123";
             postData.author_name = "admin";
@@ -502,11 +282,9 @@
     })
 </script>
 
-
 <script>
     // 获取发布并预览按钮元素
     const publishAndPreviewButton = document.getElementById('publish');
-
     // 为发布并预览按钮添加点击事件监听器
     publishAndPreviewButton.addEventListener('click', () => {
         // 获取要发布的数据
@@ -531,44 +309,6 @@
             });
     });
 </script>
-<script>
-    // 获取保存按钮元素
-    const saveButton = document.getElementById('preserve');
 
-    // 为保存按钮添加点击事件监听器
-    saveButton.addEventListener('click', () => {
-        // 获取要保存的数据
-        const data = document.getElementById('data-input').value;
-
-        // 将数据保存到服务器
-        fetch('/save', {
-            method: 'POST',
-            body: data
-        })
-            .then(response => {
-                // 处理保存成功的响应
-                console.log('数据保存成功！');
-            })
-            .catch(error => {
-                // 处理保存失败的情况
-                console.error('数据保存失败：', error);
-            });
-    });
-</script>
-<script>
-    // 获取返回按钮元素
-    const backButton = document.getElementById('getback');
-
-    // 为返回按钮添加点击事件监听器
-    backButton.addEventListener('click', () => {
-        // 执行返回操作，例如使用 history.back() 方法返回上一页
-        history.back();
-    });
-</script>
-<script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js.map"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.js"></script>
-<script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
-<script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
