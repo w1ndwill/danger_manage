@@ -31,6 +31,7 @@ public class TaskController {
     public ResponseEntity<String> deleteTask(@RequestBody Task task) {
         try {
             taskService.deleteTask(task);
+            taskMapper.deletechildTask(task);
             return new ResponseEntity<>("任务删除成功", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("删除任务时出错: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

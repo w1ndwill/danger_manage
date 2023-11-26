@@ -150,15 +150,15 @@
   </div>
   <div>
     <!--        用于显示所有企业的表格-->
-    <el-table :data="tasksPage" style="width: 100%">
+    <el-table :data="companypage" style="width: 100%">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="number" label="#" width="20"></el-table-column>
-      <el-table-column prop="企业名称" label="任务名称" width="300"  ></el-table-column>
-      <el-table-column prop="行业" label="被检查企业" width="150"></el-table-column>
-      <el-table-column prop="直接监管单位" label="检查类型" width="120"></el-table-column>
-      <el-table-column prop="行政区域" label="隐患数" width="100"></el-table-column>
-      <el-table-column prop="单位管理员" label="检查人" width="120"></el-table-column>
-      <el-table-column label="操作" width="300">
+      <el-table-column prop="name" label="任务名称" width="300"  ></el-table-column>
+      <el-table-column prop="domain" label="行业" width="150"></el-table-column>
+      <el-table-column prop="unit" label="直接监管单位" width="120"></el-table-column>
+      <el-table-column prop="area" label="行政区域" width="100"></el-table-column>
+      <el-table-column prop="manager" label="单位管理员" width="120"></el-table-column>
+      <el-table-column label="操作" width="500">
         <template slot-scope="scope">
           <div style="display: flex; justify-content: space-around;">
             <el-button type="primary" icon="el-icon-edit" @click="editTask(scope.row)">编辑</el-button>
@@ -184,29 +184,27 @@
             :page-sizes="[2, 10, 20, 50]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="tasks.length">
+            :total="company.length">
     </el-pagination>
   </div>
 </div>
 </body>
 
 <script>
-  // import EditForm from './EditForm.vue';
-  // import Table from './Table.vue';
   new Vue({
     el: '#app',
     data: {
       taskStatus: '不限',
       taskDeadline: '不限',
       search: '',
-      tasks: [], // 用于存储任务的数组
+      company: [], // 用于存储任务的数组
       currentPage: 1, // 当前页数
       pageSize: 2, // 每页显示的记录数
       industry: '',
       dialogVisible: false,
       majorCategory: '',
       minorCategory: '',
-      tasksPage: [],
+      companypage: [],
       selectIndustry: '',
       exportList : '',
       openTemporaryTaskDialog : '',
@@ -217,6 +215,19 @@
       minorCategoryOptions: [],
     },
     methods: {
+      getAllcompanies() {
+        // 发起HTTP请求，获取数据
+        axios.get('/allcompanies')
+                .then(response => {
+                  // 将从后端获取的数据赋值给tasks[]属性
+                  this.companypage = response.data;
+
+                })
+                .catch(error => {
+                  console.error('获取任务时发生错误', error);
+                  console.log('完整的错误响应:', error.response);
+                });
+      },
       searchTasks() {
         // 在这里实现搜索任务的逻辑
       },
@@ -245,7 +256,7 @@
         },
     },
     mounted() {
-      // 在这里获取初始数据
+      this.getAllcompanies();
     }
   });
 </script>

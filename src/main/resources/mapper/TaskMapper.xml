@@ -43,10 +43,6 @@
         </foreach>
     </insert>
 
-<!--    <delete id="deletechildtask" parameterType="com.example.software.bean.Task">-->
-<!--        DELETE FROM childtask-->
-<!--        WHERE number = #{number} AND inspector = #{inspector} AND taskName = #{taskName}-->
-<!--    </delete>-->
     <select id="getContent" resultType="com.example.software.bean.Task">
         SELECT * FROM childtask
         WHERE number = #{number} AND inspector = #{inspector}
@@ -65,8 +61,8 @@
     </update>
 
     <insert id="addcheck" parameterType="com.example.software.bean.Task">
-        INSERT INTO `check` (taskName, company, inspectionType, reason)
-        VALUES (#{taskName}, #{company}, #{inspectionType}, #{reason})
+        INSERT INTO `check` (taskName, company, inspectionType, reason,startDate,endDate,inspector)
+        VALUES (#{taskName}, #{company}, #{inspectionType}, #{reason},#{startDate},#{endDate},#{inspector})
     </insert>
     <select id="getAllcheck"  resultType="com.example.software.bean.Task">
         SELECT * FROM  `check`;
@@ -75,5 +71,10 @@
     <delete id="deletecheck" parameterType="com.example.software.bean.Task">
         DELETE FROM `check`
         WHERE taskName = #{taskName} AND company = #{company} AND inspectionType = #{inspectionType}
+    </delete>
+
+    <delete id="deletechildTask" parameterType="com.example.software.bean.Task">
+        DELETE FROM childtask
+        WHERE taskName=#{taskName} AND company = #{company} AND inspectionType = #{inspectionType}
     </delete>
 </mapper>
