@@ -76,14 +76,12 @@
     </div>
     <!-- 任务状态和任务时效下拉框 -->
     <div>
-        <label>任务状态:</label>
-        <el-select v-model="taskStatus" placeholder="请选择">
-            <el-option label="不限" value="不限"></el-option>
-            <el-option label="未发布" value="未发布"></el-option>
-            <el-option label="进行中" value="进行中"></el-option>
-            <el-option label="已结束" value="已结束"></el-option>
-            <el-option label="复查通过" value="复查通过"></el-option>
-        </el-select>
+        <el-form-item label="活动区域">
+            <el-select v-model="form.region" placeholder="请选择活动区域">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+        </el-form-item>
         <label>任务时效:</label>
         <el-select v-model="taskDeadline" placeholder="请选择">
             <el-option label="不限" value="不限"></el-option>
