@@ -93,14 +93,14 @@
     <div>
     <el-table :data="tasksPage" style="width: 100%">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="taskName" label="任务名称" width="150"  ></el-table-column>
-        <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
+        <el-table-column prop="taskName" label="任务名称" width="250"  ></el-table-column>
+        <el-table-column prop="company" label="被检查企业" width="250"></el-table-column>
         <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
-        <el-table-column label="隐患数/检查数" width="150">
-            <template slot-scope="scope">
-                {{ scope.row.hiddenDangerCount }} / {{ scope.row.checkcount }}
-            </template>
-        </el-table-column>
+<!--        <el-table-column label="隐患数/检查数" width="150">-->
+<!--            <template slot-scope="scope">-->
+<!--                {{ scope.row.hiddenDangerCount }} / {{ scope.row.checkcount }}-->
+<!--            </template>-->
+<!--        </el-table-column>-->
         <el-table-column label="任务起止日期" width="200">
             <template slot-scope="scope">
                 {{ scope.row.startDate }} - {{ scope.row.endDate }}
@@ -228,16 +228,23 @@
                 });
             },
             searchTasks() {
-                // 处理搜索逻辑
-                console.log('Searching tasks...');
+                const filteredTasks = this.tasks.filter(task => {
+                    return (
+                        (task.taskName && task.taskName.includes(this.search)) ||
+                        (task.company && task.company.includes(this.search)) ||
+                        (task.inspectionType && task.inspectionType.includes(this.search))
+                        // Add more conditions as needed
+                    );
+                });
+                this.tasks = filteredTasks;
             },
             reset() {
                 // 重置表单
                 this.search = '';
+                this.loadContentFromDatabase();
             },
             loadContentFromDatabase() {
                 // 根据this.userBean.id和this.userBean.name获取数据库中的内容
-                // 例如，可以构建请求的URL，然后使用axios再次发起请求
                 const url = `/getContent?number=${this.userBean.id}&inspector=${this.userBean.truename}`;
                 axios.get(url)
                     .then(response => {
@@ -267,7 +274,6 @@
                 // Process the uploaded image response if needed
                 console.log(response, file, fileList);
             },
-            // Before image upload, you can check file type, size, etc.
             beforeImageUpload(file) {
                 // Implement validation logic here
                 return true; // To allow the upload
@@ -296,16 +302,16 @@
                     inspectionType: this.currentTask.inspectionType,
                     company: this.currentTask.company
                 };
-
                 // 在这里调用实际更新数据库的方法，这里使用伪代码表示
                 if (hasHiddenDanger) {
                     const formData = {
                         taskName: this.currentTask.taskName,
                         inspectionType: this.currentTask.inspectionType,
                         company: this.currentTask.company,
-                        // startDate: this.currentTask.startDate,
-                        // endDate: this.currentTask.endDate,
-                        reason: this.hiddenDangerReason
+                        startDate: this.currentTask.startDate,
+                        endDate: this.currentTask.endDate,
+                        reason: this.hiddenDangerReason,
+                        inspector:this.userBean.truename
                     };
                     axios.post('/addcheck', formData)
                         .then(response => {

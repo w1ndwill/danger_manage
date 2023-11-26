@@ -24,4 +24,5 @@ public interface TaskMapper {
     void addcheck(Task task);
     List<Task> getAllcheck();
     void deletecheck(Task task);
+    void deletechildTask(Task task);
 }

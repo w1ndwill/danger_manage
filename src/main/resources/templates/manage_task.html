@@ -518,6 +518,7 @@
                         if (index !== -1) {
                             this.tasksPage.splice(index, 1);
                         }
+                        this.getAllTasks();
                     })
                     .catch(error => {
                         // 处理错误
@@ -574,7 +575,6 @@
             },
             submitTaskForm(){
                 this.closeDialog();
-
             },
             handleTabClick(tab) {
                 // 切换选项卡时，可以在这里根据选项卡的名称请求对应的数据，更新表格内容
@@ -583,11 +583,9 @@
             },
             search() {
                 // 根据关键词搜索
-                // 更新表格内容
             },
             resetSearch() {
                 // 重置搜索条件
-                // 更新表格内容
             },
             handleButtonClick(row) {
                 row.used = !row.used;

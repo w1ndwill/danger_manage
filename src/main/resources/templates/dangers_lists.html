@@ -129,14 +129,14 @@
                     width="120">
             </el-table-column>
             <el-table-column
-                    prop="check_people"
+                    prop="inspector"
                     label="检查人"
                     width="120">
             </el-table-column>
-            <el-table-column
-                    prop="check_time"
-                    label="检查时间"
-                    width="120">
+            <el-table-column label="任务起止日期" width="200">
+                <template slot-scope="scope">
+                    {{ scope.row.startDate }} - {{ scope.row.endDate }}
+                </template>
             </el-table-column>
                 <el-table-column
                         prop="origin"
