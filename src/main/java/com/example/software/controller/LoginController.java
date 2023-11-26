@@ -63,7 +63,7 @@ public class LoginController {
 
     @RequestMapping("/release")
     public String release() {
-        return "release_information";
+        return "release_Info";
     }
 
     @RequestMapping("/dangerlists")

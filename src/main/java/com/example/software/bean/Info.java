@@ -3,13 +3,13 @@ package com.example.software.bean;
 public class Info {
     private int number;
     private String title;
-    private String check_type;
-    private int info_type;
-    private int eme_degree;
+    private String info_type;
+    private String eme_degree;
     private String issuer;
     private String sec_level;
     private String issue_time;
     private String details;
+    private int scope;
 
     //补全getter和setter方法
     public int getNumber() {
@@ -26,24 +26,17 @@ public class Info {
         this.title = title;
     }
 
-    public String getCheck_type() {
-        return check_type;
-    }
-    public void setCheck_type(String check_type) {
-        this.check_type = check_type;
-    }
-
-    public int getInfo_type() {
+    public String getInfo_type() {
         return info_type;
     }
-    public void setInfo_type(int info_type) {
+    public void setInfo_type(String info_type) {
         this.info_type = info_type;
     }
 
-    public int getEme_degree() {
+    public String getEme_degree() {
         return eme_degree;
     }
-    public void setEme_degree(int eme_degree) {
+    public void setEme_degree(String eme_degree) {
         this.eme_degree = eme_degree;
     }
 
@@ -74,13 +67,18 @@ public class Info {
     public void setDetails(String details) {
         this.details = details;
     }
+    public int getScope() {
+        return scope;
+    }
+    public void setScope(int scope) {
+        this.scope = scope;
+    }
 
     @Override
     public String toString() {
         return "Info{" +
                 "number=" + number +
                 ", title='" + title + '\'' +
-                ", check_type='" + check_type + '\'' +
                 ", info_type=" + info_type +
                 ", eme_degree=" + eme_degree +
                 ", issuer='" + issuer + '\'' +

@@ -28,13 +28,14 @@ public class InfoController {
     }
 
     @PostMapping("/addInfo")
-    public ResponseEntity addInfo(@RequestBody Info information) {
+    public ResponseEntity<String> addInfo(@RequestBody Info information) {
         try {
             infoService.addInfo(information);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            System.out.println("addInfo被调用了");
+            return ResponseEntity.status(HttpStatus.CREATED).build(); //201
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); //500
         }
     }
 }

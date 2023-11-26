@@ -210,12 +210,11 @@
     //
     new Vue({
         el: '#app',
-
         data() {
             return {
                 search: '',
                 temporaryTaskDialogVisible: false,
-                radioNoticeType:['普通通知','会议通知','检查通知','培训通知'],
+                radioNoticeType:'',
                 radioSecurityLevel:'',
                 radioUrgencyLevel:'',
                 radioScopeRelease:'',
@@ -281,10 +280,10 @@
         })
     })
 </script>
-
 <script>
     // 获取发布并预览按钮元素
     const publishAndPreviewButton = document.getElementById('publish');
+
     // 为发布并预览按钮添加点击事件监听器
     publishAndPreviewButton.addEventListener('click', () => {
         // 获取要发布的数据
@@ -309,6 +308,41 @@
             });
     });
 </script>
+<script>
+    // 获取保存按钮元素
+    const saveButton = document.getElementById('preserve');
+
+    // 为保存按钮添加点击事件监听器
+    saveButton.addEventListener('click', () => {
+        // 获取要保存的数据
+        const data = document.getElementById('data-input').value;
+
+        // 将数据保存到服务器
+        fetch('/save', {
+            method: 'POST',
+            body: data
+        })
+            .then(response => {
+                // 处理保存成功的响应
+                console.log('数据保存成功！');
+            })
+            .catch(error => {
+                // 处理保存失败的情况
+                console.error('数据保存失败：', error);
+            });
+    });
+</script>
+<script>
+    // 获取返回按钮元素
+    const backButton = document.getElementById('getback');
+
+    // 为返回按钮添加点击事件监听器
+    backButton.addEventListener('click', () => {
+        // 执行返回操作，例如使用 history.back() 方法返回上一页
+        history.back();
+    });
+</script>
+
 
 </body>
 </html>

@@ -7,8 +7,8 @@
     </select>
 
     <insert id="addInfo" parameterType="com.example.software.bean.Info">
-        INSERT INTO Info (numbers, title, check_Type, info_type, eme_degree, issuer, sec_level, issue_time ,details)
-        VALUES (#{numbers}, #{title}, #{check_Type}, #{info_type}, #{eme_degree}, #{issuer}, #{sec_level}, #{issue_time}, #{details});
+        INSERT INTO Info (numbers, title, info_type, eme_degree, issuer, sec_level, issue_time ,details, scope)
+        VALUES (#{numbers}, #{title}, #{info_type}, #{eme_degree}, #{issuer}, #{sec_level}, #{issue_time}, #{details}, #{scope});
     </insert>
 
 </mapper>
