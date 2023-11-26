@@ -208,7 +208,18 @@
 
         <div class="box4">
             <div class="title">信息中心</div>
-            <br>
+            <template>
+                <el-table
+                        :data="tableData1"
+                        stripe
+                        style="width: 100%">
+                    <el-table-column prop="title" label="信息标题" width="200"  ></el-table-column>
+                    <el-table-column prop="eme_degree" label="紧急度" width="100"  ></el-table-column>
+                    <el-table-column prop="issuer" label="发布人" width="150"></el-table-column>
+                    <el-table-column prop="issue_time" label="任务日期" width="200">
+                    </el-table-column>
+                </el-table>
+            </template>
         </div>
     </el-main>
 
@@ -220,6 +231,7 @@
             data: function () {
                 return {
                     tableData:[],
+                    tableData1:[],
                     visible: false }
             },
         mounted() {
@@ -245,6 +257,18 @@
                     })
                     .catch(error => {
                         console.log(error);
+                    });
+            },
+            getAllInfo() {
+                // 发起HTTP请求，获取数据
+                axios.get('/allInfo')
+                    .then(response => {
+                        // 将从后端获取的数据赋值给tasks[]属性
+                        this.tableData1 = response.data;
+                    })
+                    .catch(error => {
+                        console.error('获取任务时发生错误', error);
+                        console.log('完整的错误响应:', error.response);
                     });
             },
         }
