@@ -110,7 +110,7 @@
         <label  class="year-label">年份:</label>
         <el-date-picker v-model="selectedDate" type="date" placeholder="选择年月日"></el-date-picker>
 
-        <el-input  class="search-input" v-model="search" placeholder="输入关键字"></el-input>
+        <el-input  class="search-input" v-model="search" placeholder="输入任务名称、被检查企业、检查类型、检查人查询"></el-input>
         <el-button @click="searchTasks" type="primary">搜索</el-button>
         <el-button @click="reset">重置</el-button>
 
@@ -121,7 +121,7 @@
 
     <div>
 <!--        用于显示所有任务的表格-->
-            <el-table :data="tasksPage" style="width: 100%">
+        <el-table :data="tasksPage" style="width: 100%">
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="number" label="#" width="20"></el-table-column>
                 <el-table-column prop="taskName" label="任务名称" width="150"  ></el-table-column>
@@ -139,12 +139,12 @@
                         {{ scope.row.startDate }} - {{ scope.row.endDate }}
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="300">
+                <el-table-column  fixed="right" label="操作" width="250">
                     <template slot-scope="scope">
                         <div style="display: flex; justify-content: space-around;">
-                            <el-button type="primary" icon="el-icon-edit" @click="editTask(scope.row)">编辑</el-button>
-                            <el-button type="success" icon="el-icon-view" @click="viewTask(scope.row)">详情</el-button>
-                            <el-button type="danger" icon="el-icon-delete" @click="deleteTask(scope.row)">删除</el-button>
+                            <el-button size="small" type="primary" icon="el-icon-edit" @click="editTask(scope.row)">编辑</el-button>
+                            <el-button size="small" type="success" icon="el-icon-view" @click="viewTask(scope.row)">详情</el-button>
+                            <el-button size="small" type="danger" icon="el-icon-delete" @click="deleteTask(scope.row)">删除</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -322,11 +322,11 @@
             <el-table-column prop="job" label="岗位" width="80"></el-table-column>
             <el-table-column prop="role" label="角色" width="120"></el-table-column>
             <!-- 其他列省略，请根据你的数据结构添加 -->
-            <el-table-column label="操作" width="150">
+            <el-table-column  fixed="right" label="操作" width="100">
                 <template slot-scope="scope">
                     <el-button
                             :type="scope.row.used ? 'danger' : 'primary'"
-                            @click="handleButtonClick(scope.row)">
+                            @click="handleButtonClick(scope.row)" size="small">
                         {{ scope.row.used ? '已使用' : '未使用' }}
                     </el-button>
                 </template>
@@ -387,12 +387,9 @@
 
                 editDialogVisible: false,
                 editedTask: {},
-
                 currentPage: 1, // 当前页数
                 pageSize: 10, // 每页显示的记录数
-
                 dialogVisible: false,//检察人员弹窗
-
                 currentTab: 'government', // 默认选中政府
                 searchForm: {
                     keyword: '',
@@ -400,13 +397,13 @@
                 tableData:[], // 表格数据
                 Page: 1, // 当前页数
                 Size: 10, // 每页显示的记录数
-
                 changedRows: [], // 存储所有切换后的行信息
             };
         },
         mounted() {
             this.getAllTasks();
             this.getAllofficial();
+
         },
         computed: {
             // 对tasks[]数组进行分页的设置
@@ -431,6 +428,7 @@
                     .then(response => {
                         // 将从后端获取的数据赋值给tasks[]属性
                         this.tasks = response.data;
+
                     })
                     .catch(error => {
                         console.error('获取任务时发生错误', error);
@@ -464,12 +462,21 @@
                 this.Page = val;
             },
             searchTasks() {
-                // 处理搜索逻辑
-                console.log('Searching tasks...');
+                const filteredTasks = this.tasks.filter(task => {
+                    return (
+                        (task.taskName && task.taskName.includes(this.search)) ||
+                        (task.company && task.company.includes(this.search)) ||
+                        (task.inspectionType && task.inspectionType.includes(this.search)) ||
+                        (task.inspector && task.inspector.includes(this.search))
+                        // Add more conditions as needed
+                    );
+                });
+                this.tasks = filteredTasks;
             },
             reset() {
                 // 重置表单
                 this.search = '';
+                this.getAllTasks();
             },
             editTask(task) {
                 this.editedTask = { ...task }; // 使用浅拷贝以防止直接修改原始数据
@@ -502,8 +509,6 @@
                 console.log("View task:", task);
             },
             deleteTask(task) {
-                // 删除任务的逻辑
-                // 使用Axios发送删除请求
                 axios.delete('/deleteTask', { data: task })
                     .then(response => {
                         // 处理成功的情况，例如更新UI
@@ -597,7 +602,6 @@
                     const inspectionType=this.temporaryTaskForm.inspectionType;
                     const startDate=this.temporaryTaskForm.startDate;
                     const endDate=this.temporaryTaskForm.endDate;
-
                     // 将相关信息存储到数组中
                     const changedRow = {
                         number: index,
@@ -644,23 +648,6 @@
                         console.error('Error saving data to database:', error);
                     });
             },
-            // deleteRecordFromBackend(index, inspectorName, taskName) {
-            //     axios.delete('/deleteRecord', {
-            //         data: {
-            //             number: index,
-            //             inspector: inspectorName,
-            //             taskName: taskName
-            //         }
-            //     })
-            //         .then(response => {
-            //             // 处理成功删除记录的响应
-            //             console.log('记录删除成功:', response.data);
-            //         })
-            //         .catch(error => {
-            //             // 处理删除记录时的错误
-            //             console.error('删除记录失败:', error);
-            //         });
-            // },
             fetchTableData() {
                 // 根据选项卡名称请求对应的表格数据
             },

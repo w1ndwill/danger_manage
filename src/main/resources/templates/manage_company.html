@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Page Title</title>
+  <!-- 引入 Vue.js 和 Element-UI -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<style>
+  .logo{
+    height: 24px; /* 设置标题高度为24像素 */
+    font-family: Arial, sans-serif; /* 字体 */
+    font-size: 24px; /* 字体大小 */
+    color: #007BFF; /* 字体颜色 */
+    text-align: left; /* 对齐方式 */
+    margin-top: 20px; /* 距离顶部的间距 */
+    border-bottom: 1px solid #000000; /* 添加下边框 */
+    border-bottom-color: #007BFF; /* 改变下边框颜色为红色 */
+    width: 17%; /* 设置标题宽度为100% */
+    padding-bottom: 10px; /* 设置标题与下边框之间的间隔 */
+  }
+  .search-input {
+    width: 30%; /* 设置搜索框的宽度，可以根据需要调整 */
+  }
+  .e1{
+    width: 60%;/*设置el-input属性的宽度*/
+  }
+  label {
+    font-family: 'Arial', sans-serif;
+    font-size: 18px;
+    color: #000000;
+    font-weight: bold;
+  }
+  .form-item-flex {
+    /*align-items: baseline; !* 单行框头部对齐 *!*/
+    margin-bottom: 10px;
+  }
+  .form-item-flex label {
+    white-space: nowrap; /* label文字不换行 */
+    /*flex-shrink: 0; !* 防止label缩小，保持原始宽度 *!*/
+    /*width: 100px; !* 设置label的宽度 *!*/
+    /*margin-right: 10px; !* 可选：添加一些右侧间距 *!*/
+  }
+  .form-item-flex span {
+    margin-right: 5px;
+  }
+  #app {
+    !important;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+  }
+</style>
+
+<style scoped>
+  /* 标题行和偶数行背景颜色为灰色 */
+  .el-table tr:nth-child(even), .el-table thead {
+    background-color: #f0f0f0;
+  }
+  /* 奇数行背景颜色为白色 */
+  .el-table tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+</style>
+<body>
+<div id="app">
+  <!-- 任务和实施选项 -->
+  <div class="logo">
+    <label>当前页面:下辖企业</label>
+
+  </div>
+  <!-- 任务状态和任务时效下拉框 -->
+  <div style="padding: 5px">
+    <label>层级:</label>
+    <el-select v-model="taskStatus" placeholder="请选择">
+      <el-option label="不限" value="不限"></el-option>
+      <el-option label="所有下级" value="所有下级"></el-option>
+      <el-option label="直接下级" value="直接下级"></el-option>
+    </el-select>
+    <label>重点关注企业:</label>
+    <el-select v-model="taskDeadline" placeholder="请选择">
+      <el-option label="不限" value="不限"></el-option>
+      <el-option label="否" value="否"></el-option>
+      <el-option label="是" value="是"></el-option>
+    </el-select>
+  </div>
+  <div style="padding: 5px">
+    <label>重点监管领域:</label>
+    <el-select v-model="taskStatus" placeholder="请选择">
+      <el-option label="不限" value="不限"></el-option>
+      <el-option label="有限空间" value="有限空间"></el-option>
+      <el-option label="喷涂作业" value="喷涂作业"></el-option>
+      <el-option label="粉尘涉爆" value="粉尘涉爆"></el-option>
+      <el-option label="涉氨场所" value="涉氨场所"></el-option>
+      <el-option label="危险化学品仓库" value="危险化学品仓库"></el-option>
+      <el-option label="重点监管危化品" value="重点监管危化品"></el-option>
+      <el-option label="重大危险源" value="重大危险源"></el-option>
+      <el-option label="剧毒品" value="剧毒品"></el-option>
+      <el-option label="易制毒化学品" value="易制毒化学品"></el-option>
+    </el-select>
+
+    <label>行业：</label>
+    <el-input v-model="industry" placeholder="请选择行业" readonly style="width: 200px"></el-input>
+    <el-button @click="dialogVisible = true">选择</el-button>
+    <el-dialog :visible.sync="dialogVisible" title="选择行业">
+      <el-select v-model="majorCategory" placeholder="请选择大类" @change="handleMajorCategoryChange">
+        <!-- 在这里添加你的大类选项 -->
+        <el-option label="大类1" value="大类1"></el-option>
+        <el-option label="大类2" value="大类2"></el-option>
+        <!-- ... -->
+      </el-select>
+      <el-select v-model="minorCategory" placeholder="请选择小类">
+        <!-- 在这里添加你的小类选项 -->
+        <el-option v-for="option in minorCategoryOptions" :label="option.label" :value="option.value"></el-option>
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+<el-button @click="dialogVisible = false">取消</el-button>
+<el-button type="primary" @click="selectIndustry">确 定</el-button>
+  </span>
+    </el-dialog>
+
+    <label>风险等级:</label>
+    <el-select v-model="taskDeadline" placeholder="请选择">
+      <el-option label="不限" value="不限"></el-option>
+      <el-option label="重大风险" value="重大风险"></el-option>
+      <el-option label="较大风险" value="较大风险"></el-option>
+      <el-option label="一般风险" value="一般风险"></el-option>
+      <el-option label="低风险" value="低风险"></el-option>
+      <el-option label="稍有风险" value="稍有风险"></el-option>
+    </el-select>
+  </div>
+  <div class="search-bar" style="padding: 5px">
+    <el-input  class="search-input" v-model="search" placeholder="请输入企业名称、直接监管单位、行业进行模糊查询"></el-input>
+    <el-button @click="searchTasks" type="primary">搜索</el-button>
+    <el-button @click="reset">重置</el-button>
+    <el-select v-model="taskDeadline" placeholder="批量操作" style="float:right; width:150px; margin-right: 10px;">
+      <el-option label="批量操作" value="批量操作"></el-option>
+      <el-option label="批量删除" value="批量删除"></el-option>
+      <el-option label="导出列表" value="导出列表"></el-option>
+    </el-select>
+    <el-button style="float:right; margin-right: 5px;" @click="openTemporaryTaskDialog" type="danger" icon="el-icon-plus">添加包管干部</el-button>
+    <el-button style="float:right; margin-right: 5px;" @click="openTemporaryTaskDialog" type="info" icon="el-icon-upload2">导入企业</el-button>
+    <el-button style="float:right;" @click="exportList" type="success" icon="el-icon-circle-plus-outline">新增企业</el-button>
+  </div>
+  <div>
+    <!--        用于显示所有企业的表格-->
+    <el-table :data="tasksPage" style="width: 100%">
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column prop="number" label="#" width="20"></el-table-column>
+      <el-table-column prop="企业名称" label="任务名称" width="300"  ></el-table-column>
+      <el-table-column prop="行业" label="被检查企业" width="150"></el-table-column>
+      <el-table-column prop="直接监管单位" label="检查类型" width="120"></el-table-column>
+      <el-table-column prop="行政区域" label="隐患数" width="100"></el-table-column>
+      <el-table-column prop="单位管理员" label="检查人" width="120"></el-table-column>
+      <el-table-column label="操作" width="300">
+        <template slot-scope="scope">
+          <div style="display: flex; justify-content: space-around;">
+            <el-button type="primary" icon="el-icon-edit" @click="editTask(scope.row)">编辑</el-button>
+            <el-button type="success" icon="el-icon-view" @click="viewTask(scope.row)">进入单位</el-button>
+            <el-button type="danger" icon="el-icon-delete" @click="deleteTask(scope.row)">企业履历</el-button>
+            <el-select v-model="taskDeadline" placeholder="更多操作">
+              <el-option label="更多操作" value="更多操作"></el-option>
+              <el-option label="调整监管单位" value="调整监管单位"></el-option>
+              <el-option label="更改企业状态" value="更改企业状态"></el-option>
+              <el-option label="删除" value="删除"></el-option>
+              <el-option label="重置管理员密码" value="重置管理员密码"></el-option>
+            </el-select>
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!--           所有任务表格的 分页设置，currentPage当前页码，pageSize一页显示多少数据-->
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[2, 10, 20, 50]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="tasks.length">
+    </el-pagination>
+  </div>
+</div>
+</body>
+
+<script>
+  // import EditForm from './EditForm.vue';
+  // import Table from './Table.vue';
+  new Vue({
+    el: '#app',
+    data: {
+      taskStatus: '不限',
+      taskDeadline: '不限',
+      search: '',
+      tasks: [], // 用于存储任务的数组
+      currentPage: 1, // 当前页数
+      pageSize: 2, // 每页显示的记录数
+      industry: '',
+      dialogVisible: false,
+      majorCategory: '',
+      minorCategory: '',
+      tasksPage: [],
+      selectIndustry: '',
+      exportList : '',
+      openTemporaryTaskDialog : '',
+      handleSizeChange : '',
+      handleCurrentChange : '',
+      searchForm : '',
+      resetSearch : '',
+      minorCategoryOptions: [],
+    },
+    methods: {
+      searchTasks() {
+        // 在这里实现搜索任务的逻辑
+      },
+      reset() {
+        // 在这里实现重置搜索的逻辑
+      },
+      handleMajorCategoryChange(majorCategory) {
+          // 在这里根据所选的大类获取对应的小类
+          // 这只是一个示例，你需要根据你的实际需求来实现这个方法
+          if (majorCategory === '大类1') {
+            this.minorCategoryOptions = [
+              { label: '小类1', value: '小类1' },
+              // ...
+            ];
+          } else if (majorCategory === '大类2') {
+            this.minorCategoryOptions = [
+              { label: '小类2', value: '小类2' },
+              // ...
+            ];
+          }
+        },
+        selectIndustry() {
+          // 将所选的小类设置为industry的值
+          this.industry = this.minorCategory;
+          this.dialogVisible = false;
+        },
+    },
+    mounted() {
+      // 在这里获取初始数据
+    }
+  });
+</script>
+</html>

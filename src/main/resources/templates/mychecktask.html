@@ -24,6 +24,30 @@
     .search-input {
         width: 30%; /* 设置搜索框的宽度，可以根据需要调整 */
     }
+    label {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+        color: #000000;
+        font-weight: bold;
+    }
+    .logo{
+        height: 24px; /* 设置标题高度为24像素 */
+        font-family: Arial, sans-serif; /* 字体 */
+        font-size: 24px; /* 字体大小 */
+        color: #007BFF; !important;/* 字体颜色 */
+        text-align: left; /* 对齐方式 */
+        margin-top: 20px; /* 距离顶部的间距 */
+        border-bottom: 1px solid #000000; !important;/* 添加下边框 */
+        border-bottom-color: #007BFF; !important;
+        width: 17%; /* 设置标题宽度为100% */
+        padding-bottom: 10px; /* 设置标题与下边框之间的间隔 */
+    }
+    #app {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px;
+    }
 </style>
 <style scoped>
     /* 标题行和偶数行背景颜色为灰色 */
@@ -37,6 +61,9 @@
 </style>
 <body>
 <div id="app">
+    <div class="logo">
+        <label>任务管理>隐患复查</label>
+    </div>
     <div class="status">
         <label>任务状态:</label>
         <el-select v-model="taskStatus" placeholder="请选择">
@@ -66,7 +93,6 @@
     <div>
     <el-table :data="tasksPage" style="width: 100%">
         <el-table-column type="selection" width="55"></el-table-column>
-<!--        <el-table-column prop="number" label="#" width="20"></el-table-column>-->
         <el-table-column prop="taskName" label="任务名称" width="150"  ></el-table-column>
         <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
         <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
@@ -75,17 +101,16 @@
                 {{ scope.row.hiddenDangerCount }} / {{ scope.row.checkcount }}
             </template>
         </el-table-column>
-<!--        <el-table-column prop="inspector" label="检查人" width="120"></el-table-column>-->
-<!--        <el-table-column prop="inspectorType" label="检查人类型" width="120"></el-table-column>-->
         <el-table-column label="任务起止日期" width="200">
             <template slot-scope="scope">
                 {{ scope.row.startDate }} - {{ scope.row.endDate }}
             </template>
         </el-table-column>
-        <el-table-column label="操作" width="300">
+        <el-table-column  fixed="right" label="操作" width="250">
             <template slot-scope="scope">
                 <div style="display: flex; justify-content: space-around;">
-                    <el-button type="success" icon="el-icon-view" @click="viewTask(scope.row)">详情</el-button>
+                    <el-button size="small" type="success" icon="el-icon-view" @click="viewTask(scope.row)">详情</el-button>
+                    <el-button size="small" type="primary" icon="el-icon-view" @click="check(scope.row)">检查</el-button>
                 </div>
             </template>
         </el-table-column>
@@ -102,6 +127,61 @@
     </el-pagination>
     </div>
 
+    <el-dialog
+            :visible.sync="dialogVisible"
+            title="检查任务"
+            width="50%"
+            @close="handleClose"
+    >
+        <div style="display: flex">
+            <label>是否有隐患:</label>
+            <!-- 包裹整个单选框组 -->
+            <el-radio-group v-model="hasHiddenDanger" style="display: flex; align-items: center;">
+                <el-radio label="true">有隐患</el-radio>
+                <el-radio label="false">无隐患</el-radio>
+            </el-radio-group>
+        </div>
+
+        <div style="display: flex; justify-content: space-between;align-items: flex-start;">
+            <div style="width: 48%;">
+                <p>任务名称: {{ currentTask.taskName }}</p>
+                <p>任务类型: {{ currentTask.inspectionType }}</p>
+            </div>
+            <div style="width: 48%;">
+                <p>被检查企业: {{ currentTask.company }}</p>
+                <p>任务起止日期: {{ currentTask.startDate }} - {{ currentTask.endDate }}</p>
+            </div>
+        </div>
+        <el-form style="display: flex; flex-wrap: wrap;">
+            <el-form-item label="隐患原因:" style="flex: 0 0 100%;">
+                <el-input  style="width: 100%; display: none;"></el-input>
+            </el-form-item>
+            <!-- 新增的 el-form-item，占48%的宽度 -->
+            <el-form-item style="flex: 0 0 48%; margin-bottom: 15px;">
+                <!-- 这里的 el-input 设置为 100% 宽度，以占据 el-form-item 的宽度 -->
+                <el-input type="textarea" v-model="hiddenDangerReason" placeholder="请输入隐患原因" style="width: 100%;"></el-input>
+            </el-form-item>
+            <!-- 其他表单项可以继续添加 -->
+        </el-form>
+
+        <el-upload
+                class="upload-demo"
+                action="/your-upload-api-endpoint"
+                :on-success="handleUploadSuccess"
+                :before-upload="beforeImageUpload"
+        >
+            <el-button size="small" type="primary">点击上传图片</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <!-- Display uploaded image -->
+            <img v-if="imageUrl" :src="imageUrl" alt="Uploaded Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;">
+        </el-upload>
+
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" @click="handleConfirm">确定</el-button>
+        </span>
+
+    </el-dialog>
 </div>
 <script>
     new Vue({
@@ -116,6 +196,14 @@
                 currentPage: 1, // 当前页数
                 pageSize: 10, // 每页显示的记录数
                 userBean:null,
+                dialogVisible: false,
+                currentTask: {},  // To store details of the current task being checked
+                hiddenDangerReason: '',// To store the hidden danger reason input
+                otherInput:'',
+                uploadedImages: [],
+                imageUrl:'',// To store the uploaded images
+                hasHiddenDanger: false,  // 新增的变量
+
             }
         },
         mounted() {
@@ -166,6 +254,90 @@
             },
             handleCurrentChange(val) {
                 this.currentPage = val;
+            },
+            check(row){
+                this.currentTask = row;
+                this.dialogVisible = true;
+            },
+            viewTask(task) {
+                // 查看任务的逻辑
+                console.log("View task:", task);
+            },
+            handleUploadSuccess(response, file, fileList) {
+                // Process the uploaded image response if needed
+                console.log(response, file, fileList);
+            },
+            // Before image upload, you can check file type, size, etc.
+            beforeImageUpload(file) {
+                // Implement validation logic here
+                return true; // To allow the upload
+            },
+            handleClose() {
+                // Reset data when the modal is closed
+                this.currentTask = {};
+                this.hiddenDangerReason = '';
+                this.uploadedImages = [];
+            },
+            handleConfirm() {
+                // 在这里根据 hasHiddenDanger 的值执行相应的操作
+                if (this.hasHiddenDanger === 'true') {
+                    // 有隐患，增加数据库中隐患数和检查数
+                    this.updateDatabase(true);
+                } else {
+                    // 没有隐患，只增加检查数
+                    this.updateDatabase(false);
+                }
+                // 关闭弹窗
+                this.dialogVisible = false;
+            },
+            updateDatabase(hasHiddenDanger) {
+                const taskData = {
+                    taskName: this.currentTask.taskName,
+                    inspectionType: this.currentTask.inspectionType,
+                    company: this.currentTask.company
+                };
+
+                // 在这里调用实际更新数据库的方法，这里使用伪代码表示
+                if (hasHiddenDanger) {
+                    const formData = {
+                        taskName: this.currentTask.taskName,
+                        inspectionType: this.currentTask.inspectionType,
+                        company: this.currentTask.company,
+                        // startDate: this.currentTask.startDate,
+                        // endDate: this.currentTask.endDate,
+                        reason: this.hiddenDangerReason
+                    };
+                    axios.post('/addcheck', formData)
+                        .then(response => {
+                            // Handle the response if needed
+                            console.log(response.data);
+                        })
+                        .catch(error => {
+                            // Handle errors
+                            console.error('Error inserting data into the database:', error);
+                        });
+                    // this.insertDataIntoDatabase(formData);
+
+                    axios.post('/judge2', taskData)
+                        .then(response => {
+                            // 处理响应
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            // 处理错误
+                            console.error(error);
+                        });
+                } else {
+                    axios.post('/judge1', taskData)
+                        .then(response => {
+                            // 处理响应
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            // 处理错误
+                            console.error(error);
+                        });
+                }
             },
         }
     });

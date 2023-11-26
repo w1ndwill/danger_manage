@@ -107,7 +107,7 @@
                  :collapse="isCollapse">
           <el-menu-item index="1">
             <i class="el-icon-s-home"></i>
-            <span slot="title">我的主页</span>
+            <span slot="title" @click="switchPage_home">我的主页</span>
           </el-menu-item>
           <el-menu-item index="2">
             <i class="el-icon-document"></i>
@@ -124,7 +124,7 @@
           </el-submenu>
           <el-menu-item index="4">
             <i class="el-icon-tickets"></i>
-            <span slot="title">隐患清单</span>
+            <span slot="title"  @click=" switchPage_dangerlists">隐患清单</span>
           </el-menu-item>
           <el-menu-item index="5">
             <i class="el-icon-upload2"></i>
@@ -132,8 +132,6 @@
           </el-menu-item>
         </el-menu>
       </el-aside>
-
-
       <el-main>
         <iframe :src="flowSrc" style="height:100%; width:100%;margin:0;border:0;" v-if="loading" ref="iframeId" id="myFrameId" name="myFrameName">
         </iframe>
@@ -164,13 +162,30 @@
       }
     },
     methods: {
+      switchPage_dangerlists:function (){
+        var iframe=document.querySelector("iframe");
+        iframe.src="/dangerlists";
+      },
+      switchPage_home:function (){
+        var iframe=document.querySelector("iframe");
+        iframe.src="/home";
+      },
       fetchUser: function () {
         axios.get('/user').then(function (response) {
           this.userBean = response.data;
         }.bind(this)).catch(function (error) {
           console.log(error);
         });
-      }
+      },
+      handleIframe(e) {
+        console.log('切换', e)
+        this.warehouse.cloudId = e
+        this.loading = false
+        this.flowSrc = 'http://10.0.11.9:2080/#/grain-room/condition/current?user=grainszy&pass=bupt%40Htl301&grainRoomId=' + this.warehouse.cloudId;  //直接给flowSrc赋值链接
+        setTimeout(()=>{
+          this.loading = true
+        },1000)
+      },
     },
     mounted: function () {
       this.fetchUser();

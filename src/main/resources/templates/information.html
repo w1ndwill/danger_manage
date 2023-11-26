@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <!-- 引入 Vue.js 和 Element-UI -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<style>
+    .logo{
+        height: 24px; /* 设置标题高度为24像素 */
+        font-family: Arial, sans-serif; /* 字体 */
+        font-size: 24px; /* 字体大小 */
+        color: #007BFF; /* 字体颜色 */
+        text-align: left; /* 对齐方式 */
+        margin-top: 20px; /* 距离顶部的间距 */
+        border-bottom: 1px solid #000000; /* 添加下边框 */
+        border-bottom-color: #007BFF; /* 改变下边框颜色为红色 */
+        padding-bottom: 10px; /* 设置标题与下边框之间的间隔 */
+    }
+    .status{
+        padding:8px;
+    }
+    .search-bar{
+        padding:8px;
+    }
+    .year-label {
+        margin-left: 2em; /* 设置年份标签，可以调整左间距 */
+    }
+    .search-input {
+        width: 30%; /* 设置搜索框的宽度，可以根据需要调整 */
+    }
+    .e1{
+        width: 60%;/*设置el-input属性的宽度*/
+    }
+
+    .form-item-flex {
+        /*align-items: baseline; !* 单行框头部对齐 *!*/
+        margin-bottom: 10px;
+    }
+    .form-item-flex label {
+        white-space: nowrap; /* label文字不换行 */
+    }
+    .form-item-flex span {
+        margin-right: 5px;
+    }
+    label {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+        color: #000000;
+        font-weight: bold;
+    }
+    #app {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px;
+    }
+</style>
+<style scoped>
+    /* 标题行和偶数行背景颜色为灰色 */
+    .el-table tr:nth-child(even), .el-table thead {
+        background-color: #f0f0f0;
+    }
+    /* 奇数行背景颜色为白色 */
+    .el-table tr:nth-child(odd) {
+        background-color: #ffffff;
+    }
+</style>
+
+<body>
+<div id="app">
+    <!-- 任务和实施选项 -->
+    <div class="logo">
+        <label>信息中心 &nbsp&nbsp 信息中心</label>
+    </div>
+    <!-- 任务状态和任务时效下拉框 -->
+
+    <div class="status">
+        <label>通知类型:</label>
+        <el-select v-model="info_type" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="未发布" value="未发布"></el-option>
+            <el-option label="进行中" value="进行中"></el-option>
+            <el-option label="已结束" value="已结束"></el-option>
+            <el-option label="复查通过" value="复查通过"></el-option>
+        </el-select>
+        <label>安全级别:</label>
+        <el-select v-model="sec_level" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="未逾期" value="未逾期"></el-option>
+            <el-option label="已逾期" value="已逾期"></el-option>
+        </el-select>
+        <label>紧急度:</label>
+        <el-select v-model="emer_level" placeholder="请选择">
+            <el-option label="不限" value="不限"></el-option>
+            <el-option label="未逾期" value="未逾期"></el-option>
+            <el-option label="已逾期" value="已逾期"></el-option>
+        </el-select>
+
+    </div>
+    <!-- 年份选择和搜索框 -->
+    <div style="clear:both;"></div> <!-- 添加一个清除浮动的空行 -->
+    <div class="search-bar">
+        <el-input  class="search-input" v-model="search" placeholder="请输入通知标题、通知编号进行模糊查询"></el-input>
+        <el-button @click="searchTasks" type="primary">搜索</el-button>
+        <el-button @click="reset">重置</el-button>
+    </div>
+
+    <div>
+        <!--        用于显示所有任务的表格-->
+        <el-table :data="information" style="width: 100%">
+            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column prop="number" label="#" width="20"></el-table-column>
+            <el-table-column prop="cover" label="封面" width="100"  ></el-table-column>
+            <el-table-column prop="title" label="通知标题" width="180"></el-table-column>
+            <el-table-column prop="check_type" label="检查类型" width="80"></el-table-column>
+            <el-table-column prop="info_type" label="通知类型" width="80"></el-table-column>
+            <el-table-column prop="eme_degree" label="紧急度"  width="80"></el-table-column>
+            <el-table-column prop="issuer" label="发布人"  width="90"></el-table-column>
+            <el-table-column prop="sec_level" label="安全级别"  width="80"></el-table-column>
+            <el-table-column prop="issue_time" label="发布时间" width="200"></el-table-column>
+            <el-table-column label="操作" width="300">
+                <template slot-scope="scope">
+                    <div style="display: flex; justify-content: space-around;">
+                        <el-button type="primary" icon="el-icon-edit" @click="editInfo(scope.row)">编辑</el-button>
+                        <el-button type="success" icon="el-icon-view" @click="viewInfo(scope.row)">详情</el-button>
+                        <el-button type="danger" icon="el-icon-delete" @click="deleteInfo(scope.row)">删除</el-button>
+                    </div>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <!--           所有任务表格的 分页设置，currentPage当前页码，pageSize一页显示多少数据-->
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[2, 10, 20, 50]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="information.length">
+        </el-pagination>
+    </div>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                info_type: '不限',
+                sec_level: '不限',
+                emer_level: '不限',
+                info_Page: [],
+                search: '',
+                information: [] , // 获取数据库中所有任务的数组
+                currentPage: 1, // 当前页数
+                pageSize: 2, // 每页显示的记录数
+                tableData:[], // 表格数据
+                Page: 1, // 当前页数
+                Size: 2, // 每页显示的记录数
+                check_typeMap: {
+                    '1':  '日常检查',
+                    '2': '专项检查',
+                    '3': '节假日检查',
+                    '4': '隐患排查',
+                    '5': '其他'
+                },
+                info_typeMap: {
+                    '1': '普通通知',
+                    '2': '检查通知',
+                    '3': '会议通知',
+                    '4': '培训通知',
+                },
+                eme_degreeMap: {
+                    '1': '低',
+                    '2': '中',
+                    '3': '高',
+                },
+                sec_levelMap: {
+                    '1': '公开',
+                    '2': '机密',
+                },
+            };
+        },
+        mounted() {
+            this.getAllInfo();
+        },
+        computed: {
+            // 对tasks[]数组进行分页的设置
+            tasksPage() {
+                // 根据currentPage和pageSize计算分页后的数据
+                const startIndex = (this.currentPage - 1) * this.pageSize;
+                const endIndex = startIndex + this.pageSize;
+                return this.information.slice(startIndex, endIndex);
+            },
+            // 对tableData[]数组进行分页的设置
+            tableDataPage() {
+                const Index = (this.Page - 1) * this.Size;
+                const end = Index + this.Size;
+                return this.tableData.slice(Index, end);
+            }
+        },
+        methods: {
+            getAllInfo() {
+                // 发起HTTP请求，获取数据
+                axios.get('/allInfo')
+                    .then(response => {
+                        // 将从后端获取的数据赋值给tasks[]属性
+                        this.information = response.data;
+
+                    })
+                    .catch(error => {
+                        console.error('获取任务时发生错误', error);
+                        console.log('完整的错误响应:', error.response);
+                    });
+            },
+            //tasks[]中的分页方法，获取每页显示几条记录的pageSize和当前页数的currentPage
+            handleSizeChange(val) {
+                this.pageSize = val;
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+            },
+            //tableData[]中的分页方法，获取每页显示几条记录的Size和当前页数的Page
+            SizeChange(val) {
+                this.Size = val;
+            },
+            CurrentChange(val) {
+                this.Page = val;
+            },
+            searchTasks() {
+                // 处理搜索逻辑
+                console.log('Searching tasks...');
+            },
+            reset() {
+                // 重置表单
+                this.search = '';
+            },
+            updateTableContent() {
+                // 更新表格内容的方法
+                this.getAllInfo();
+            },
+            handleTabClick(tab) {
+                // 切换选项卡时，可以在这里根据选项卡的名称请求对应的数据，更新表格内容
+                this.currentTab = tab.name;
+                this.fetchTableData();
+            },
+            search() {
+                // 根据关键词搜索
+                // 更新表格内容
+            },
+            resetSearch() {
+                // 重置搜索条件
+                // 更新表格内容
+            },
+            fetchTableData() {
+                // 根据选项卡名称请求对应的表格数据
+            },
+            editInfo(row) {
+                // 编辑任务
+                console.log('Editing task:', row);
+            },
+            viewInfo(row) {
+                // 查看任务详情
+                console.log('Viewing task:', row);
+            },
+            deleteInfo(row) {
+                // 删除任务
+                console.log('Deleting task:', row);
+            }
+        }
+    });
+</script>
+</body>
+</html>

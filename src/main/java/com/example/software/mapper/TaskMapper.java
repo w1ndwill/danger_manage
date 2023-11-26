@@ -4,14 +4,12 @@ import com.example.software.bean.Official;
 import com.example.software.bean.Task;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
-
 import java.util.List;
 import java.util.Map;
 
 @Mapper
 public interface TaskMapper {
     List<Task> getAllTasks();
-
     List<Official> getAllofficial();
 //    @Delete(" DELETE FROM task WHERE number = #{number}")
     void deleteTask(Task task);
@@ -20,4 +18,10 @@ public interface TaskMapper {
     void addchildtask(List<Task> task);
 //    void deletechildtask(Task task);
     List<Task> getContent(int number, String inspector);
+    void incrementCheckCount(Task task);
+
+    void incrementHiddenDangerCount(Task task);
+    void addcheck(Task task);
+    List<Task> getAllcheck();
+    void deletecheck(Task task);
 }

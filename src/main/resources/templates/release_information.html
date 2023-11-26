@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <!-- 引入 Vue.js 和 Element-UI -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <link rel="icon" href="../imgs/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/fonts/w-e-icon.woff">
+    <link href="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js.map"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+<style>
+    .logo{
+        !important;
+        height: 24px; /* 设置标题高度为24像素 */
+        font-family: Arial, sans-serif; /* 字体 */
+        font-size: 24px; /* 字体大小 */
+        color: #007BFF; /* 字体颜色 */
+        text-align: left; /* 对齐方式 */
+        margin-top: 20px; /* 距离顶部的间距 */
+        border-bottom: 1px solid #000000; /* 添加下边框 */
+        border-bottom-color: #007BFF; /* 改变下边框颜色为红色 */
+        padding-bottom: 35px; /* 设置标题与下边框之间的间隔 */
+    }
+
+    .input-bar{
+        padding:8px;
+    }
+
+    .circle-select{
+        padding: 10px;
+
+    }
+    .vice{
+        padding: 10px;
+    }
+    .annexes{
+        padding-left: 40px;
+        padding-bottom: 8px;
+    }
+    .circle-choose{
+        padding: 10px;
+    }
+    .face{
+        padding: 8px;
+    }
+    .form-item-flex label {
+        white-space: nowrap; /* label文字不换行 */
+        /*flex-shrink: 0; !* 防止label缩小，保持原始宽度 *!*/
+        /*width: 100px; !* 设置label的宽度 *!*/
+        /*margin-right: 10px; !* 可选：添加一些右侧间距 *!*/
+    }
+    .form-item-flex span {
+        margin-right: 5px;
+    }
+    .toolbar {
+        border: 1px solid #ccc;
+    }
+    .text {
+        border: 1px solid #ccc;
+        height: 500px;
+    }
+    label {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+        color: #000000;
+        font-weight: bold;
+    }
+    #app {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px;
+    }
+</style>
+<body>
+<div id="app">
+    <!-- 任务和实施选项 -->
+    <div class="logo">
+        <label>信息中心>发布通知</label>
+    </div>
+    <!-- 任务状态和任务时效下拉框 -->
+    <div class="input-bar">
+        <label style="padding-left:2px">通知标题:</label>
+        <el-input  v-model="titleinput"   placeholder="请输入通知标题" style="width:600px"></el-input>
+        <label style="padding-left: 40px">通知编号:</label>
+        <el-input  v-model="numberinput"  placeholder="请输入通知编号"  style="width: 200px"></el-input>
+    </div>
+    <div class="circle-select" style="display: flex; align-items: center;">
+        <label>通知类型:</label>
+        <div>
+            <el-radio-group v-model="radioNoticeType">
+                <el-radio label="普通通知">普通通知</el-radio>
+                <el-radio label="会议通知">会议通知</el-radio>
+                <el-radio label="检查通知">检查通知</el-radio>
+                <el-radio label="培训通知">培训通知</el-radio>
+            </el-radio-group>
+        </div>
+
+        <label style="margin-left: 100px;">安全级别:</label>
+        <div>
+            <el-radio-group v-model="radioSecurityLevel">
+                <el-radio label="公开">公开</el-radio>
+                <el-radio label="机密">机密</el-radio>
+
+            </el-radio-group>
+        </div>
+        <label style="margin-left: 100px">紧急度:</label>
+        <div>
+            <el-radio-group v-model="radioUrgencyLevel">
+                <el-radio label="低">低</el-radio>
+                <el-radio label="中">中</el-radio>
+                <el-radio label="高">高</el-radio>
+            </el-radio-group>
+        </div>
+    </div>
+    <div class="vice">
+        <label style="padding-left: 17px">副标题:</label>
+        <el-input  v-model="subtitleinput"   placeholder="请输入副标题" style="width:1200px"></el-input>
+    </div>
+    <div class="container-fluid">
+        <!--    顶部导航栏-->
+        <div class="row">
+            <label style="padding: 10px;">通知内容:</label>
+            <div class="col-md-6" style="padding-left:0px">
+                <div class="card-body" style="min-height: 100px">
+                    <div style="padding:0; color: #ccc"></div>
+                    <div id="div1" class="toolbar">
+                    </div>
+                    <div id="div2" class="text"> <!--可使用 min-height 实现编辑区域自动增加高度-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="annexes">
+        <div style="display: flex">
+        <label>附件:</label>
+            <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-change="handleChange"
+                    style="padding-left:14px"
+            >
+                <el-button size="big" type="primary"  >从附件库上传</el-button>
+            </el-upload>
+            <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-change="handleChange"
+                    style="padding-left: 20px"
+                    >
+                <el-button size="big" type="primary">本地上传</el-button>
+            </el-upload>
+        </div>
+    </div>
+    <div class="face">
+        <div style="display: flex">
+            <label>上传封面:</label>
+            <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-change="handleChange"
+                    style="padding-left:10px"
+            >
+                <el-button size="big" type="primary"  >点击添加/更换封面</el-button>
+            </el-upload>
+        </div>
+    </div>
+    <div class="circle-choose" style="display: flex; align-items: center;">
+        <div>
+            <label>发布范围:</label>
+            <el-radio-group v-model="radioScopeRelease">
+                <el-radio id="specify" label="3">指定对象</el-radio>
+                <el-radio id="all" :label="6">全员</el-radio>
+            </el-radio-group>
+            <div style="padding-left: 85px;padding-top: 15px">
+                <el-button id="localman" type="primary" icon="el-icon-upload2">本单位人员</el-button>
+                <el-button id="regulartory" type="primary" icon="el-icon-upload2">监管单位</el-button>
+                <el-button id="subordinate" type="primary" icon="el-icon-upload2">下辖企业</el-button>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-left: 110px;padding-top: 20px" >
+        <el-row>
+            <el-button id="publish" type="primary" @click="publish_Info">发布</el-button>
+            <el-button id="preserve" type="primary">保存</el-button>
+            <el-button id="getback" type="back" plain>返回</el-button>
+        </el-row>
+    </div>
+</div>
+
+<script>
+    // import EditForm from './EditForm.vue';
+    // import Table from './Table.vue';
+    //
+    new Vue({
+        el: '#app',
+
+        data() {
+            return {
+                search: '',
+                temporaryTaskDialogVisible: false,
+                radioNoticeType:['普通通知','会议通知','检查通知','培训通知'],
+                radioSecurityLevel:'',
+                radioUrgencyLevel:'',
+                radioScopeRelease:'',
+                titleinput:'',
+                numberinput:'',
+                subtitleinput:'',
+                tasks: [] , // 获取数据库中所有任务的数组
+            };
+        },
+        methods: {
+            publish_Info() {
+                axios.post('/addInfo', this.information)
+                    .then(response => {
+                        this.information = false;
+                        this.getAllInfo();
+                    })
+                    .catch(error => {
+                        console.log("保存失败：", error);
+                    });
+                let dataToSave = this.changeRows.map(row => {
+                    return {
+                        number: row.number,
+
+                    };
+                });
+            }
+        }
+    });
+</script>
+<script>
+    $(function () {
+        //富文本编辑器初始化代码
+        var E = window.wangEditor;
+        var editor = new E('#div1', '#div2');
+
+        editor.customConfig.uploadImgShowBase64 = true;   // 使用 base64 保存图片
+        editor.create();
+
+        //创建replaceAll()函数,用于替换字符串中出现的所有某个字符
+        String.prototype.replaceAll = function (FindText, RepText) {
+            return this.replace(new RegExp(FindText, "g"), RepText);
+        };
+        //发布文章按钮的点击事件，即封装数据，向后台传递
+        $("#publishBtn").click(function () {
+            console.info("click");
+            var postData = {};
+            postData.title = $("#titleInput").val();
+            postData.category = $("#categoryInput").val();
+
+            //替换双引号为两个单引号，方便编写SQL语句插入数据库中
+            var content = editor.txt.html().replaceAll("\"", "\'\'");
+            postData.content = content;
+            console.info(content);
+            postData.author_acc = "123";
+            postData.author_name = "admin";
+            postData.create_time = new Date().toLocaleDateString();
+            postData.last_edit_time = new Date().toLocaleDateString();
+            console.info(postData);
+            //向后台传递数据，需要根据具体后台来改
+            $.post("http://localhost:8099/publishArticle", postData, function (data) {
+                alert(data);
+            })
+        })
+    })
+</script>
+
+<script>
+    // 获取发布并预览按钮元素
+    const publishAndPreviewButton = document.getElementById('publish');
+    // 为发布并预览按钮添加点击事件监听器
+    publishAndPreviewButton.addEventListener('click', () => {
+        // 获取要发布的数据
+        const data = document.getElementById('data-input').value;
+
+        // 将数据发布到服务器
+        fetch('/publish', {
+            method: 'POST',
+            body: data
+        })
+            .then(response => {
+                // 处理发布成功的响应
+                console.log('数据发布成功！');
+
+                // 预览数据
+                const previewElement = document.getElementById('preview-element');
+                previewElement.innerHTML = data;
+            })
+            .catch(error => {
+                // 处理发布失败的情况
+                console.error('数据发布失败：', error);
+            });
+    });
+</script>
+
+</body>
+</html>
