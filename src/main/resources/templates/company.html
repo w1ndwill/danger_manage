@@ -6,7 +6,7 @@
   <!-- import CSS -->
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
   <style>
     /* 侧边栏大小 */
     .el-menu-vertical-demo:not(.el-menu--collapse) {
@@ -111,7 +111,7 @@
           </el-menu-item>
           <el-menu-item index="2">
             <i class="el-icon-document"></i>
-            <span slot="title">信息中心</span>
+            <span slot="title" @click="switchPage_Info">信息中心</span>
           </el-menu-item>
           <el-submenu index="3">
             <template slot="title">
@@ -170,6 +170,10 @@
         var iframe=document.querySelector("iframe");
         iframe.src="/home";
       },
+      switchPage_info() {
+        var iframe=document.querySelector("iframe");
+        iframe.src="/information1";
+      },
       fetchUser: function () {
         axios.get('/user').then(function (response) {
           this.userBean = response.data;
@@ -186,11 +190,10 @@
           this.loading = true
         },1000)
       },
+
     },
     mounted: function () {
       this.fetchUser();
     }
   })
 </script>
-
-</html>

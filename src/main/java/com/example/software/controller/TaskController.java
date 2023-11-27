@@ -17,8 +17,9 @@ public class TaskController {
     private TaskService taskService;
     @GetMapping("/all")
     public List<Task> getAllTasks() {
-            List all=taskMapper.getAllTasks();
-            return all;
+        System.out.println("all方法被调用了");
+        List all=taskMapper.getAllTasks();
+        return all;
     }
 
     @GetMapping("/allofficial")

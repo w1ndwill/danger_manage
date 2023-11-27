@@ -51,6 +51,11 @@ public class LoginController {
         return "home";
     }
 
+    @RequestMapping("/home1")
+    public String home1() {
+        return "home_manager";
+    }
+
     @RequestMapping("/mychecktask")
     public String checktask() {
         return "mychecktask";
@@ -59,6 +64,11 @@ public class LoginController {
     @RequestMapping("/information")
     public String information() {
         return "information";
+    }
+
+    @RequestMapping("/information1")
+    public String information1() {
+        return "information1";
     }
 
     @RequestMapping("/release")
@@ -74,6 +84,16 @@ public class LoginController {
     @RequestMapping("/managecompany")
     public String managecompany() {
         return "manage_company";
+    }
+
+    @RequestMapping("/manageAcc")
+    public String manageAcc() {
+        return "manage_Acc";
+    }
+
+    @RequestMapping("/mapTask")
+    public String mapTask() {
+        return "taskMap";
     }
 
     @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
@@ -166,5 +186,7 @@ public class LoginController {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
         }
     }
+
+
 }
 

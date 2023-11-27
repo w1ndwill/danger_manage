@@ -32,5 +32,12 @@
         SELECT truename FROM user WHERE truename = #{truename} AND identity = #{identity}
     </select>
 
+    <select id="getAllUser" resultType="com.example.software.bean.UserBean">
+        SELECT * FROM user
+    </select>
+
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM user WHERE id = #{id}
+    </delete>
 
 </mapper>

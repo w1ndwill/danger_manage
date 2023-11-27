@@ -1,7 +1,10 @@
 package com.example.software.mapper;
 
+import com.example.software.bean.Info;
 import com.example.software.bean.UserBean;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface UserMapper {
     UserBean getInfo(String name,String password);
@@ -12,4 +15,8 @@ public interface UserMapper {
     boolean checkAuthCode(String authCode, int identity);
 
     UserBean getname(String name);
+    List<UserBean> getAllUser();
+
+    void deleteUser(UserBean user);
+
 }

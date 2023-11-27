@@ -12,4 +12,6 @@ public interface InfoMapper {
     List<Info> getAllInfo();
 
     void addInfo(Info info);
+
+    void deleteInfo(Info info);
 }

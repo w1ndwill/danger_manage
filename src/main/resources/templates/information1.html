@@ -50,6 +50,7 @@
     .form-item-flex span {
         margin-right: 5px;
     }
+
     label {
         font-family: 'Arial', sans-serif;
         font-size: 18px;
@@ -117,7 +118,7 @@
     <div style="clear:both;"></div> <!-- 添加一个清除浮动的空行 -->
     <div class="search-bar">
         <el-input  class="search-input" v-model="search" placeholder="请输入通知标题、通知编号进行模糊查询"></el-input>
-        <el-button @click="searchInfo" type="primary">搜索</el-button>
+        <el-button @click="search" type="primary">搜索</el-button>
         <el-button @click="reset">重置</el-button>
     </div>
 
@@ -137,12 +138,10 @@
                     {{ scope.row.issue_time | formatDate }}
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="300">
+            <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
                     <div style="display: flex; justify-content: space-around;">
-                        <el-button type="primary" icon="el-icon-edit" @click="editInfo(scope.row)">编辑</el-button>
                         <el-button type="success" icon="el-icon-view" @click="viewInfo(scope.row)">详情</el-button>
-                        <el-button type="danger" icon="el-icon-delete" @click="deleteInfo(scope.row)">删除</el-button>
                     </div>
                 </template>
             </el-table-column>
@@ -190,8 +189,8 @@
                 tableData:[], // 表格数据
                 Page: 1, // 当前页数
                 Size: 2, // 每页显示的记录数
-                dialogVisible: false, // 是否显示对话框
-                currentRow: null, // 当前选中的行
+                dialogVisible: false,
+                currentRow: null,
                 check_typeMap: {
                     '1':  '日常检查',
                     '2': '专项检查',
@@ -261,13 +260,9 @@
             CurrentChange(val) {
                 this.Page = val;
             },
-            searchTasks() {
-                // 处理搜索逻辑
-                console.log('Searching tasks...');
-            },
             reset() {
-                // 重置表单
                 this.search = '';
+                this.getAllInfo();
             },
             updateTableContent() {
                 // 更新表格内容的方法
@@ -278,7 +273,7 @@
                 this.currentTab = tab.name;
                 this.fetchTableData();
             },
-            searchInfo() {
+            search() {
                 const filteredInfo = this.information.filter(tasks => {
                     return (
                         (tasks.title && tasks.title.includes(this.search))
@@ -293,10 +288,6 @@
             fetchTableData() {
                 // 根据选项卡名称请求对应的表格数据
             },
-            editInfo(row) {
-                // 编辑任务
-                console.log('Editing task:', row);
-            },
             viewInfo(row) {
                 if (row && 'title' in row) {
                     this.currentRow = row;
@@ -305,28 +296,6 @@
                     console.error('Row is null or does not have a title property');
                 }
             },
-            deleteInfo(row) {
-                axios.delete('/deleteInfo', {
-                    data: {
-                        number: row.number
-                    }
-                })
-                    .then(response => {
-                        console.log('删除通知成功', response);
-                        this.$message({
-                            type: 'success',
-                            message: '删除通知成功'
-                        });
-                        this.updateTableContent();
-                    })
-                    .catch(error => {
-                        console.error('删除通知时发生错误', error);
-                        this.$message({
-                            type: 'error',
-                            message: '删除通知时发生错误'
-                        });
-                    });
-            }
         }
     });
 </script>

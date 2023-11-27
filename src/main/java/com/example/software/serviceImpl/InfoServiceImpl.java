@@ -21,4 +21,9 @@ public class InfoServiceImpl implements InfoService {
     public void addInfo(Info info) {
         infoMapper.addInfo(info);
     }
+
+    @Override
+    public void deleteInfo(Info info) {
+        infoMapper.deleteInfo(info);
+    }
 }

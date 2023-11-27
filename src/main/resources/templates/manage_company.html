@@ -78,13 +78,13 @@
   <!-- 任务状态和任务时效下拉框 -->
   <div style="padding: 5px">
     <label>层级:</label>
-    <el-select v-model="taskStatus" placeholder="请选择">
+    <el-select v-model="level" placeholder="请选择">
       <el-option label="不限" value="不限"></el-option>
       <el-option label="所有下级" value="所有下级"></el-option>
       <el-option label="直接下级" value="直接下级"></el-option>
     </el-select>
     <label>重点关注企业:</label>
-    <el-select v-model="taskDeadline" placeholder="请选择">
+    <el-select v-model="isImportant" placeholder="请选择">
       <el-option label="不限" value="不限"></el-option>
       <el-option label="否" value="否"></el-option>
       <el-option label="是" value="是"></el-option>
@@ -92,7 +92,7 @@
   </div>
   <div style="padding: 5px">
     <label>重点监管领域:</label>
-    <el-select v-model="taskStatus" placeholder="请选择">
+    <el-select v-model="field" placeholder="请选择">
       <el-option label="不限" value="不限"></el-option>
       <el-option label="有限空间" value="有限空间"></el-option>
       <el-option label="喷涂作业" value="喷涂作业"></el-option>
@@ -126,7 +126,7 @@
     </el-dialog>
 
     <label>风险等级:</label>
-    <el-select v-model="taskDeadline" placeholder="请选择">
+    <el-select v-model="sec_level" placeholder="请选择">
       <el-option label="不限" value="不限"></el-option>
       <el-option label="重大风险" value="重大风险"></el-option>
       <el-option label="较大风险" value="较大风险"></el-option>
@@ -139,7 +139,7 @@
     <el-input  class="search-input" v-model="search" placeholder="请输入企业名称、直接监管单位、行业进行模糊查询"></el-input>
     <el-button @click="searchTasks" type="primary">搜索</el-button>
     <el-button @click="reset">重置</el-button>
-    <el-select v-model="taskDeadline" placeholder="批量操作" style="float:right; width:150px; margin-right: 10px;">
+    <el-select v-model="operation1" placeholder="批量操作" style="float:right; width:150px; margin-right: 10px;">
       <el-option label="批量操作" value="批量操作"></el-option>
       <el-option label="批量删除" value="批量删除"></el-option>
       <el-option label="导出列表" value="导出列表"></el-option>
@@ -164,7 +164,7 @@
             <el-button type="primary" icon="el-icon-edit" @click="editTask(scope.row)">编辑</el-button>
             <el-button type="success" icon="el-icon-view" @click="viewTask(scope.row)">进入单位</el-button>
             <el-button type="danger" icon="el-icon-delete" @click="deleteTask(scope.row)">企业履历</el-button>
-            <el-select v-model="taskDeadline" placeholder="更多操作">
+            <el-select v-model="operation" placeholder="更多操作">
               <el-option label="更多操作" value="更多操作"></el-option>
               <el-option label="调整监管单位" value="调整监管单位"></el-option>
               <el-option label="更改企业状态" value="更改企业状态"></el-option>
@@ -194,10 +194,8 @@
   new Vue({
     el: '#app',
     data: {
-      taskStatus: '不限',
-      taskDeadline: '不限',
       search: '',
-      company: [], // 用于存储任务的数组
+      company: [],
       currentPage: 1, // 当前页数
       pageSize: 2, // 每页显示的记录数
       industry: '',
@@ -213,6 +211,12 @@
       searchForm : '',
       resetSearch : '',
       minorCategoryOptions: [],
+      level: '',
+      isImportant: '',
+      field: '',
+      sec_level: '',
+      operation: '',
+      operation1: '',
     },
     methods: {
       getAllcompanies() {

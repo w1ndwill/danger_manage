@@ -115,7 +115,6 @@
       <el-radio-group v-model="radioSecurityLevel">
         <el-radio label="公开">公开</el-radio>
         <el-radio label="机密">机密</el-radio>
-
       </el-radio-group>
     </div>
     <label style="margin-left: 100px">紧急度:</label>
@@ -143,7 +142,6 @@
       </div>
     </div>
   </div>
-
   <div class="annexes">
     <div style="display: flex">
       <label>附件:</label>
@@ -165,7 +163,6 @@
       </el-upload>
     </div>
   </div>
-
   <div class="face">
     <div style="display: flex">
       <label>上传封面:</label>
@@ -179,7 +176,6 @@
       </el-upload>
     </div>
   </div>
-
   <div class="circle-choose" style="display: flex; align-items: center;">
     <div>
       <label>发布范围:</label>
@@ -194,11 +190,11 @@
       </div>
     </div>
   </div>
-
   <div class="row" style="padding-left: 110px;padding-top: 20px" >
+
     <el-row>
-      <el-button  type="primary"  @click="publish_Info">发布并预览</el-button>
-      <el-button id="preserve" type="primary"  @click="saveButton">保存</el-button>
+      <el-button id="publish" type="primary" @click="publish_Info">发布并预览</el-button>
+      <el-button id="preserve" type="primary" @click="saveButton">保存</el-button>
       <el-button id="getback" type="back" plain>返回</el-button>
     </el-row>
   </div>
@@ -219,39 +215,53 @@
         userBean: '',
         editorContent: '',
         fileList: [],
+        isCollapsed: false,
+        editor: null,
       };
     },
     mounted() {
       this.fetchUser();
+      this.initEditor();
     },
     methods: {
-      publish_Info() {
-        // var E = window.wangEditor;
-        // var editor = new E('#div1', '#div2');
-        // this.editorContent = editor.txt.html();
-        // var data = {
-        //     title: this.titleinput,
-        //     number: this.numberinput,
-        //     info_Type: this.radioNoticeType,
-        //     sec_level: this.radioSecurityLevel,
-        //     eme_degree: this.radioUrgencyLevel,
-        //     scope: this.radioScopeRelease,
-        //     details: this.editorContent,
-        //     issue_time: new Date().toLocaleDateString(),
-        //     issuer: userBean.truename,
-        //     };
-        // console.log(data);
-        // axios.post('/addInfo', data)
-        //         .then(response => {
-        //           // 处理响应
-        //           console.log('数据发布成功！');
-        //         })
-        //         .catch(error => {
-        //           // 处理错误
-        //           console.error('数据发布失败：', error);
-        //         });
+      async publish_Info() {
+        // // 检查radioSecurityLevel是否为空
+        // if (this.radioSecurityLevel === '') {
+        //   this.$message({
+        //     message: '安全级别不能为空！',
+        //     type: 'warning'
+        //   });
+        //   return;
+        // }
+        // 等待 fetchUser 方法完成
+        await this.fetchUser(); // 添加 await 关键字
+        var E = window.wangEditor;
+        var editor = new E('#div1', '#div2');
+        this.editorContent = this.editor.txt.text();
+        var data = {
+          title: this.titleinput,
+          number: this.numberinput,
+          info_type: this.radioNoticeType,
+          sec_level: this.radioSecurityLevel,
+          eme_degree: this.radioUrgencyLevel,
+          scope: this.radioScopeRelease,
+          details: this.editorContent,
+          issue_time: new Date().toISOString(),
+          issuer: this.userBean.truename, // 使用 this.userBean 替代 userBean
+        };
+        console.log(data);
+        axios.post('/addInfo', data)
+                .then(response => {
+                  // 处理响应
+                  console.log('数据发布成功！');
+                })
+                .catch(error => {
+                  // 处理错误
+                  console.error('数据发布失败：', error);
+                });
         console.log("发布方法");
-        },
+      },
+
       fetchUser: function () {
         axios.get('/user').then(function (response) {
           this.userBean = response.data;
@@ -262,9 +272,22 @@
       handleChange(file, fileList) {
         this.fileList = fileList.slice(-3);
       },
+      initEditor() {
+          const E = window.wangEditor;
+          const editor = new E('#div1', '#div2');
+          editor.customConfig.uploadImgShowBase64 = true;   // 使用 base64 保存图片
+          editor.create();
+          this.editor = editor;
+      },
       saveButton() {
         console.log("保存方法");
-      }
+      },
+      handleOpen() {
+        console.log('handleOpen');
+      },
+      handleClose() {
+        console.log('handleClose');
+      },
     },
   });
 </script>
@@ -302,35 +325,35 @@
           })
 
 </script>
+<!--<script>-->
+<!--  // 获取保存按钮元素-->
+<!--  const saveButton = document.getElementById('preserve');-->
 
-<script>
-  // // 获取保存按钮元素
-  // const saveButton = document.getElementById('preserve');
-  //
-  // // 为保存按钮添加点击事件监听器
-  // saveButton.addEventListener('click', () => {
-  //   // 获取要保存的数据
-  //   const data = document.getElementById('data-input').value;
-  //   // 将数据保存到服务器
-  //   fetch('/save', {
-  //     method: 'POST',
-  //     body: data
-  //   })
-  //           .then(response => {
-  //             // 处理保存成功的响应
-  //             console.log('数据保存成功！');
-  //           })
-  //           .catch(error => {
-  //             // 处理保存失败的情况
-  //             console.error('数据保存失败：', error);
-  //           });
-  // });
-</script>
+<!--  // 为保存按钮添加点击事件监听器-->
+<!--  saveButton.addEventListener('click', () => {-->
+<!--    // 获取要保存的数据-->
+<!--    const data = document.getElementById('data-input').value;-->
+<!--    // 将数据保存到服务器-->
+<!--    fetch('/save', {-->
+<!--      method: 'POST',-->
+<!--      body: data-->
+<!--    })-->
+<!--            .then(response => {-->
+<!--              // 处理保存成功的响应-->
+<!--              console.log('数据保存成功！');-->
+<!--            })-->
+<!--            .catch(error => {-->
+<!--              // 处理保存失败的情况-->
+<!--              console.error('数据保存失败：', error);-->
+<!--            });-->
+<!--  });-->
+<!--</script>-->
 <script>
   // 获取返回按钮元素
   const backButton = document.getElementById('getback');
   // 为返回按钮添加点击事件监听器
   backButton.addEventListener('click', () => {
+    console.log("返回方法");
     // 执行返回操作，例如使用 history.back() 方法返回上一页
     history.back();
   });

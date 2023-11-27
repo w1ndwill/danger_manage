@@ -8,14 +8,13 @@
     <!-- 引入 Vue.js 和 Element-UI -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.14/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
 <style>
     .logo{
-
         height: 20px; /* 设置标题高度为24像素 */
         font-family: Arial, sans-serif; /* 字体 */
         font-size: 18px; /* 字体大小 */
@@ -27,10 +26,21 @@
         width: 10%; /* 设置标题宽度为100% */
         padding-bottom: 10px; /* 设置标题与下边框之间的间隔 */
     }
+    label {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+        color: #000000;
+        font-weight: bold;
+    }
     .refresh{
         float: right;
     }
-
+    #app {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px;
+    }
 </style>
 <body>
 <div id="app">
@@ -39,7 +49,6 @@
 
     </div>
     <div>
-
         <label>账号类别：</label>
         <div  style="display:inline-block;">
             <el-select size="small" v-model="origin" placeholder="请选择">
@@ -50,14 +59,6 @@
             </el-select>
         </div>
 
-        <label>注册时间:</label>
-        <div  style="display:inline-block;">
-            <el-select size="small" v-model="quality" placeholder="请选择">
-                <el-option label="不限" value="不限"></el-option>
-                <el-option label="一般隐患" value="一般隐患"></el-option>
-                <el-option label="重大隐患" value="重大隐患"></el-option>
-            </el-select>
-        </div>
         <label>隐患状态:</label>
         <div size="small" style="display:inline-block;">
             <el-select v-model="state" placeholder="请选择">
@@ -66,11 +67,10 @@
                 <el-option label="重大隐患" value="重大隐患"></el-option>
             </el-select>
         </div>
-    </div>
-    <div>
+
         <label>账号ID：</label>
         <div  style="display:inline-block;">
-            <el-input v-model="name" placeholder="账号ID"></el-input>
+            <el-input v-model="accId" placeholder="账号ID"></el-input>
         </div>
         <el-button
                 type="primary"
@@ -79,25 +79,19 @@
             搜索
         </el-button>
         <div class="refresh" >
-            <el-button type="warning" size="small" @click="handleDownload">
-                显示密码
-            </el-button>
-            <el-button type="primary" size="small" @click="handleDownload">
+            <el-button type="primary" size="small">
                 excel导出表格
             </el-button>
             <el-button plain size="small" onclick="javascript:location.reload()" icon="el-icon-refresh">刷新</el-button>
-
-
         </div>
         <template>
             <el-table
                     ref="multipleTable"
-                    :data="tableData"
+                    :data="AccountData"
                     stripe
                     style="width: 100%"
                     max-height="550"
                     @selection-change="handleSelectionChange">
-
                 <el-table-column
                         fixed
                         prop="id"
@@ -120,27 +114,26 @@
                         width="250">
                 </el-table-column>
                 <el-table-column
-                        prop="password"
                         label="密码"
                         width="450">
-
-
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.showPassword">{{ scope.row.password }}</span>
+                        <span v-else>******</span>
+                        <i class="el-icon-close" @click="togglePassword(scope.row)">
+                        </i>
+                    </template>
                 </el-table-column>
-
-
-
                 <el-table-column
                         fixed="right"
                         label="操作"
                         width="120">
                     <template slot-scope="scope">
                         <el-button
-                                @click.native.prevent="deleteRow(scope.$index, tableData)"
+                                @click="deleteAcc(scope.row)"
                                 type="danger"
                                 size="small">
                             移除
                         </el-button>
-
                     </template>
                 </el-table-column>
             </el-table>
@@ -151,14 +144,20 @@
 <script>
     new Vue({
             el: '#app',
+            data() {
+                return {
+                    origin: '不限',
+                    state: '不限',
+                    accId: '',
+                    showPassword: false,
+                    AccountData: [],
+                };
+            },
+            mounted() {
+                this.getAllUsers();
+            },
             methods: {
-
-
-                deleteRow(index, rows) {
-                    rows.splice(index, 1);
-                },
-
-                toggleSelection(rows) {
+                toggleSelection(rows) { //多选操作
                     if (rows) {
                         rows.forEach(row => {
                             this.$refs.multipleTable.toggleRowSelection(row);
@@ -170,25 +169,46 @@
                 handleSelectionChange(val) {
                     this.multipleSelection = val;
                 },
+                togglePassword(row) {
+                    console.log('为行切换密码：', row);
+                    row.showPassword = !row.showPassword;
+                },
+                deleteAcc(row) {
+                    axios.delete('/deleteuser', {
+                        data: {
+                            id: row.id,
+                        },
+                    })
+                        .then(response => {
+                            console.log('删除账号成功:', response);
+                            this.$message({
+                                message: '删除账号成功',
+                                type: 'success'
+                            });
+                            this.getAllUsers();
+                        })
+                        .catch(error => {
+                            console.error('删除时发生错误:', error);
+                            this.$message.error('删除失败');
+                        });
+                },
+                getAllUsers(){
+                    axios.get('/allusers')
+                        .then(response => {
+                            // 将从后端获取的数据赋值给tasks[]属性
+                            console.log(response.data);
+                            this.AccountData = response.data.map(account => ({
+                                ...account,
+                                showPassword: false,
+                            }));
+                        })
+                        .catch(error => {
+                            console.error('获取任务时发生错误', error);
+                            console.log('完整的错误响应:', error.response);
+                        });
+                },
             },
-            data() {
-
-                return {
-                    tableData: [{
-                        id: '1',
-                        name: '12345',
-                        identity: '蜘蛛侠',
-                        truename: '张天赐',
-                        password: '123456',
-                    }],
-
-
-
-                }
-            },
-
         }
-
     )
 </script>
 </html>

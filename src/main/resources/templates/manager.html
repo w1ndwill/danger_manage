@@ -137,14 +137,17 @@
                         <i class="el-icon-document"></i>
                         <span slot="title"@click="switchPage_dangerlists">隐患清单</span>
                     </el-menu-item>
-
-                    <el-submenu  index="5">
+                    <el-menu-item index="5" >
+                        <i class="el-icon-document"></i>
+                        <span slot="title"@click="switchPage_mapTask">任务地图</span>
+                    </el-menu-item>
+                    <el-submenu  index="6">
                         <template slot="title">
                         <i class="el-icon-setting"></i>
                         <span slot="title">系统设置</span>
                             </el-badge>
                         </template>
-                        <el-menu-item index="1-1">账号管理</el-menu-item>
+                        <el-menu-item index="1-1" @click="switchPage_manageAcc">账号管理</el-menu-item>
                         <el-menu-item index="1-2" @click="switchPage_managecompany">企业管理</el-menu-item>
                     </el-submenu>
                 </el-menu>
@@ -180,7 +183,7 @@
             },
             switchPage_home:function (){
                 var iframe=document.querySelector("iframe");
-                iframe.src="/home";
+                iframe.src="/home1";
             },
             switchPage_mychecktask:function (){
                 var iframe=document.querySelector("iframe");
@@ -201,6 +204,14 @@
             switchPage_managecompany:function (){
                 var iframe=document.querySelector("iframe");
                 iframe.src="/managecompany";
+            },
+            switchPage_manageAcc:function (){
+                var iframe=document.querySelector("iframe");
+                iframe.src="/manageAcc";
+            },
+            switchPage_mapTask:function (){
+                var iframe=document.querySelector("iframe");
+                iframe.src="/mapTask";
             },
             handleIframe(e) {
                 console.log('切换', e)

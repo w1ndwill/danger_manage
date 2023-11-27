@@ -35,7 +35,22 @@ public class InfoController {
             return ResponseEntity.status(HttpStatus.CREATED).build(); //201
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("addInfo出错了");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); //500
         }
     }
+
+    @DeleteMapping("/deleteInfo")
+    public ResponseEntity<String> deleteInfo(@RequestBody Info information) {
+        try {
+            infoService.deleteInfo(information);
+            System.out.println("deleteInfo被调用了");
+            return ResponseEntity.status(HttpStatus.CREATED).build(); //201
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("deleteInfo出错了");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); //500
+        }
+    }
+
 }

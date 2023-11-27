@@ -1,5 +1,8 @@
 package com.example.software.bean;
 
+import javax.xml.crypto.Data;
+import java.util.Date;
+
 public class Info {
     private int number;
     private String title;
@@ -7,7 +10,7 @@ public class Info {
     private String eme_degree;
     private String issuer;
     private String sec_level;
-    private String issue_time;
+    private Date issue_time;
     private String details;
     private int scope;
 
@@ -54,13 +57,12 @@ public class Info {
         this.sec_level = sec_level;
     }
 
-    public String getIssue_time() {
+    public Date getIssue_time() {
         return issue_time;
     }
-    public void setIssue_time(String issue_time) {
+    public void setIssue_time(Date issue_time) {
         this.issue_time = issue_time;
     }
-
     public String getDetails() {
         return details;
     }

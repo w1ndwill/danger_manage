@@ -6,4 +6,6 @@ import java.util.List;
 public interface InfoService {
     List<Info> AllInfo();
     void addInfo(Info info);
+
+    void deleteInfo(Info info);
 }
