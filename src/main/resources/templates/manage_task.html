@@ -116,7 +116,7 @@
 
 <!--        <el-button @click="openDialog" type="info" icon="el-icon-edit">发起临时任务</el-button>-->
         <el-button style="float:right;" @click="exportList" type="success" icon="el-icon-download">导出列表</el-button>
-        <el-button style="float:right;" @click="openTemporaryTaskDialog" type="info" icon="el-icon-edit">发起临时任务</el-button>
+        <el-button style="float:right;" @click="openTemporaryTaskDialog" type="info" icon="el-icon-edit">发起巡查任务</el-button>
     </div>
 
     <div>
@@ -223,7 +223,7 @@
     </div>
 
     <!-- 弹窗：发起临时任务 -->
-    <el-dialog :visible.sync="temporaryTaskDialogVisible" title="发起临时任务" :width="800">
+    <el-dialog :visible.sync="temporaryTaskDialogVisible" title="发起巡查任务" :width="800">
         <!-- 巡查计划信息部分 -->
         <el-form ref="temporaryTaskForm" :model="temporaryTaskForm" label-width="100px">
             <el-form-item  label="检查类型:" prop="inspectionType">
