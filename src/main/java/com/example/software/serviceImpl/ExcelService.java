@@ -34,9 +34,8 @@ public class ExcelService {
             titleRow.createCell(2).setCellValue("检查类型");
             titleRow.createCell(3).setCellValue("隐患数");
             titleRow.createCell(4).setCellValue("检查人");
-            titleRow.createCell(5).setCellValue("检查人类型");
-            titleRow.createCell(6).setCellValue("开始");
-            titleRow.createCell(7).setCellValue("结束");
+            titleRow.createCell(5).setCellValue("开始");
+            titleRow.createCell(6).setCellValue("结束");
             // 可以根据需要添加其他标题列的内容
 
             // 将数据写入工作表
@@ -48,9 +47,8 @@ public class ExcelService {
                 row.createCell(2).setCellValue(record.getInspectionType());
                 row.createCell(3).setCellValue(record.getHiddenDangerCount());
                 row.createCell(4).setCellValue(record.getInspector());
-                row.createCell(5).setCellValue(record.getInspectorType());
-                row.createCell(6).setCellValue(record.getstartDate());
-                row.createCell(7).setCellValue(record.getEndDate());
+                row.createCell(5).setCellValue(record.getstartDate());
+                row.createCell(6).setCellValue(record.getEndDate());
                 // 根据需要重复添加其他列的数据
             }
             // 设置响应头，告诉浏览器返回的是Excel文件

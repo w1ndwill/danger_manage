@@ -1,41 +1,19 @@
 package com.example.software.bean;
 
 public class Task {
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
     private String reason;
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
     private String number;
     private String taskName;
     private String company;
     private String inspectionType;
     private String hiddenDangerCount;
-
-    public String getCheckcount() {
-        return checkcount;
-    }
-
-    public void setCheckcount(String checkcount) {
-        this.checkcount = checkcount;
-    }
-
     private String checkcount;
     private String inspector;
-    private String inspectorType;
     private String startDate;
+    private String lng;
+    private String lat;
+
+    private String endDate;
 
     public String getEndDate() {
         return endDate;
@@ -44,8 +22,6 @@ public class Task {
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
-
-    private String endDate;
 
     public String getTaskName() {
         return taskName;
@@ -87,20 +63,52 @@ public class Task {
         this.inspector = inspector;
     }
 
-    public String getInspectorType() {
-        return inspectorType;
-    }
-
-    public void setInspectorType(String inspectorType) {
-        this.inspectorType = inspectorType;
-    }
-
     public String getstartDate() {
         return startDate;
     }
 
     public void setstartDate(String startDate) {
         this.startDate = startDate;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public String getCheckcount() {
+        return checkcount;
+    }
+
+    public void setCheckcount(String checkcount) {
+        this.checkcount = checkcount;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
     }
 
 

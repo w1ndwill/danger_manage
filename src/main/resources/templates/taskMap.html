@@ -46,64 +46,6 @@
     map.addControl(scaleCtrl);
     var navi3DCtrl = new BMapGL.NavigationControl3D();  // 添加3D控件
     map.addControl(navi3DCtrl);
-
-    // fetch('all') , {
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    // }
-    //     .then(response => response.json())
-    //     .then(response => {
-    //         console.log("all方法")
-    //         console.log(response.data);
-    //         // 遍历所有任务
-    //         response.data.forEach(function (task) {
-    //             var lng = task.lng;
-    //             var lat = task.lat;
-    //             var number = task.number;
-    //             var taskName = task.company;
-    //             var inspectionType = task.inspectionType;
-    //             var hiddenDangerCount = task.hiddenDangerCount;
-    //             var checkcount = task.checkcount;
-    //             var inspector = task.inspector;
-    //             var startDate = task.startDate;
-    //
-    //             // 创建点标记
-    //             var point = new BMapGL.Point(lng, lat);
-    //             var marker = new BMapGL.Marker(point);
-    //             map.addOverlay(marker);
-    //             var opts = {
-    //                 width: 200,
-    //                 height: 300,
-    //             };
-    //
-    //             var infoWindow = new BMapGL.InfoWindow('', opts); // 创建信息窗口对象
-    //             // 点标记添加点击事件
-    //             marker.addEventListener('click', function () {
-    //                 // 创建逆地理编码对象
-    //                 var geocoder = new BMapGL.Geocoder();
-    //                 // 根据坐标获取地址信息
-    //                 geocoder.getLocation(point, function (result) {
-    //                     if (result) {
-    //                         var address = result.address; // 获取地址信息
-    //                         infoWindow.setContent(
-    //                             '<div>' +
-    //                             '<p>任务编号：' + number + '</p>' +
-    //                             '<p>任务名称：' + taskName + '</p>' +
-    //                             '<p>巡检类型：' + inspectionType + '</p>' +
-    //                             '<p>隐患数量：' + hiddenDangerCount + '</p>' +
-    //                             '<p>检查次数：' + checkcount + '</p>' +
-    //                             '<p>巡检人员：' + inspector + '</p>' +
-    //                             '<p>开始时间：' + startDate + '</p>' +
-    //                             '<p>地址：' + address + '</p>' +
-    //                             '</div>'
-    //                         );
-    //                         map.openInfoWindow(infoWindow, point);
-    //                     }
-    //                 });
-    //             });
-    //         });
-    //     })
 </script>
 </body>
 <script>
@@ -144,6 +86,7 @@
                             var startDate = task.startDate;
 
                             // 创建点标记
+                            var point = new BMapGL.Point(lng, lat);
                             var point = new BMapGL.Point(lng, lat);
                             var marker = new BMapGL.Marker(point);
                             map.addOverlay(marker);
