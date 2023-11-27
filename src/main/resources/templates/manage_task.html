@@ -244,21 +244,17 @@
             </el-form-item>
 
             <el-form-item class="form-item-flex" label="被检查企业:" prop="company">
-                <el-input class="e1" v-model="temporaryTaskForm.company" placeholder="请输入被检查企业"></el-input>
+                <el-input class="e1" v-model="temporaryTaskForm.company" placeholder="请输入被检查企业">
+                    <i slot="suffix" class="el-icon-more" @click="openCompanyDialog"></i>
+                </el-input>
             </el-form-item>
 
             <el-form-item class="form-item-flex" label="隐患数量:" prop="hiddenDangerCount">
                 <el-input class="e1" v-model="temporaryTaskForm.hiddenDangerCount" placeholder="请输入隐患数量"></el-input>
             </el-form-item>
 
-            <el-form-item class="form-item-flex" label="隐患数量:" prop="checkcount">
+            <el-form-item class="form-item-flex" label="检查数量:" prop="checkcount">
                 <el-input class="e1" v-model="temporaryTaskForm.checkcount" placeholder="请输入检查数量"></el-input>
-            </el-form-item>
-
-            <el-form-item class="form-item-flex" label="检查人:" prop="inspector">
-                <el-input class="e1" v-model="temporaryTaskForm.inspector" placeholder="请输入检查人"  >
-                    <i slot="suffix" class="el-icon-user-solid" @click="openDialog"></i>
-                </el-input>
             </el-form-item>
 
             <el-form-item class="form-item-flex" prop="date">
@@ -284,7 +280,13 @@
                 </template>
             </el-form-item>
 
+            <el-form-item class="form-item-flex" label="检查人:" prop="inspector">
+                <el-input class="e1" v-model="temporaryTaskForm.inspector" placeholder="请输入检查人"  >
+                    <i slot="suffix" class="el-icon-user-solid" @click="openDialog"></i>
+                </el-input>
+            </el-form-item>
         </el-form>
+
         <div slot="footer" class="dialog-footer">
             <el-button @click="temporaryTaskDialogVisible = false">取消</el-button>
             <el-button type="primary" @click="submitTemporaryTaskForm">确定</el-button>
@@ -348,6 +350,32 @@
             <el-button type="primary" @click="submitTaskForm">确定</el-button>
         </div>
     </el-dialog>
+
+
+        <el-dialog :visible.sync="companyDialogVisible" title="企业选择">
+            <el-table :data="companyPage" style="width: 100%">
+                <el-table-column type="selection"></el-table-column>
+                <el-table-column prop="number" label="#" width="20"></el-table-column>
+                <el-table-column prop="name" label="企业名称" width="80"></el-table-column>
+                <el-table-column prop="domain" label="行业" width="120"></el-table-column>
+                <el-table-column prop="unit" label="监管单位" width="80"></el-table-column>
+                <el-table-column prop="area" label="直辖区域" width="150"></el-table-column>
+                <el-table-column prop="manager" label="管理员" width="80"></el-table-column>
+                <!-- 其他列省略，请根据你的数据结构添加 -->
+                <el-table-column  fixed="right" label="操作" width="80">
+                    <template slot-scope="scope">
+                        <el-button @click="handleRowButtonClick(scope.row)" size="small" type="primary">
+                            <i class="el-icon-s-promotion"></i> 加入
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="closeCompanyDialog">取消</el-button>
+                <el-button type="primary" @click="closeCompanyDialog">确定</el-button>
+            </div>
+        </el-dialog>
     <!-- 这里可以添加设定查询表的内容，比如el-table等 -->
     </div>
 </div>
@@ -395,6 +423,8 @@
                     keyword: '',
                 },
                 tableData:[], // 表格数据
+                companyPage:[],
+                companyDialogVisible: false,
                 Page: 1, // 当前页数
                 Size: 10, // 每页显示的记录数
                 changedRows: [], // 存储所有切换后的行信息
@@ -403,7 +433,7 @@
         mounted() {
             this.getAllTasks();
             this.getAllofficial();
-
+            this.getAllcompanies();
         },
         computed: {
             // 对tasks[]数组进行分页的设置
@@ -441,6 +471,18 @@
                     .then(response => {
                         // 将从后端获取的数据赋值给tasks[]属性
                         this.tableData = response.data;
+                    })
+                    .catch(error => {
+                        console.error('获取任务时发生错误', error);
+                        console.log('完整的错误响应:', error.response);
+                    });
+            },
+            getAllcompanies() {
+                // 发起HTTP请求，获取数据
+                axios.get('/allcompanies')
+                    .then(response => {
+                        // 将从后端获取的数据赋值给tasks[]属性
+                        this.companyPage = response.data;
                     })
                     .catch(error => {
                         console.error('获取任务时发生错误', error);
@@ -573,6 +615,14 @@
             closeDialog() {
                 this.dialogVisible = false;
             },
+            openCompanyDialog() {
+                // 打开被检查企业的更多选项弹窗
+                this.companyDialogVisible = true;
+            },
+            closeCompanyDialog() {
+                // 打开被检查企业的更多选项弹窗
+                this.companyDialogVisible = false;
+            },
             submitTaskForm(){
                 this.closeDialog();
             },
@@ -634,6 +684,12 @@
                     // 从 changedRows 数组中删除相应的行信息
                     this.changedRows = this.changedRows.filter(item => !(item.number === index2 && item.inspector === inspectorName2 && item.taskName === taskName2));
                 }
+            },
+            handleRowButtonClick(row) {
+                // 将该行企业名称填入到表单中
+                this.temporaryTaskForm.company = row.name;
+                // // 关闭 el-dialog
+                // this.closeCompanyDialog();
             },
             saveToDatabase(data) {
                 axios.post('/saveData', data)

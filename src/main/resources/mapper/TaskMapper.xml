@@ -24,15 +24,15 @@
             hiddenDangerCount = #{hiddenDangerCount},
             checkcount= #{checkcount},
             inspector = #{inspector},
-            inspectorType= #{inspectorType},
+--             inspectorType= #{inspectorType},
             startDate = #{startDate},
             endDate = #{endDate}
             WHERE
             number = #{number}
     </update>
     <insert id="addTask" parameterType="com.example.software.bean.Task">
-        INSERT INTO task (number,taskName, company, inspectionType,hiddenDangerCount,checkcount,inspector,inspectorType,startDate,endDate)
-        VALUES (#{number},#{taskName}, #{company}, #{inspectionType},#{hiddenDangerCount},#{checkcount},#{inspector},#{inspectorType},#{startDate},#{endDate})
+        INSERT INTO task (number,taskName, company, inspectionType,hiddenDangerCount,checkcount,inspector,startDate,endDate)
+        VALUES (#{number},#{taskName}, #{company}, #{inspectionType},#{hiddenDangerCount},#{checkcount},#{inspector},#{startDate},#{endDate})
     </insert>
 
     <insert id="addchildtask" parameterType="java.util.List">
