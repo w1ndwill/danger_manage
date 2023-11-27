@@ -32,7 +32,6 @@
         padding: 5px;
         background-color: white;
         border-radius: 10px;
-        overflow-y:auto;
     }
     .box2{
         position: absolute;
@@ -75,36 +74,36 @@
     .carousel-container {
         width: 600px; /* 设置容器元素的宽度 */
     }
-    .el-carousel__item h3 {
-        color: #475669;
-        font-size: 14px;
-        opacity: 0.75;
-        line-height: 350px;
-        margin: 0;
-    }
+    /*.el-carousel__item h3 {*/
+    /*    color: #475669;*/
+    /*    font-size: 14px;*/
+    /*    opacity: 0.75;*/
+    /*    line-height: 350px;*/
+    /*    margin: 0;*/
+    /*}*/
 
-    .el-carousel__item:nth-child(2n) {
-        background-color: #99a9bf;
-    }
-    .el-carousel__item:nth-child(2n+1) {
-        background-color: #d3dce6;
-    }
-    /*走马灯内容*/
-    .el-carousel__item h3 {
-        color: #475669;
-        font-size: 14px;
-        opacity: 0.75;
-        line-height: 150px;
-        margin: 0;
-    }
+    /*.el-carousel__item:nth-child(2n) {*/
+    /*    background-color: #99a9bf;*/
+    /*}*/
+    /*.el-carousel__item:nth-child(2n+1) {*/
+    /*    background-color: #d3dce6;*/
+    /*}*/
+    /*!*走马灯内容*!*/
+    /*!*.el-carousel__item h3 {*!*/
+    /*!*    color: #475669;*!*/
+    /*!*    font-size: 14px;*!*/
+    /*!*    opacity: 0.75;*!*/
+    /*!*    line-height: 150px;*!*/
+    /*!*    margin: 0;*!*/
+    /*!*}*!*/
 
-    .el-carousel__item:nth-child(2n) {
-        background-color: #99a9bf;
-    }
+    /*.el-carousel__item:nth-child(2n) {*/
+    /*    background-color: #99a9bf;*/
+    /*}*/
 
-    .el-carousel__item:nth-child(2n+1) {
-        background-color: #d3dce6;
-    }
+    /*.el-carousel__item:nth-child(2n+1) {*/
+    /*    background-color: #d3dce6;*/
+    /*}*/
 
     /*main中的表格 */
     .td{
@@ -149,8 +148,11 @@
         /* 设置按钮的高度 */
         width: 80px; /* 设置按钮的宽度 */
     }
-    .Info {
-        overflow: auto;
+    .carousel-image {
+        width: 100%; /* 图片宽度 */
+        height: 100%; /* 图片高度 */
+        object-fit: cover; /* 适应容器尺寸 */
+        /* 其他样式根据需要调整 */
     }
 </style>
 <body>
@@ -159,8 +161,8 @@
         <div class="box1">
             <div class="block">
                 <el-carousel trigger="click" height="350px" indicator-position="none">
-                    <el-carousel-item v-for="item in 4" :key="item">
-                        <h3 class="small">{{ item }}</h3>
+                    <el-carousel-item v-for="(item, index) in imageArray" :key="index">
+                        <img :src="item.src" :alt="item.alt" class="carousel-image" />
                     </el-carousel-item>
                 </el-carousel>
             </div>
@@ -209,14 +211,13 @@
                 <el-link class="link" type="primary">主要链接</el-link>
             </el-row>
         </div>
-
         <div class="box4">
             <div class="title">信息中心</div>
             <template>
                 <el-table
                         :data="tableData1"
                         stripe
-                        style="width: 100%; overflow-y: auto; height: 90%;">
+                        style="width: 100%">
                     <el-table-column prop="title" label="信息标题" width="200"  ></el-table-column>
                     <el-table-column prop="eme_degree" label="紧急度" width="100"  ></el-table-column>
                     <el-table-column prop="issuer" label="发布人" width="150"></el-table-column>
@@ -236,11 +237,15 @@
                 return {
                     tableData:[],
                     tableData1:[],
-                    visible: false }
+                    visible: false,
+                    imageArray: [
+                        { src: '/img1.jpg', alt: 'Image 1' },
+                        { src: '/img2.jpg', alt: 'Image 2' },
+                        { src: '/img3.jpg', alt: 'Image 3' },
+                    ]}
             },
         mounted() {
             this.fetchUser();
-            this.getAllInfo();
         },
         methods:{
             fetchUser: function () {
