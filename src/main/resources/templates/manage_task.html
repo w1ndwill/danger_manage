@@ -41,7 +41,7 @@
     }
     .form-item-flex {
         /*align-items: baseline; !* 单行框头部对齐 *!*/
-        margin-bottom: 20px;
+        margin-bottom: 5px;
         padding: 10px;
     }
     .form-item-flex label {
@@ -124,8 +124,8 @@
         <el-table :data="tasksPage" style="width: 100%">
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="number" label="#" width="20"></el-table-column>
-                <el-table-column prop="taskName" label="任务名称" width="150"  ></el-table-column>
-                <el-table-column prop="company" label="被检查企业" width="150"></el-table-column>
+                <el-table-column prop="taskName" label="任务名称" width="300"  ></el-table-column>
+                <el-table-column prop="company" label="被检查企业" width="200"></el-table-column>
                 <el-table-column prop="inspectionType" label="检查类型" width="120"></el-table-column>
                 <el-table-column label="隐患数/检查数" width="150">
                     <template slot-scope="scope">
@@ -133,7 +133,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="inspector" label="检查人" width="120"></el-table-column>
-                <el-table-column prop="inspectorType" label="检查人类型" width="120"></el-table-column>
+<!--                <el-table-column prop="inspectorType" label="检查人类型" width="120"></el-table-column>-->
                 <el-table-column label="任务起止日期" width="200">
                     <template slot-scope="scope">
                         {{ scope.row.startDate }} - {{ scope.row.endDate }}
@@ -151,7 +151,7 @@
             </el-table>
 
         <el-dialog
-                title="编辑"
+                title="编辑任务"
                 :visible.sync="editDialogVisible"
                 width="50%"
                 :before-close="handleEditDialogClose">
@@ -178,9 +178,9 @@
                 <el-form-item class="form-item-flex" label="检查人:">
                     <el-input class="e1" v-model="editedTask.inspector"></el-input>
                 </el-form-item>
-                <el-form-item class="form-item-flex" label="检查人类型:">
-                    <el-input class="e1" v-model="editedTask.inspectorType"></el-input>
-                </el-form-item>
+<!--                <el-form-item class="form-item-flex" label="检查人类型:">-->
+<!--                    <el-input class="e1" v-model="editedTask.inspectorType"></el-input>-->
+<!--                </el-form-item>-->
                 <el-form-item class="form-item-flex" label="开始时间:">
                     <el-date-picker
                             v-model="editedTask.startDate"
@@ -244,7 +244,9 @@
             </el-form-item>
 
             <el-form-item class="form-item-flex" label="被检查企业:" prop="company">
-                <el-input class="e1" v-model="temporaryTaskForm.company" placeholder="请输入被检查企业"></el-input>
+                <el-input class="e1" v-model="temporaryTaskForm.company" placeholder="请输入被检查企业">
+                    <i slot="suffix" class="el-icon-more" @click="openCompanyDialog"></i>
+                </el-input>
             </el-form-item>
 
             <el-form-item class="form-item-flex" label="隐患数量:" prop="hiddenDangerCount">
@@ -253,12 +255,6 @@
 
             <el-form-item class="form-item-flex" label="隐患数量:" prop="checkcount">
                 <el-input class="e1" v-model="temporaryTaskForm.checkcount" placeholder="请输入检查数量"></el-input>
-            </el-form-item>
-
-            <el-form-item class="form-item-flex" label="检查人:" prop="inspector">
-                <el-input class="e1" v-model="temporaryTaskForm.inspector" placeholder="请输入检查人"  >
-                    <i slot="suffix" class="el-icon-user-solid" @click="openDialog"></i>
-                </el-input>
             </el-form-item>
 
             <el-form-item class="form-item-flex" prop="date">
@@ -284,12 +280,17 @@
                 </template>
             </el-form-item>
 
+            <el-form-item class="form-item-flex" label="检查人:" prop="inspector">
+                <el-input class="e1" v-model="temporaryTaskForm.inspector" placeholder="请输入检查人"  >
+                    <i slot="suffix" class="el-icon-user-solid" @click="openDialog"></i>
+                </el-input>
+            </el-form-item>
+
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="temporaryTaskDialogVisible = false">取消</el-button>
             <el-button type="primary" @click="submitTemporaryTaskForm">确定</el-button>
         </div>
-
     </el-dialog>
 
     <!-- 设定查询表部分 -->
@@ -349,6 +350,30 @@
         </div>
     </el-dialog>
     <!-- 这里可以添加设定查询表的内容，比如el-table等 -->
+
+        <el-dialog :visible.sync="companyDialogVisible" title="企业选择">
+            <el-table :data="companyPage" style="width: 100%">
+                <el-table-column type="selection"></el-table-column>
+                <el-table-column prop="number" label="#" width="20"></el-table-column>
+                <el-table-column prop="name" label="企业名称" width="80"></el-table-column>
+                <el-table-column prop="domain" label="行业" width="120"></el-table-column>
+                <el-table-column prop="unit" label="监管单位" width="80"></el-table-column>
+                <el-table-column prop="area" label="直辖区域" width="150"></el-table-column>
+                <el-table-column prop="manager" label="管理员" width="80"></el-table-column>
+                <!-- 其他列省略，请根据你的数据结构添加 -->
+                <el-table-column  fixed="right" label="操作" width="100">
+                    <template slot-scope="scope">
+                        <el-button @click="handleRowButtonClick(scope.row)" size="small">
+                            <i class="el-icon-s-promotion"></i> 加入
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="closeCompanyDialog">取消</el-button>
+                <el-button type="primary" @click="closeCompanyDialog">确定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </div>
 
@@ -398,12 +423,14 @@
                 Page: 1, // 当前页数
                 Size: 10, // 每页显示的记录数
                 changedRows: [], // 存储所有切换后的行信息
+                companyDialogVisible: false,
+                companyPage:[],
             };
         },
         mounted() {
             this.getAllTasks();
             this.getAllofficial();
-
+            this.getAllcompanies();
         },
         computed: {
             // 对tasks[]数组进行分页的设置
@@ -441,6 +468,19 @@
                     .then(response => {
                         // 将从后端获取的数据赋值给tasks[]属性
                         this.tableData = response.data;
+                    })
+                    .catch(error => {
+                        console.error('获取任务时发生错误', error);
+                        console.log('完整的错误响应:', error.response);
+                    });
+            },
+            getAllcompanies() {
+                // 发起HTTP请求，获取数据
+                axios.get('/allcompanies')
+                    .then(response => {
+                        // 将从后端获取的数据赋值给tasks[]属性
+                        this.companyPage = response.data;
+
                     })
                     .catch(error => {
                         console.error('获取任务时发生错误', error);
@@ -586,6 +626,16 @@
             },
             resetSearch() {
                 // 重置搜索条件
+            },
+            handleRowButtonClick(row) {
+                // 将该行企业名称填入到表单中
+                this.temporaryTaskForm.company = row.name;
+            },
+            openCompanyDialog(){
+                this.companyDialogVisible=true;
+            },
+            closeCompanyDialog(){
+                this.companyDialogVisible=false;
             },
             handleButtonClick(row) {
                 row.used = !row.used;
