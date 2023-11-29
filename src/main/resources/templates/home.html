@@ -74,36 +74,6 @@
     .carousel-container {
         width: 600px; /* 设置容器元素的宽度 */
     }
-    /*.el-carousel__item h3 {*/
-    /*    color: #475669;*/
-    /*    font-size: 14px;*/
-    /*    opacity: 0.75;*/
-    /*    line-height: 350px;*/
-    /*    margin: 0;*/
-    /*}*/
-
-    /*.el-carousel__item:nth-child(2n) {*/
-    /*    background-color: #99a9bf;*/
-    /*}*/
-    /*.el-carousel__item:nth-child(2n+1) {*/
-    /*    background-color: #d3dce6;*/
-    /*}*/
-    /*!*走马灯内容*!*/
-    /*!*.el-carousel__item h3 {*!*/
-    /*!*    color: #475669;*!*/
-    /*!*    font-size: 14px;*!*/
-    /*!*    opacity: 0.75;*!*/
-    /*!*    line-height: 150px;*!*/
-    /*!*    margin: 0;*!*/
-    /*!*}*!*/
-
-    /*.el-carousel__item:nth-child(2n) {*/
-    /*    background-color: #99a9bf;*/
-    /*}*/
-
-    /*.el-carousel__item:nth-child(2n+1) {*/
-    /*    background-color: #d3dce6;*/
-    /*}*/
 
     /*main中的表格 */
     .td{
@@ -190,25 +160,25 @@
             <div class="title">主要功能</div>
             <br>
             <el-row>
+                <el-button class="button" type="primary" icon="el-icon-s-claim" circle ></el-button>
+                <el-button class="button" type="primary" icon="el-icon-edit" circle></el-button>
+                <el-button class="button" type="primary" icon="el-icon-check" circle></el-button>
+                <el-button class="button" type="primary" icon="el-icon-message" circle></el-button>
+                <br>
+                <el-link class="link" type="primary" >巡查计划</el-link>
+                <el-link class="link" type="primary">隐患复查</el-link>
+                <el-link class="link" type="primary">信息中心</el-link>
+                <el-link class="link" type="primary">信息发布</el-link>
+                <br>
                 <el-button class="button" type="primary" icon="el-icon-s-claim" circle  ></el-button>
                 <el-button class="button" type="primary" icon="el-icon-edit" circle></el-button>
                 <el-button class="button" type="primary" icon="el-icon-check" circle></el-button>
                 <el-button class="button" type="primary" icon="el-icon-message" circle></el-button>
                 <br>
-                <el-link class="link" type="primary">主要链接</el-link>
-                <el-link class="link" type="primary">主要链接</el-link>
-                <el-link class="link" type="primary">主要链接</el-link>
-                <el-link class="link" type="primary">主要链接</el-link>
-                <br>
-                <el-button class="button" type="primary" icon="el-icon-s-claim" circle  ></el-button>
-                <el-button class="button" type="primary" icon="el-icon-edit" circle></el-button>
-                <el-button class="button" type="primary" icon="el-icon-check" circle></el-button>
-                <el-button class="button" type="primary" icon="el-icon-message" circle></el-button>
-                <br>
-                <el-link class="link" type="primary">主要链接</el-link>
-                <el-link class="link" type="primary">主要链接</el-link>
-                <el-link class="link" type="primary">主要链接</el-link>
-                <el-link class="link" type="primary">主要链接</el-link>
+                <el-link class="link" type="primary">隐患清单</el-link>
+                <el-link class="link" type="primary">任务地图</el-link>
+                <el-link class="link" type="primary">账号管理</el-link>
+                <el-link class="link" type="primary">企业管理</el-link>
             </el-row>
         </div>
         <div class="box4">
@@ -217,7 +187,7 @@
                 <el-table
                         :data="tableData1"
                         stripe
-                        style="width: 100%">
+                        style="width: 100%; overflow-y: auto; height: 90%;">
                     <el-table-column prop="title" label="信息标题" width="200"  ></el-table-column>
                     <el-table-column prop="eme_degree" label="紧急度" width="100"  ></el-table-column>
                     <el-table-column prop="issuer" label="发布人" width="150"></el-table-column>
@@ -247,6 +217,8 @@
             },
         mounted() {
             this.fetchUser();
+            this.getAllInfo();
+
         },
         methods:{
             fetchUser: function () {
