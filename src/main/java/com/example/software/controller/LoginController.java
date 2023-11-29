@@ -96,6 +96,16 @@ public class LoginController {
         return "taskMap";
     }
 
+    @RequestMapping("/taskMap1")
+    public String manage_task() {
+        return "taskMap1";
+    }
+
+    @RequestMapping("/info_report")
+    public String info_report() {
+        return "info_report";
+    }
+
     @RequestMapping(value = "/loginIn", method = RequestMethod.POST)
     public ResponseEntity<?> loginIn(@RequestBody Map<String, String> request, HttpSession session) {
         String name = request.get("name");

@@ -17,10 +17,9 @@
     <style type="text/css">
         #map{
             overflow: hidden;
-            weight: 80%;
+            weight: 90%;
             height: 90%;
             margin: 0;
-            font-family: "微软雅黑";
         }
         /*#app {*/
         /*    background-color: white;*/
@@ -36,7 +35,7 @@
 </head>
 <body style="overflow-y: hidden">
 <div id="app"></div>
-<div id="map" style="z-index: 1; background-color: white; border-radius: 10px; padding: 20px; margin: 20px;"></div>
+<div id="map" style="z-index: 1; background-color: white; border-radius: 10px; padding: 5px; margin: 5px;"></div>
 
 <script type="text/javascript">
     var map = new BMapGL.Map("map");    // 创建Map实例
@@ -46,6 +45,7 @@
     map.addControl(scaleCtrl);
     var navi3DCtrl = new BMapGL.NavigationControl3D();  // 添加3D控件
     map.addControl(navi3DCtrl);
+    map.enableDragging();//添加拖动
 </script>
 </body>
 <script>

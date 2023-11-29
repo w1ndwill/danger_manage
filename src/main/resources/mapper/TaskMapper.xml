@@ -24,9 +24,10 @@
             hiddenDangerCount = #{hiddenDangerCount},
             checkcount= #{checkcount},
             inspector = #{inspector},
---             inspectorType= #{inspectorType},
             startDate = #{startDate},
-            endDate = #{endDate}
+            endDate = #{endDate},
+            lng = #{lng},
+            lat = #{lat}
             WHERE
             number = #{number}
     </update>

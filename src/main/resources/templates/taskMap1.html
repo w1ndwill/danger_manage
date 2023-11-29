@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>任务地图</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <script type="text/javascript" src="https://api.map.baidu.com/api?type=webgl&v=1.0&ak=VxXMwTrk3B9lrfDkxRFRvnvUXx1Wq1cy"></script>
+  <style type="text/css">
+    #map{
+      overflow: hidden;
+      weight: 100%;
+      height: 100%;
+      margin: 5px;
+      font-family: "微软雅黑";
+    }
+    html{height:100%}
+    body{height:100%;margin:0;padding:0}
+    #container{height:100%}
+  </style>
+</head>
+<body style="overflow-y: hidden">
+<div id="app"></div>
+<div id="map" style="z-index: 1; background-color: white; border-radius: 10px;"></div>
+
+<script type="text/javascript">
+  var map = new BMapGL.Map("map");    // 创建Map实例
+  map.centerAndZoom('苏州市', 12);  // 初始化地图,设置中心点坐标和地图级别
+  map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+  var scaleCtrl = new BMapGL.ScaleControl();  // 添加比例尺控件
+  map.addControl(scaleCtrl);
+  var navi3DCtrl = new BMapGL.NavigationControl3D();  // 添加3D控件
+  map.addControl(navi3DCtrl);
+</script>
+</body>
+<script>
+  new Vue ({
+    el: '#app',
+    data() {
+      return {
+        TaskData: [],
+      };
+    },
+    mounted() {
+      this.fetchUser();
+      this.getMyTasks();
+    },
+    methods: {
+      fetchUser: function () {
+        axios.get('/user').then(function (response) {
+          this.userBean = response.data;
+          this.loadContentFromDatabase();
+        }.bind(this)).catch(function (error) {
+          console.log(error);
+        });
+      },
+      getMyTasks() {
+        const url = `/getContent?number=${this.userBean.id}&inspector=${this.userBean.truename}`;
+        axios({
+          method: 'get',
+          url: 'url',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          },
+        })
+                .then(response => {
+                  console.log("myTask方法")
+                  console.log(response.data);
+                  this.TaskData = response.data;
+                  // 遍历所有任务
+                  this.TaskData.forEach(function (task) {
+                    var lng = task.lng;
+                    var lat = task.lat;
+                    var number = task.number;
+                    var taskName = task.company;
+                    var inspectionType = task.inspectionType;
+                    var hiddenDangerCount = task.hiddenDangerCount;
+                    var checkcount = task.checkcount;
+                    var inspector = task.inspector;
+                    var startDate = task.startDate;
+
+                    // 创建点标记
+                    var point = new BMapGL.Point(lng, lat);
+                    var point = new BMapGL.Point(lng, lat);
+                    var marker = new BMapGL.Marker(point);
+                    map.addOverlay(marker);
+                    var opts = {
+                      width: 200,
+                      height: 300,
+                    };
+
+                    var infoWindow = new BMapGL.InfoWindow('', opts); // 创建信息窗口对象
+                    // 点标记添加点击事件
+                    marker.addEventListener('click', function () {
+                      // 创建逆地理编码对象
+                      var geocoder = new BMapGL.Geocoder();
+                      // 根据坐标获取地址信息
+                      geocoder.getLocation(point, function (result) {
+                        if (result) {
+                          var address = result.address; // 获取地址信息
+                          infoWindow.setContent(
+                                  '<div>' +
+                                  '<p>任务编号：' + number + '</p>' +
+                                  '<p>任务名称：' + taskName + '</p>' +
+                                  '<p>巡检类型：' + inspectionType + '</p>' +
+                                  '<p>隐患数量：' + hiddenDangerCount + '</p>' +
+                                  '<p>检查次数：' + checkcount + '</p>' +
+                                  '<p>巡检人员：' + inspector + '</p>' +
+                                  '<p>开始时间：' + startDate + '</p>' +
+                                  '<p>地址：' + address + '</p>' +
+                                  '</div>'
+                          );
+                          map.openInfoWindow(infoWindow, point);
+                        }
+                      });
+                    });
+                  });
+                })
+                .catch(error => console.log(error))
+      },
+    }
+  })
+</script>
+</html>

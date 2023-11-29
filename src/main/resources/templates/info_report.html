@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Page Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <link rel="icon" href="../imgs/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/fonts/w-e-icon.woff">
+  <link href="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.css" rel="stylesheet">
+  <link href="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.css" rel="stylesheet">
+  <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.min.js.map"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/wangEditor/10.0.13/wangEditor.js"></script>
+  <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<style>
+  .logo{
+  !important;
+    height: 24px; /* 设置标题高度为24像素 */
+    font-family: Arial, sans-serif; /* 字体 */
+    font-size: 24px; /* 字体大小 */
+    color: #007BFF; /* 字体颜色 */
+    text-align: left; /* 对齐方式 */
+    margin-top: 20px; /* 距离顶部的间距 */
+    border-bottom: 1px solid #000000; /* 添加下边框 */
+    border-bottom-color: #007BFF; /* 改变下边框颜色为红色 */
+    padding-bottom: 35px; /* 设置标题与下边框之间的间隔 */
+  }
+
+  .input-bar{
+    padding:8px;
+  }
+
+
+  .circle-select{
+    padding: 10px;
+
+  }
+  .vice{
+    padding: 10px;
+  }
+  .annexes{
+    padding-left: 40px;
+    padding-bottom: 8px;
+  }
+  .circle-choose{
+    padding: 10px;
+  }
+  .face{
+    padding: 8px;
+  }
+  .form-item-flex label {
+    white-space: nowrap; /* label文字不换行 */
+    /*flex-shrink: 0; !* 防止label缩小，保持原始宽度 *!*/
+    /*width: 100px; !* 设置label的宽度 *!*/
+    /*margin-right: 10px; !* 可选：添加一些右侧间距 *!*/
+  }
+  .form-item-flex span {
+    margin-right: 5px;
+  }
+  .toolbar {
+    border: 1px solid #ccc;
+  }
+  .text {
+    border: 1px solid #ccc;
+    height: 500px;
+  }
+  label {
+    font-family: 'Arial', sans-serif;
+    font-size: 18px;
+    color: #000000;
+    font-weight: bold;
+  }
+  #app {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+  }
+</style>
+<body>
+<div id="app">
+  <!-- 任务和实施选项 -->
+  <div class="logo">
+    <label>信息上报>信息上报</label>
+  </div>
+  <!-- 任务状态和任务时效下拉框 -->
+  <div class="input-bar">
+    <label style="padding-left:2px">隐患原因:</label>
+    <el-input  v-model="titleinput"   placeholder="请输入通知标题" style="width:900px"></el-input>
+    <label style="padding-left: 40px">巡查编号:</label>
+    <el-input  v-model="numberinput"  placeholder="请输入通知编号"  style="width: 200px"></el-input>
+  </div>
+
+  <div class="container-fluid">
+    <!--    顶部导航栏-->
+    <div class="row">
+      <label style="padding: 10px;">整改情况:</label>
+      <div class="col-md-6" style="padding-left:0px">
+        <div class="card-body" style="min-height: 100px">
+          <div style="padding:0; color: #ccc"></div>
+          <div id="div1" class="toolbar">
+          </div>
+          <div id="div2" class="text"> <!--可使用 min-height 实现编辑区域自动增加高度-->
+            <!--                        <p>请输入内容</p>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annexes">
+    <div style="display: flex">
+      <label>附件:</label>
+      <el-upload
+              class="upload-demo"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-change="handleChange"
+              style="padding-left:14px"
+      >
+        <el-button size="big" type="primary">从附件库上传</el-button>
+      </el-upload>
+      <el-upload
+              class="upload-demo"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-change="handleChange"
+              style="padding-left: 20px"
+      >
+        <el-button size="big" type="primary">本地上传</el-button>
+      </el-upload>
+    </div>
+  </div>
+  <div class="row" style="padding-left: 110px;padding-top: 20px" >
+    <el-row>
+      <el-button id="publish" type="primary" >发布并预览</el-button>
+      <el-button id="preserve" type="primary" @click="saveButton">保存</el-button>
+      <el-button id="getback" type="back" plain>返回</el-button>
+    </el-row>
+  </div>
+</div>
+
+<script>
+  new Vue({
+    el: '#app',
+
+    data() {
+      return {
+        radioNoticeType:'',
+        radioSecurityLevel:'',
+        radioUrgencyLevel:'',
+        radioScopeRelease:'',
+        titleinput:'',
+        numberinput:'',
+        userBean: '',
+        editorContent: '',
+        fileList: [],
+        isCollapsed: false,
+        editor: null,
+      };
+    },
+    mounted() {
+      this.fetchUser();
+      this.initEditor();
+    },
+    methods: {
+      async publish_Info() {
+        // // 检查radioSecurityLevel是否为空
+        // if (this.radioSecurityLevel === '') {
+        //   this.$message({
+        //     message: '安全级别不能为空！',
+        //     type: 'warning'
+        //   });
+        //   return;
+        // }
+        // 等待 fetchUser 方法完成
+        await this.fetchUser(); // 添加 await 关键字
+        var E = window.wangEditor;
+        var editor = new E('#div1', '#div2');
+        this.editorContent = this.editor.txt.text();
+        var data = {
+          title: this.titleinput,
+          number: this.numberinput,
+          info_type: this.radioNoticeType,
+          sec_level: this.radioSecurityLevel,
+          eme_degree: this.radioUrgencyLevel,
+          scope: this.radioScopeRelease,
+          details: this.editorContent,
+          issue_time: new Date().toISOString(),
+          issuer: this.userBean.truename, // 使用 this.userBean 替代 userBean
+        };
+        console.log(data);
+        axios.post('/addInfo', data)
+                .then(response => {
+                  // 处理响应
+                  console.log('数据发布成功！');
+                })
+                .catch(error => {
+                  // 处理错误
+                  console.error('数据发布失败：', error);
+                });
+        console.log("发布方法");
+      },
+
+      fetchUser: function () {
+        axios.get('/user').then(function (response) {
+          this.userBean = response.data;
+        }.bind(this)).catch(function (error) {
+          console.log(error);
+        });
+      },
+      handleChange(file, fileList) {
+        this.fileList = fileList.slice(-3);
+      },
+      initEditor() {
+          const E = window.wangEditor;
+          const editor = new E('#div1', '#div2');
+          editor.customConfig.uploadImgShowBase64 = true;   // 使用 base64 保存图片
+          editor.create();
+          this.editor = editor;
+      },
+      saveButton() {
+        console.log("保存方法");
+      },
+      handleOpen() {
+        console.log('handleOpen');
+      },
+      handleClose() {
+        console.log('handleClose');
+      },
+    },
+  });
+</script>
+<script>
+  $(function () {
+            //富文本编辑器初始化代码
+            var E = window.wangEditor;
+            var editor = new E('#div1', '#div2');
+            editor.customConfig.uploadImgShowBase64 = true;   // 使用 base64 保存图片
+            editor.create();
+            //创建replaceAll()函数,用于替换字符串中出现的所有某个字符
+            String.prototype.replaceAll = function (FindText, RepText) {
+              return this.replace(new RegExp(FindText, "g"), RepText);
+            };
+            //发布文章按钮的点击事件，即封装数据，向后台传递
+            $("#publishBtn").click(function () {
+              console.info("click");
+              var postData = {};
+              postData.title = $("#titleInput").val();
+              postData.category = $("#categoryInput").val();
+              //替换双引号为两个单引号，方便编写SQL语句插入数据库中
+              var content = editor.txt.html().replaceAll("\"", "\'\'");
+              postData.content = content;
+              console.info(content);
+              postData.author_acc = "123";
+              postData.author_name = "admin";
+              postData.create_time = new Date().toLocaleDateString();
+              postData.last_edit_time = new Date().toLocaleDateString();
+              console.info(postData);
+              //向后台传递数据，需要根据具体后台来改
+              $.post("http://localhost:8099/publishArticle", postData, function (data) {
+                alert(data);
+              })
+            })
+          })
+
+</script>
+<!--<script>-->
+<!--  // 获取保存按钮元素-->
+<!--  const saveButton = document.getElementById('preserve');-->
+
+<!--  // 为保存按钮添加点击事件监听器-->
+<!--  saveButton.addEventListener('click', () => {-->
+<!--    // 获取要保存的数据-->
+<!--    const data = document.getElementById('data-input').value;-->
+<!--    // 将数据保存到服务器-->
+<!--    fetch('/save', {-->
+<!--      method: 'POST',-->
+<!--      body: data-->
+<!--    })-->
+<!--            .then(response => {-->
+<!--              // 处理保存成功的响应-->
+<!--              console.log('数据保存成功！');-->
+<!--            })-->
+<!--            .catch(error => {-->
+<!--              // 处理保存失败的情况-->
+<!--              console.error('数据保存失败：', error);-->
+<!--            });-->
+<!--  });-->
+<!--</script>-->
+<script>
+  // 获取返回按钮元素
+  const backButton = document.getElementById('getback');
+  // 为返回按钮添加点击事件监听器
+  backButton.addEventListener('click', () => {
+    console.log("返回方法");
+    // 执行返回操作，例如使用 history.back() 方法返回上一页
+    history.back();
+  });
+</script>
+</body>
+</html>
